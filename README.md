@@ -1,2 +1,4 @@
 # PayrollEngine.PayrollConsole
-Payroll engine console application
+[Payroll Engine](https://github.com/Payroll-Engine) console application.
+
+Start the executable to see the available commands.

@@ -1,0 +1,25 @@
+﻿using System;
+using PayrollEngine.Client;
+using PayrollEngine.PayrollConsole.Shared;
+
+namespace PayrollEngine.PayrollConsole.Arguments;
+
+public static class PayrollReportArguments
+{
+    public static string Tenant =>
+        ConsoleArguments.Get(2);
+
+    public static int TopFilter(int defaultFilter = 1) =>
+        ConsoleArguments.GetInt(3, defaultFilter);
+
+    public static ReportExportMode ResultExportMode(ReportExportMode defaultValue = ReportExportMode.NoExport) =>
+        ConsoleArguments.GetEnumToggle(defaultValue);
+
+    public static Type[] Toggles => new[]
+    {
+        typeof(ReportExportMode)
+    };
+
+    public static string TestArguments() =>
+        string.IsNullOrWhiteSpace(Tenant) ? "Missing tenant" : null;
+}

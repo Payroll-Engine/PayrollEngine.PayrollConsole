@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PayrollConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "PayrollExport CaseTest"
+    }
+  }
+}
