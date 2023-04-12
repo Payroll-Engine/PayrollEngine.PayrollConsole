@@ -5,6 +5,7 @@ using PayrollEngine.Client;
 using PayrollEngine.Client.Exchange;
 using PayrollEngine.Client.Model;
 using PayrollEngine.Client.Service.Api;
+using PayrollEngine.IO;
 using PayrollEngine.PayrollConsole.Shared;
 
 namespace PayrollEngine.PayrollConsole.Command;

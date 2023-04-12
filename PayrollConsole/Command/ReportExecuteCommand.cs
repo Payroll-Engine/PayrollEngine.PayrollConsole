@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using PayrollEngine.Client;
 using PayrollEngine.Client.Model;
 using PayrollEngine.Client.Service.Api;
+using PayrollEngine.IO;
 using PayrollEngine.PayrollConsole.Shared;
 
 namespace PayrollEngine.PayrollConsole.Command;
