@@ -2,7 +2,8 @@
   "profiles": {
     "PayrollConsole": {
       "commandName": "Project",
-      "commandLineArgs": "PayrollExport CaseTest"
+      "commandLineArgs": "TenantDelete CaseDefPayroll /trydelete",
+      "workingDirectory": "C:\\Shared\\PayrollEngine\\Repos\\PayrollEngine.Workbench\\Examples\\Backend\\CaseDefPayroll"
     }
   }
 }
