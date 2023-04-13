@@ -2,8 +2,8 @@
   "profiles": {
     "PayrollConsole": {
       "commandName": "Project",
-      "commandLineArgs": "TenantDelete CaseDefPayroll /trydelete",
-      "workingDirectory": "C:\\Shared\\PayrollEngine\\Repos\\PayrollEngine.Workbench\\Examples\\Backend\\CaseDefPayroll"
+      "commandLineArgs": "Report Payroll.Report peter.schmid@foo.com Payroll.Report EmployeeCaseValues german",
+      "workingDirectory": "C:\\Shared\\PayrollEngine\\Repos\\PayrollEngine.Workbench\\Examples\\Backend\\ReportPayroll"
     }
   }
 }

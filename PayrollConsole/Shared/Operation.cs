@@ -24,7 +24,8 @@ public enum Operation
     PayrollExport,
 
     // report
-    ReportExecute,
+    Report,
+    DataReport,
 
     // test
     CaseTest,

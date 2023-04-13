@@ -176,15 +176,24 @@ sealed class Program : ConsoleProgram<Program>
                 break;
 
             // report
-            case Operation.ReportExecute:
-                exitCode = await new ReportExecuteCommand(HttpClient).ExportAsync(
-                    ReportExecuteArguments.OutputFile,
-                    ReportExecuteArguments.Tenant,
-                    ReportExecuteArguments.User,
-                    ReportExecuteArguments.Regulation,
-                    ReportExecuteArguments.Report,
-                    ReportExecuteArguments.Language,
-                    ReportExecuteArguments.ParametersFile);
+            case Operation.Report:
+                exitCode = await new ReportCommand(HttpClient).ReportAsync(
+                    ReportArguments.Tenant,
+                    ReportArguments.User,
+                    ReportArguments.Regulation,
+                    ReportArguments.Report,
+                    ReportArguments.DocumentType(),
+                    ReportArguments.Language);
+                break;
+            case Operation.DataReport:
+                exitCode = await new DataReportCommand(HttpClient).ReportAsync(
+                    DataReportArguments.OutputFile,
+                    DataReportArguments.Tenant,
+                    DataReportArguments.User,
+                    DataReportArguments.Regulation,
+                    DataReportArguments.Report,
+                    DataReportArguments.Language,
+                    DataReportArguments.ParametersFile);
                 break;
 
             // test

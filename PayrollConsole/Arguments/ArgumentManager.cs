@@ -91,8 +91,11 @@ public static class ArgumentManager
                 break;
 
             // report
-            case Operation.ReportExecute:
-                operationToggles = ReportExecuteArguments.Toggles;
+            case Operation.Report:
+                operationToggles = ReportArguments.Toggles;
+                break;
+            case Operation.DataReport:
+                operationToggles = DataReportArguments.Toggles;
                 break;
 
             // test
@@ -180,7 +183,8 @@ public static class ArgumentManager
             Operation.PayrollImportExcel => PayrollImportExcelArguments.TestArguments(),
             Operation.PayrollExport => PayrollExportArguments.TestArguments(),
 
-            Operation.ReportExecute => ReportExecuteArguments.TestArguments(),
+            Operation.Report => ReportArguments.TestArguments(),
+            Operation.DataReport => DataReportArguments.TestArguments(),
 
             Operation.CaseTest => CaseTestArguments.TestArguments(),
             Operation.ReportTest => ReportTestArguments.TestArguments(),

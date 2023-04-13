@@ -13,14 +13,14 @@ using PayrollEngine.PayrollConsole.Shared;
 
 namespace PayrollEngine.PayrollConsole.Command;
 
-internal sealed class ReportExecuteCommand : HttpCommandBase
+internal sealed class DataReportCommand : HttpCommandBase
 {
-    internal ReportExecuteCommand(PayrollHttpClient httpClient) :
+    internal DataReportCommand(PayrollHttpClient httpClient) :
         base(httpClient)
     {
     }
 
-    internal async Task<ProgramExitCode> ExportAsync(string outputFile, string tenantIdentifier,
+    internal async Task<ProgramExitCode> ReportAsync(string outputFile, string tenantIdentifier,
         string userIdentifier, string regulationName, string reportName, Language language,
         string parameterFile = null)
     {
@@ -45,7 +45,7 @@ internal sealed class ReportExecuteCommand : HttpCommandBase
             throw new PayrollException("Missing report");
         }
 
-        DisplayTitle("Export regulation report");
+        DisplayTitle("Data report");
         ConsoleTool.DisplayTextLine($"Output file      {outputFile}");
         ConsoleTool.DisplayTextLine($"Tenant           {tenantIdentifier}");
         ConsoleTool.DisplayTextLine($"User             {userIdentifier}");
@@ -62,7 +62,7 @@ internal sealed class ReportExecuteCommand : HttpCommandBase
         // stopwatch
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-        ConsoleTool.DisplayText("Exporting report...");
+        ConsoleTool.DisplayText("Building data report...");
 
         // tenant
         var tenant = await new TenantService(HttpClient)
@@ -151,7 +151,7 @@ internal sealed class ReportExecuteCommand : HttpCommandBase
                 stopwatch.Stop();
                 ConsoleTool.DisplayTextLine($"done in {stopwatch.ElapsedMilliseconds} ms");
                 ConsoleTool.DisplayNewLine();
-                ConsoleTool.DisplaySuccessLine($"Report {reportName} executed into file {new FileInfo(fileName).FullName}");
+                ConsoleTool.DisplaySuccessLine($"Report {reportName} to data file {new FileInfo(fileName).FullName}");
                 ConsoleTool.DisplayNewLine();
             }
             return ProgramExitCode.Ok;
@@ -160,7 +160,7 @@ internal sealed class ReportExecuteCommand : HttpCommandBase
         {
             if (ConsoleTool.DisplayMode == ConsoleDisplayMode.Silent)
             {
-                ConsoleTool.WriteErrorLine($"Report execute error: {exception.GetBaseMessage()}");
+                ConsoleTool.WriteErrorLine($"Report error: {exception.GetBaseMessage()}");
             }
             return ProgramExitCode.GenericError;
         }
@@ -168,8 +168,8 @@ internal sealed class ReportExecuteCommand : HttpCommandBase
 
     internal static void ShowHelp()
     {
-        ConsoleTool.DisplayTitleLine("- ReportExecute");
-        ConsoleTool.DisplayTextLine("      Execute report to json file");
+        ConsoleTool.DisplayTitleLine("- DataReport");
+        ConsoleTool.DisplayTextLine("      Report data to json file");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. target file");
         ConsoleTool.DisplayTextLine("          2. tenant identifier");
@@ -179,7 +179,7 @@ internal sealed class ReportExecuteCommand : HttpCommandBase
         ConsoleTool.DisplayTextLine("          6. language");
         ConsoleTool.DisplayTextLine("          7. report parameter file with a json string/string dictionary (optional)");
         ConsoleTool.DisplayTextLine("      Examples:");
-        ConsoleTool.DisplayTextLine("          ReportExecute MyReport.data.json MyTenant MyUser MyRegulation MyReport German");
-        ConsoleTool.DisplayTextLine("          ReportExecute MyReport.data.json MyTenant MyUser MyRegulation MyReport German MyParameters.json");
+        ConsoleTool.DisplayTextLine("          DataReport MyReport.data.json MyTenant MyUser MyRegulation MyReport German");
+        ConsoleTool.DisplayTextLine("          DataReport MyReport.data.json MyTenant MyUser MyRegulation MyReport German MyParameters.json");
     }
 }

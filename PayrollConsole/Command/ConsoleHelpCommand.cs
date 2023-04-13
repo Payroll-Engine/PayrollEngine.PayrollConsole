@@ -37,7 +37,8 @@ internal sealed class ConsoleHelpCommand : CommandBase
         PayrollExportCommand.ShowHelp();
 
         // report
-        ReportExecuteCommand.ShowHelp();
+        ReportCommand.ShowHelp();
+        DataReportCommand.ShowHelp();
 
         // test commands
         CaseTestCommand.ShowHelp();
