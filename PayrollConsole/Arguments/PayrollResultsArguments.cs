@@ -4,7 +4,7 @@ using PayrollEngine.PayrollConsole.Shared;
 
 namespace PayrollEngine.PayrollConsole.Arguments;
 
-public static class PayrollReportArguments
+public static class PayrollResultsArguments
 {
     public static string Tenant =>
         ConsoleArguments.Get(2);

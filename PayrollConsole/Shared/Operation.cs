@@ -18,7 +18,7 @@ public enum Operation
     LogTrail,
 
     // payroll
-    PayrollReport,
+    PayrollResults,
     PayrollImport,
     PayrollImportExcel,
     PayrollExport,

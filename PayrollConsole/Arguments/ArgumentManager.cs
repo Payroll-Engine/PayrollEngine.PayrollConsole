@@ -77,8 +77,8 @@ public static class ArgumentManager
                 break;
 
             // payroll
-            case Operation.PayrollReport:
-                operationToggles = PayrollReportArguments.Toggles;
+            case Operation.PayrollResults:
+                operationToggles = PayrollResultsArguments.Toggles;
                 break;
             case Operation.PayrollImport:
                 operationToggles = PayrollImportArguments.Toggles;
@@ -178,7 +178,7 @@ public static class ArgumentManager
             Operation.HttpDelete => HttpDeleteArguments.TestArguments(),
             Operation.LogTrail => LogTrailArguments.TestArguments(),
 
-            Operation.PayrollReport => PayrollReportArguments.TestArguments(),
+            Operation.PayrollResults => PayrollResultsArguments.TestArguments(),
             Operation.PayrollImport => PayrollImportArguments.TestArguments(),
             Operation.PayrollImportExcel => PayrollImportExcelArguments.TestArguments(),
             Operation.PayrollExport => PayrollExportArguments.TestArguments(),

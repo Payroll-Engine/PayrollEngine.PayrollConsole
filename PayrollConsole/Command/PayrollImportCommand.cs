@@ -22,10 +22,9 @@ internal sealed class PayrollImportCommand : HttpCommandBase
     /// Import a tenant from a JSON file
     /// </summary>
     /// <param name="fileName">The import file name</param>
-    /// <param name="updateMode">The update mode</param>
     /// <param name="importMode">The import mode</param>
     /// <param name="namespace">The import namespace</param>
-    internal async Task<ProgramExitCode> ImportAsync(string fileName, UpdateMode updateMode, DataImportMode importMode,
+    internal async Task<ProgramExitCode> ImportAsync(string fileName, DataImportMode importMode,
         string @namespace = null)
     {
         if (string.IsNullOrWhiteSpace(fileName))
@@ -39,7 +38,6 @@ internal sealed class PayrollImportCommand : HttpCommandBase
             ConsoleTool.DisplayTextLine($"Namespace        {@namespace}");
         }
         ConsoleTool.DisplayTextLine($"File             {fileName}");
-        ConsoleTool.DisplayTextLine($"Update mode      {updateMode}");
         ConsoleTool.DisplayTextLine($"Import mode      {importMode}");
         ConsoleTool.DisplayTextLine($"Url              {HttpClient}");
         ConsoleTool.DisplayNewLine();
@@ -49,7 +47,7 @@ internal sealed class PayrollImportCommand : HttpCommandBase
             // read file
             var exchange = await ExchangeReader.ReadAsync(fileName, @namespace);
             // import tenant
-            var import = new ExchangeImport(HttpClient, exchange, ScriptParser, updateMode, importMode);
+            var import = new ExchangeImport(HttpClient, exchange, ScriptParser, importMode);
             await import.ImportAsync();
 
             ConsoleTool.DisplaySuccessLine($"Payroll successfully imported from {new FileInfo(fileName).FullName}");
@@ -70,7 +68,6 @@ internal sealed class PayrollImportCommand : HttpCommandBase
         ConsoleTool.DisplayTextLine("          1. JSON/ZIP file name");
         ConsoleTool.DisplayTextLine("          2. namespace (optional)");
         ConsoleTool.DisplayTextLine("      Toggles:");
-        ConsoleTool.DisplayTextLine("          update mode: /update or /noupdate (default: update)");
         ConsoleTool.DisplayTextLine("          import mode: /single or /bulk (default: single)");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          PayrollImport MyImportFile.json");

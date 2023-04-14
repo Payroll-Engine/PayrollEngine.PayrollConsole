@@ -5,9 +5,9 @@ using PayrollEngine.PayrollConsole.Shared;
 
 namespace PayrollEngine.PayrollConsole.Command;
 
-internal sealed class PayrollReportCommand : HttpCommandBase
+internal sealed class PayrollResultsCommand : HttpCommandBase
 {
-    internal PayrollReportCommand(PayrollHttpClient httpClient) :
+    internal PayrollResultsCommand(PayrollHttpClient httpClient) :
         base(httpClient)
     {
     }
@@ -25,7 +25,7 @@ internal sealed class PayrollReportCommand : HttpCommandBase
             throw new PayrollException("Missing tenant argument");
         }
 
-        DisplayTitle("Create payroll result report");
+        DisplayTitle("Payroll results");
         ConsoleTool.DisplayTextLine($"Tenant           {tenantIdentifier}");
         ConsoleTool.DisplayTextLine($"Top filter       {topFilter} Jobs");
         ConsoleTool.DisplayTextLine($"Export mode      {exportMode}");
@@ -33,7 +33,7 @@ internal sealed class PayrollReportCommand : HttpCommandBase
 
         try
         {
-            var payrollReport = new PayrollConsoleReport(HttpClient, topFilter, exportMode);
+            var payrollReport = new PayrollResultsReport(HttpClient, topFilter, exportMode);
             await payrollReport.ConsoleWriteAsync(tenantIdentifier);
             return ProgramExitCode.Ok;
         }
@@ -52,7 +52,7 @@ internal sealed class PayrollReportCommand : HttpCommandBase
         ConsoleTool.DisplayTextLine("          1. tenant name");
         ConsoleTool.DisplayTextLine("          2. result of top <count> payrun jobs (default: 1, max: 100)");
         ConsoleTool.DisplayTextLine("      Toggles:");
-        ConsoleTool.DisplayTextLine($"         result export mode: /export or /noexport (CSV report {PayrollConsoleReport.ReportFolderName}, default=noexport)");
+        ConsoleTool.DisplayTextLine($"         result export mode: /export or /noexport (CSV report {PayrollResultsReport.ResultsFolderName}, default=noexport)");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          PayrollReport MyTenantName");
         ConsoleTool.DisplayTextLine("          PayrollReport MyTenantName 3");

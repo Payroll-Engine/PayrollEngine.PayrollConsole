@@ -12,15 +12,11 @@ public static class PayrollImportExcelArguments
     public static string Tenant =>
         ConsoleArguments.Get(3);
 
-    public static UpdateMode UpdateMode(UpdateMode defaultValue = Client.UpdateMode.Update) =>
-        ConsoleArguments.GetEnumToggle(defaultValue);
-
     public static DataImportMode DataImportMode(DataImportMode defaultValue = Client.Exchange.DataImportMode.Single) =>
         ConsoleArguments.GetEnumToggle(defaultValue);
 
     public static Type[] Toggles => new[]
     {
-        typeof(UpdateMode),
         typeof(DataImportMode)
     };
 

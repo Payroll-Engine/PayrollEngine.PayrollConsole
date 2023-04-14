@@ -31,7 +31,7 @@ internal sealed class ConsoleHelpCommand : CommandBase
         LogTrailCommand.ShowHelp();
 
         // payroll commands
-        PayrollReportCommand.ShowHelp();
+        PayrollResultsCommand.ShowHelp();
         PayrollImportCommand.ShowHelp();
         PayrollImportExcelCommand.ShowHelp();
         PayrollExportCommand.ShowHelp();

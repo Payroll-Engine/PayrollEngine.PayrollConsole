@@ -172,7 +172,8 @@ internal sealed class ReportCommand : HttpCommandBase
 
             stopwatch.Stop();
 
-            ConsoleTool.DisplaySuccessLine($"Report {reportName} to data file {new FileInfo(outputFile).FullName}");
+            ConsoleTool.DisplayNewLine();
+            ConsoleTool.DisplaySuccessLine($"Report file created {new FileInfo(outputFile).FullName}");
             ConsoleTool.DisplayNewLine();
             ConsoleTool.DisplayTextLine("Report statistics:");
             ConsoleTool.DisplayTextLine($"  Execute: {executeTime} ms");
@@ -184,10 +185,8 @@ internal sealed class ReportCommand : HttpCommandBase
         }
         catch (Exception exception)
         {
-            if (ConsoleTool.DisplayMode == ConsoleDisplayMode.Silent)
-            {
-                ConsoleTool.WriteErrorLine($"Report error: {exception.GetBaseMessage()}");
-            }
+            ConsoleTool.DisplayNewLine();
+            ConsoleTool.WriteErrorLine($"Report error: {exception.GetBaseMessage()}");
             return ProgramExitCode.GenericError;
         }
     }
@@ -205,6 +204,7 @@ internal sealed class ReportCommand : HttpCommandBase
         var response = await new ReportService(httpClient).ExecuteReportAsync(new(tenantId, regulationId), report.Id, request);
         if (response == null)
         {
+            ConsoleTool.DisplayNewLine();
             ConsoleTool.WriteErrorLine($"Error while executing report {report.Name}");
             return null;
         }
@@ -255,7 +255,7 @@ internal sealed class ReportCommand : HttpCommandBase
         ReportSet report, DataSet dataSet, DocumentMetadata documentMetadata,
         DocumentType documentType, Language language)
     {
-        var merge = new DocumentMerge();
+        var merge = new DataMerge();
         if (!merge.IsMergeable(documentType))
         {
             ConsoleTool.WriteErrorLine($" report {report.Name}: merge of {documentType} is not supported");
@@ -268,7 +268,7 @@ internal sealed class ReportCommand : HttpCommandBase
         MemoryStream resultStream;
         if (documentType == DocumentType.Excel)
         {
-            // excel raw
+            // excel report
             resultStream = merge.ExcelMerge(dataSet, documentMetadata);
         }
         else
@@ -333,6 +333,7 @@ internal sealed class ReportCommand : HttpCommandBase
             // report transformation
             try
             {
+                ConsoleTool.DisplayNewLine();
                 ConsoleTool.DisplayText("Transforming raw XML...");
 
                 // style sheet
@@ -406,17 +407,16 @@ internal sealed class ReportCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- Report");
         ConsoleTool.DisplayTextLine("      Report to file");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. target file");
-        ConsoleTool.DisplayTextLine("          2. tenant identifier");
-        ConsoleTool.DisplayTextLine("          3. user identifier");
-        ConsoleTool.DisplayTextLine("          4. regulation name");
-        ConsoleTool.DisplayTextLine("          5. report name");
-        ConsoleTool.DisplayTextLine("          6. language");
+        ConsoleTool.DisplayTextLine("          1. tenant identifier");
+        ConsoleTool.DisplayTextLine("          2. user identifier");
+        ConsoleTool.DisplayTextLine("          3. regulation name");
+        ConsoleTool.DisplayTextLine("          4. report name");
+        ConsoleTool.DisplayTextLine("          6. language:/language (default: /english)");
         ConsoleTool.DisplayTextLine("          7. document type: /pdf /xml or /xmlraw (default: /pdf)");
         ConsoleTool.DisplayTextLine("          8. report parameter file with a json string/string dictionary (optional)");
         ConsoleTool.DisplayTextLine("      Examples:");
-        ConsoleTool.DisplayTextLine("          DataReport MyReport.data.json MyTenant MyUser MyRegulation MyReport German");
-        ConsoleTool.DisplayTextLine("          DataReport MyReport.data.json MyTenant MyUser MyRegulation MyReport German MyParameters.json");
+        ConsoleTool.DisplayTextLine("          Report MyTenant MyUser MyRegulation MyReport /german");
+        ConsoleTool.DisplayTextLine("          Report MyTenant MyUser MyRegulation MyReport MyParameters.json /french /xml");
     }
 
     #endregion

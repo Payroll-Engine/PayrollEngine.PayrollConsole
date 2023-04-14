@@ -14,7 +14,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.PayrollConsole.Command;
 
-public class PayrollConsoleReport
+public class PayrollResultsReport
 {
     private sealed class ReportColumn
     {
@@ -43,13 +43,13 @@ public class PayrollConsoleReport
     };
 
     public static readonly string ExportSeparator = "\t";
-    public static readonly string ReportFolderName = "Reports";
+    public static readonly string ResultsFolderName = "Results";
 
     public PayrollHttpClient HttpClient { get; }
     public int TopFilter { get; }
     public ReportExportMode ExportMode { get; }
 
-    public PayrollConsoleReport(PayrollHttpClient httpClient, int topFilter, ReportExportMode exportMode)
+    public PayrollResultsReport(PayrollHttpClient httpClient, int topFilter, ReportExportMode exportMode)
     {
         HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         TopFilter = topFilter;
@@ -290,7 +290,7 @@ public class PayrollConsoleReport
                 // results export
                 if (ExportMode == ReportExportMode.Export)
                 {
-                    var targetDirectory = ReportFolderName;
+                    var targetDirectory = ResultsFolderName;
                     if (!Directory.Exists(targetDirectory))
                     {
                         Directory.CreateDirectory(targetDirectory);

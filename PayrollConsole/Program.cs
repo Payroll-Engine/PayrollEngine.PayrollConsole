@@ -147,23 +147,21 @@ sealed class Program : ConsoleProgram<Program>
                 break;
 
             // payroll
-            case Operation.PayrollReport:
-                exitCode = await new PayrollReportCommand(HttpClient).CreateReportAsync(
-                    PayrollReportArguments.Tenant,
-                    PayrollReportArguments.TopFilter(),
-                    PayrollReportArguments.ResultExportMode());
+            case Operation.PayrollResults:
+                exitCode = await new PayrollResultsCommand(HttpClient).CreateReportAsync(
+                    PayrollResultsArguments.Tenant,
+                    PayrollResultsArguments.TopFilter(),
+                    PayrollResultsArguments.ResultExportMode());
                 break;
             case Operation.PayrollImport:
                 exitCode = await new PayrollImportCommand(HttpClient).ImportAsync(
                     PayrollImportArguments.FileName,
-                    PayrollImportArguments.UpdateMode(),
                     PayrollImportArguments.DataImportMode(),
                     PayrollImportArguments.Namespace);
                 break;
             case Operation.PayrollImportExcel:
                 exitCode = await new PayrollImportExcelCommand(HttpClient).ImportAsync(
                     PayrollImportExcelArguments.FileName,
-                    PayrollImportExcelArguments.UpdateMode(),
                     PayrollImportExcelArguments.DataImportMode(),
                     PayrollImportExcelArguments.Tenant);
                 break;
@@ -183,7 +181,7 @@ sealed class Program : ConsoleProgram<Program>
                     ReportArguments.Regulation,
                     ReportArguments.Report,
                     ReportArguments.DocumentType(),
-                    ReportArguments.Language);
+                    ReportArguments.Language());
                 break;
             case Operation.DataReport:
                 exitCode = await new DataReportCommand(HttpClient).ReportAsync(

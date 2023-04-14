@@ -20,17 +20,18 @@ public static class ReportArguments
     public static string Report =>
         ConsoleArguments.Get(5);
 
-    public static Language Language =>
-        ConsoleArguments.GetEnum<Language>(6);
-
     public static string ParameterFile =>
-        ConsoleArguments.Get(7);
+        ConsoleArguments.Get(6);
+
+    public static Language Language(Language language = PayrollEngine.Language.English) =>
+        ConsoleArguments.GetEnumToggle(language);
 
     public static DocumentType DocumentType(DocumentType defaultTestMode = Document.DocumentType.Pdf) =>
         ConsoleArguments.GetEnumToggle(defaultTestMode);
 
     public static Type[] Toggles => new[]
     {
+        typeof(Language),
         typeof(DocumentType)
     };
 
