@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "PayrollConsole": {
-      "commandName": "Project",
-      "commandLineArgs": "PayrollImport Payroll.Report.json",
-      "workingDirectory": "C:\\Shared\\PayrollEngine\\Repos\\PayrollEngine.Workbench\\Examples\\Backend\\ReportPayroll\\Regulation"
-    }
-  }
-}
