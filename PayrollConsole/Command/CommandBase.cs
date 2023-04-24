@@ -19,26 +19,10 @@ internal abstract class CommandBase
         }
 
         // log
-        var message = exception.GetBaseException().Message;
-        Log.Error(exception, message);
+        Log.Error(exception, exception.GetBaseException().Message);
 
         // display
-        var apiError = exception.ToApiError();
-        if (apiError == null)
-        {
-            ConsoleTool.DisplayErrorLine(message);
-        }
-        else
-        {
-            if (apiError.StatusCode != 0)
-            {
-                ConsoleTool.DisplayErrorLine($"Http status code: {apiError.StatusCode}");
-            }
-            ConsoleTool.DisplayErrorLine(apiError.Message.Trim());
-            if (!string.IsNullOrWhiteSpace(apiError.StackTrace))
-            {
-                ConsoleTool.DisplayInfoLine(apiError.StackTrace);
-            }
-        }
+        var message = exception.GetApiMessage();
+        ConsoleTool.DisplayErrorLine(message);
     }
 }
