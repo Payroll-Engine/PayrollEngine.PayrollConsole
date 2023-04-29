@@ -313,7 +313,7 @@ public class PayrollResultsReport
 
     private static string FormatValue(string value, string columnName)
     {
-        if (string.IsNullOrEmpty(value))
+        if (string.IsNullOrWhiteSpace(value))
         {
             return null;
         }
