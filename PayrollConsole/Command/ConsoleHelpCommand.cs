@@ -50,7 +50,7 @@ internal sealed class ConsoleHelpCommand : CommandBase
         PayrunStatisticsCommand.ShowHelp();
 
         // shared regulation regulations commands
-        RegulationPermissionCommand.ShowHelp();
+        RegulationShareCommand.ShowHelp();
 
         // data management commands
         TenantDeleteCommand.ShowHelp();

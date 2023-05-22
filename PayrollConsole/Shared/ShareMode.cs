@@ -1,6 +1,6 @@
 ﻿namespace PayrollEngine.PayrollConsole.Shared;
 
-public enum PermissionMode
+public enum ShareMode
 {
     View,
     Set,

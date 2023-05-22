@@ -36,8 +36,8 @@ public enum Operation
     // statistics
     PayrunStatistics,
 
-    // shared regulation regulations
-    RegulationPermission,
+    // regulation share
+    RegulationShare,
 
     // data management
     TenantDelete,

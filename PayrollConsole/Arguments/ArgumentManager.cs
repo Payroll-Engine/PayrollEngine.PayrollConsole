@@ -118,8 +118,8 @@ public static class ArgumentManager
                 break;
 
             // shared regulation regulations
-            case Operation.RegulationPermission:
-                operationToggles = RegulationPermissionArguments.Toggles;
+            case Operation.RegulationShare:
+                operationToggles = RegulationShareArguments.Toggles;
                 break;
 
             // data management
@@ -193,7 +193,7 @@ public static class ArgumentManager
 
             Operation.PayrunStatistics => null,
 
-            Operation.RegulationPermission => null,
+            Operation.RegulationShare => null,
 
             Operation.TenantDelete => TenantDeleteArguments.TestArguments(),
             Operation.PayrunJobDelete => null,

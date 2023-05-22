@@ -199,7 +199,9 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
 
         // info
         ConsoleTool.DisplayNewLine();
-        ConsoleTool.DisplayTextLine($"=== Test {new FileInfo(fileName).Name} ===");
+        var title = "---------- Test statistics ----------";
+        ConsoleTool.DisplayTextLine(title);
+        ConsoleTool.DisplayTextLine($"File          {new FileInfo(fileName).Name}");
         ConsoleTool.DisplayTextLine($"Jobs          {results.Count}");
         var duration = durations.Aggregate(TimeSpan.Zero, (subtotal, t) => subtotal.Add(t));
         ConsoleTool.DisplayTextLine($"Duration      {duration.TotalSeconds:0.#} sec");
@@ -219,7 +221,8 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
             }
         }
 
-        ConsoleTool.DisplayTextLine($"Average       {duration.TotalMilliseconds / results.Count:#0} ms");
+        var average = duration.TotalMilliseconds / results.Count;
+        ConsoleTool.DisplayTextLine($"Average       {average:#0} ms");
         if (results.Count > 2 && slowestIndex >= 0)
         {
             var slowestResult = results[slowestIndex];
@@ -228,12 +231,20 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
             results.Remove(slowestResult);
             durations.Remove(slowestDuration);
             duration = durations.Aggregate(TimeSpan.Zero, (subtotal, t) => subtotal.Add(t));
-            ConsoleTool.DisplayTextLine($"Average 2+    {duration.TotalMilliseconds / results.Count:#0} ms");
+            var average2nd = duration.TotalMilliseconds / results.Count;
+
+            // show 2+ average on a difference of 20 percent
+            var range = average / 5;
+            if (Math.Abs(average - average2nd) > range)
+            {
+                ConsoleTool.DisplayTextLine($"Average 2+    {duration.TotalMilliseconds / results.Count:#0} ms");
+            }
         }
 
         if (errorCount > 0)
         {
             ConsoleTool.DisplayErrorLine($"Errors        {errorCount}");
         }
+        ConsoleTool.DisplayTextLine(new string('-', title.Length));
     }
 }

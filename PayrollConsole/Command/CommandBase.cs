@@ -22,7 +22,7 @@ internal abstract class CommandBase
         Log.Error(exception, exception.GetBaseException().Message);
 
         // display
-        var message = exception.GetApiMessage();
+        var message = exception.GetApiErrorMessage();
         ConsoleTool.DisplayErrorLine(message);
     }
 }

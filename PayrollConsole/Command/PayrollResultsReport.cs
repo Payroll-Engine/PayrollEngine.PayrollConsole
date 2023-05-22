@@ -159,7 +159,7 @@ public class PayrollResultsReport
                 Console.WriteLine($"Job start        {payrunJob.JobStart.ToUtc()}");
                 Console.WriteLine($"Job end          {payrunJob.JobEnd?.ToUtc()}");
 
-                Console.WriteLine($"Reason           {payrunJob.Reason}");
+                Console.WriteLine($"Reason           {payrunJob.CreatedReason}");
                 Console.WriteLine($"Message          {payrunJob.Message}");
                 if (!string.IsNullOrWhiteSpace(payrunJob.ErrorMessage))
                 {

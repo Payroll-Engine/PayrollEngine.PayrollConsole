@@ -239,14 +239,14 @@ sealed class Program : ConsoleProgram<Program>
                 failedOperation = exitCode == ProgramExitCode.FailedTest;
                 break;
 
-            // shared regulation permission
-            case Operation.RegulationPermission:
-                exitCode = await new RegulationPermissionCommand(HttpClient).ChangeAsync(
-                    RegulationPermissionArguments.Tenant,
-                    RegulationPermissionArguments.Regulation,
-                    RegulationPermissionArguments.PermissionTenant,
-                    RegulationPermissionArguments.PermissionDivision,
-                    RegulationPermissionArguments.PermissionMode());
+            // regulation shares
+            case Operation.RegulationShare:
+                exitCode = await new RegulationShareCommand(HttpClient).ChangeAsync(
+                    RegulationShareArguments.ProviderTenant,
+                    RegulationShareArguments.ProviderRegulation,
+                    RegulationShareArguments.ConsumerTenant,
+                    RegulationShareArguments.ConsumerDivision,
+                    RegulationShareArguments.ShareMode());
                 break;
 
             // data management
