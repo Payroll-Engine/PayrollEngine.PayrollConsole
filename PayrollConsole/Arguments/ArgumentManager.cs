@@ -8,8 +8,8 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class ArgumentManager
 {
     // fixed order arguments
-    public static Operation GetOperation(Operation defaultOperation) =>
-        ConsoleArguments.GetEnum(1, defaultOperation);
+    public static Shared.Command GetCommand(Shared.Command defaultCommand) =>
+        ConsoleArguments.GetEnum(1, defaultCommand);
 
     // global enum toggles
     public static ConsoleDisplayMode DisplayMode(ConsoleDisplayMode defaultValue = default) =>
@@ -24,7 +24,7 @@ public static class ArgumentManager
     public static PayrollConsoleWaitMode WaitMode(PayrollConsoleWaitMode defaultValue = default) =>
         ConsoleArguments.GetEnumToggle(defaultValue);
 
-    public static string TestArguments(Operation operation)
+    public static string TestArguments(Shared.Command command)
     {
         // argument order
         if (!ConsoleArguments.IsValidOrder())
@@ -41,114 +41,114 @@ public static class ArgumentManager
             typeof(PayrollConsoleWaitMode)
         };
 
-        Type[] operationToggles = null;
-        switch (operation)
+        Type[] commandToggles = null;
+        switch (command)
         {
-            // common operations
-            case Operation.Help:
+            // common commands
+            case Shared.Command.Help:
                 break;
-            case Operation.UserVariable:
-                operationToggles = UserVariableArguments.Toggles;
+            case Shared.Command.UserVariable:
+                commandToggles = UserVariableArguments.Toggles;
                 break;
-            case Operation.Stopwatch:
-                operationToggles = StopwatchArguments.Toggles;
+            case Shared.Command.Stopwatch:
+                commandToggles = StopwatchArguments.Toggles;
                 break;
 
             // action
-            case Operation.ActionReport:
-                operationToggles = ActionReportArguments.Toggles;
+            case Shared.Command.ActionReport:
+                commandToggles = ActionReportArguments.Toggles;
                 break;
 
             // system
-            case Operation.HttpGet:
-                operationToggles = HttpGetArguments.Toggles;
+            case Shared.Command.HttpGet:
+                commandToggles = HttpGetArguments.Toggles;
                 break;
-            case Operation.HttpPost:
-                operationToggles = HttpPostArguments.Toggles;
+            case Shared.Command.HttpPost:
+                commandToggles = HttpPostArguments.Toggles;
                 break;
-            case Operation.HttpPut:
-                operationToggles = HttpPutArguments.Toggles;
+            case Shared.Command.HttpPut:
+                commandToggles = HttpPutArguments.Toggles;
                 break;
-            case Operation.HttpDelete:
-                operationToggles = HttpDeleteArguments.Toggles;
+            case Shared.Command.HttpDelete:
+                commandToggles = HttpDeleteArguments.Toggles;
                 break;
-            case Operation.LogTrail:
-                operationToggles = LogTrailArguments.Toggles;
+            case Shared.Command.LogTrail:
+                commandToggles = LogTrailArguments.Toggles;
                 break;
 
             // payroll
-            case Operation.PayrollResults:
-                operationToggles = PayrollResultsArguments.Toggles;
+            case Shared.Command.PayrollResults:
+                commandToggles = PayrollResultsArguments.Toggles;
                 break;
-            case Operation.PayrollImport:
-                operationToggles = PayrollImportArguments.Toggles;
+            case Shared.Command.PayrollImport:
+                commandToggles = PayrollImportArguments.Toggles;
                 break;
-            case Operation.PayrollImportExcel:
-                operationToggles = PayrollImportExcelArguments.Toggles;
+            case Shared.Command.PayrollImportExcel:
+                commandToggles = PayrollImportExcelArguments.Toggles;
                 break;
-            case Operation.PayrollExport:
-                operationToggles = PayrollExportArguments.Toggles;
+            case Shared.Command.PayrollExport:
+                commandToggles = PayrollExportArguments.Toggles;
                 break;
 
             // report
-            case Operation.Report:
-                operationToggles = ReportArguments.Toggles;
+            case Shared.Command.Report:
+                commandToggles = ReportArguments.Toggles;
                 break;
-            case Operation.DataReport:
-                operationToggles = DataReportArguments.Toggles;
+            case Shared.Command.DataReport:
+                commandToggles = DataReportArguments.Toggles;
                 break;
 
             // test
-            case Operation.CaseTest:
-                operationToggles = CaseTestArguments.Toggles;
+            case Shared.Command.CaseTest:
+                commandToggles = CaseTestArguments.Toggles;
                 break;
-            case Operation.ReportTest:
-                operationToggles = ReportTestArguments.Toggles;
+            case Shared.Command.ReportTest:
+                commandToggles = ReportTestArguments.Toggles;
                 break;
-            case Operation.PayrunTest:
-                operationToggles = PayrunTestArguments.Toggles;
+            case Shared.Command.PayrunTest:
+                commandToggles = PayrunTestArguments.Toggles;
                 break;
-            case Operation.PayrunEmployeeTest:
-                operationToggles = PayrunEmployeeTestArguments.Toggles;
+            case Shared.Command.PayrunEmployeeTest:
+                commandToggles = PayrunEmployeeTestArguments.Toggles;
                 break;
 
             // statistics
-            case Operation.PayrunStatistics:
-                operationToggles = PayrunStatisticsArguments.Toggles;
+            case Shared.Command.PayrunStatistics:
+                commandToggles = PayrunStatisticsArguments.Toggles;
                 break;
 
             // shared regulation regulations
-            case Operation.RegulationShare:
-                operationToggles = RegulationShareArguments.Toggles;
+            case Shared.Command.RegulationShare:
+                commandToggles = RegulationShareArguments.Toggles;
                 break;
 
             // data management
-            case Operation.TenantDelete:
-                operationToggles = TenantDeleteArguments.Toggles;
+            case Shared.Command.TenantDelete:
+                commandToggles = TenantDeleteArguments.Toggles;
                 break;
-            case Operation.PayrunJobDelete:
-                operationToggles = PayrunJobDeleteArguments.Toggles;
+            case Shared.Command.PayrunJobDelete:
+                commandToggles = PayrunJobDeleteArguments.Toggles;
                 break;
 
             // scripting
-            case Operation.RegulationRebuild:
-                operationToggles = RegulationRebuildArguments.Toggles;
+            case Shared.Command.RegulationRebuild:
+                commandToggles = RegulationRebuildArguments.Toggles;
                 break;
-            case Operation.PayrunRebuild:
-                operationToggles = PayrunRebuildArguments.Toggles;
+            case Shared.Command.PayrunRebuild:
+                commandToggles = PayrunRebuildArguments.Toggles;
                 break;
-            case Operation.ScriptPublish:
-                operationToggles = ScriptPublishArguments.Toggles;
+            case Shared.Command.ScriptPublish:
+                commandToggles = ScriptPublishArguments.Toggles;
                 break;
-            case Operation.ScriptExport:
-                operationToggles = ScriptExportArguments.Toggles;
+            case Shared.Command.ScriptExport:
+                commandToggles = ScriptExportArguments.Toggles;
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(operation), operation, "Unknown operation for toggle");
+                throw new ArgumentOutOfRangeException(nameof(command), command, "Unknown command for toggle");
         }
-        if (operationToggles != null)
+        if (commandToggles != null)
         {
-            toggles.AddRange(operationToggles);
+            toggles.AddRange(commandToggles);
         }
         // unknown toggle
         var unknownToggle = ConsoleArguments.TestUnknownToggles(toggles.ToArray());
@@ -164,46 +164,46 @@ public static class ArgumentManager
         }
 
         // mandatory arguments
-        return operation switch
+        return command switch
         {
-            Operation.Help => null,
-            Operation.UserVariable => UserVariableArguments.TestArguments(),
-            Operation.Stopwatch => StopwatchArguments.TestArguments(),
+            Shared.Command.Help => null,
+            Shared.Command.UserVariable => UserVariableArguments.TestArguments(),
+            Shared.Command.Stopwatch => StopwatchArguments.TestArguments(),
 
-            Operation.ActionReport => ActionReportArguments.TestArguments(),
+            Shared.Command.ActionReport => ActionReportArguments.TestArguments(),
 
-            Operation.HttpGet => HttpGetArguments.TestArguments(),
-            Operation.HttpPost => HttpPostArguments.TestArguments(),
-            Operation.HttpPut => HttpPutArguments.TestArguments(),
-            Operation.HttpDelete => HttpDeleteArguments.TestArguments(),
-            Operation.LogTrail => LogTrailArguments.TestArguments(),
+            Shared.Command.HttpGet => HttpGetArguments.TestArguments(),
+            Shared.Command.HttpPost => HttpPostArguments.TestArguments(),
+            Shared.Command.HttpPut => HttpPutArguments.TestArguments(),
+            Shared.Command.HttpDelete => HttpDeleteArguments.TestArguments(),
+            Shared.Command.LogTrail => LogTrailArguments.TestArguments(),
 
-            Operation.PayrollResults => PayrollResultsArguments.TestArguments(),
-            Operation.PayrollImport => PayrollImportArguments.TestArguments(),
-            Operation.PayrollImportExcel => PayrollImportExcelArguments.TestArguments(),
-            Operation.PayrollExport => PayrollExportArguments.TestArguments(),
+            Shared.Command.PayrollResults => PayrollResultsArguments.TestArguments(),
+            Shared.Command.PayrollImport => PayrollImportArguments.TestArguments(),
+            Shared.Command.PayrollImportExcel => PayrollImportExcelArguments.TestArguments(),
+            Shared.Command.PayrollExport => PayrollExportArguments.TestArguments(),
 
-            Operation.Report => ReportArguments.TestArguments(),
-            Operation.DataReport => DataReportArguments.TestArguments(),
+            Shared.Command.Report => ReportArguments.TestArguments(),
+            Shared.Command.DataReport => DataReportArguments.TestArguments(),
 
-            Operation.CaseTest => CaseTestArguments.TestArguments(),
-            Operation.ReportTest => ReportTestArguments.TestArguments(),
-            Operation.PayrunTest => PayrunTestArguments.TestArguments(),
-            Operation.PayrunEmployeeTest => PayrunEmployeeTestArguments.TestArguments(),
+            Shared.Command.CaseTest => CaseTestArguments.TestArguments(),
+            Shared.Command.ReportTest => ReportTestArguments.TestArguments(),
+            Shared.Command.PayrunTest => PayrunTestArguments.TestArguments(),
+            Shared.Command.PayrunEmployeeTest => PayrunEmployeeTestArguments.TestArguments(),
 
-            Operation.PayrunStatistics => null,
+            Shared.Command.PayrunStatistics => null,
 
-            Operation.RegulationShare => null,
+            Shared.Command.RegulationShare => null,
 
-            Operation.TenantDelete => TenantDeleteArguments.TestArguments(),
-            Operation.PayrunJobDelete => null,
+            Shared.Command.TenantDelete => TenantDeleteArguments.TestArguments(),
+            Shared.Command.PayrunJobDelete => null,
 
-            Operation.RegulationRebuild => RegulationRebuildArguments.TestArguments(),
-            Operation.PayrunRebuild => PayrunRebuildArguments.TestArguments(),
-            Operation.ScriptPublish => ScriptPublishArguments.TestArguments(),
-            Operation.ScriptExport => ScriptExportArguments.TestArguments(),
+            Shared.Command.RegulationRebuild => RegulationRebuildArguments.TestArguments(),
+            Shared.Command.PayrunRebuild => PayrunRebuildArguments.TestArguments(),
+            Shared.Command.ScriptPublish => ScriptPublishArguments.TestArguments(),
+            Shared.Command.ScriptExport => ScriptExportArguments.TestArguments(),
 
-            _ => throw new ArgumentOutOfRangeException(nameof(operation), operation, "Unknown operation for arguments test")
+            _ => throw new ArgumentOutOfRangeException(nameof(command), command, "Unknown command for arguments test")
         };
     }
 }

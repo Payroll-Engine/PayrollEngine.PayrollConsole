@@ -11,9 +11,9 @@ internal sealed class ConsoleHelpCommand : CommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayNewLine();
-        ConsoleTool.DisplayTextLine("Usage: PayrollConsole Operation [Argument] [/Toggle]");
+        ConsoleTool.DisplayTextLine("Usage: PayrollConsole Command [Argument] [/Toggle]");
         ConsoleTool.DisplayNewLine();
-        ConsoleTool.DisplayTextLine("Operations:");
+        ConsoleTool.DisplayTextLine("Commands:");
 
         // common commands
         ConsoleTool.DisplayTitleLine("- Help (this screen)");

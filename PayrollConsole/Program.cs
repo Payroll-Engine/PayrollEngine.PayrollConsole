@@ -14,7 +14,7 @@ sealed class Program : ConsoleProgram<Program>
     /// <inheritdoc />
     protected override bool LogLifecycle => false;
 
-    /// <summary>Mandatory argument: operation</summary>
+    /// <summary>Mandatory argument: command</summary>
     protected override int MandatoryArgumentCount => 1;
 
     /// <inheritdoc />
@@ -33,10 +33,10 @@ sealed class Program : ConsoleProgram<Program>
         // https://www.thetechminute.com/existing-connection-was-forcibly-closed-by-the-remote-host/
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
-        // operation
-        var operation = ArgumentManager.GetOperation(Operation.Help);
-        // test operation arguments
-        var argumentError = ArgumentManager.TestArguments(operation);
+        // command
+        var command = ArgumentManager.GetCommand(Shared.Command.Help);
+        // test command arguments
+        var argumentError = ArgumentManager.TestArguments(command);
         if (!string.IsNullOrWhiteSpace(argumentError))
         {
             WriteErrorLine($"Argument error: {argumentError}");
@@ -52,13 +52,13 @@ sealed class Program : ConsoleProgram<Program>
     {
         get
         {
-            var operation = ArgumentManager.GetOperation(Operation.Help);
-            switch (operation)
+            var command = ArgumentManager.GetCommand(Shared.Command.Help);
+            switch (command)
             {
-                case Operation.Help:
-                case Operation.UserVariable:
-                case Operation.Stopwatch:
-                case Operation.ActionReport:
+                case Shared.Command.Help:
+                case Shared.Command.UserVariable:
+                case Shared.Command.Stopwatch:
+                case Shared.Command.ActionReport:
                     return false;
             }
             return base.UseHttpClient;
@@ -73,10 +73,10 @@ sealed class Program : ConsoleProgram<Program>
         ConsoleTool.ErrorMode = ArgumentManager.ErrorMode();
         ConsoleTool.WaitMode = ArgumentManager.WaitMode();
 
-        // execution operation
-        var operation = ArgumentManager.GetOperation(Operation.Help);
-        // test operation arguments
-        var argumentError = ArgumentManager.TestArguments(operation);
+        // execution command
+        var command = ArgumentManager.GetCommand(Shared.Command.Help);
+        // test command arguments
+        var argumentError = ArgumentManager.TestArguments(command);
         if (!string.IsNullOrWhiteSpace(argumentError))
         {
             WriteErrorLine($"Argument error: {argumentError}");
@@ -86,22 +86,22 @@ sealed class Program : ConsoleProgram<Program>
 
         ProgramExitCode exitCode;
 
-        // operation help (without backend connection)
-        switch (operation)
+        // command help (without backend connection)
+        switch (command)
         {
-            // common operations
-            case Operation.Help:
+            // common commands
+            case Shared.Command.Help:
                 // handled by base class
                 ProgramEnd(ProgramExitCode.Ok);
                 return;
-            case Operation.UserVariable:
+            case Shared.Command.UserVariable:
                 exitCode = new UserVariableCommand().ProcessVariable(
                     UserVariableArguments.VariableName,
                     UserVariableArguments.VariableValue,
                     UserVariableArguments.VariableMode());
                 ProgramEnd(exitCode);
                 return;
-            case Operation.Stopwatch:
+            case Shared.Command.Stopwatch:
                 exitCode = new StopwatchCommand().Stopwatch(
                     StopwatchArguments.VariableName,
                     StopwatchArguments.StopwatchMode());
@@ -109,63 +109,63 @@ sealed class Program : ConsoleProgram<Program>
                 return;
 
             // action
-            case Operation.ActionReport:
+            case Shared.Command.ActionReport:
                 exitCode = await new ActionReportCommand().ReportAsync(
                     ActionReportArguments.FileName);
                 ProgramEnd(exitCode);
                 return;
         }
 
-        var failedOperation = false;
+        var failedCommand = false;
         // API operations
-        switch (operation)
+        switch (command)
         {
             // system
-            case Operation.HttpGet:
+            case Shared.Command.HttpGet:
                 exitCode = await new HttpRequestCommand(HttpClient).GetRequestAsync(
                     HttpGetArguments.Url);
                 break;
-            case Operation.HttpPost:
+            case Shared.Command.HttpPost:
                 exitCode = await new HttpRequestCommand(HttpClient).PostRequestAsync(
                     HttpPostArguments.Url,
                     HttpPostArguments.FileName);
                 break;
-            case Operation.HttpPut:
+            case Shared.Command.HttpPut:
                 exitCode = await new HttpRequestCommand(HttpClient).PutRequestAsync(
                     HttpPutArguments.Url,
                     HttpPutArguments.FileName);
                 break;
-            case Operation.HttpDelete:
+            case Shared.Command.HttpDelete:
                 exitCode = await new HttpRequestCommand(HttpClient).DeleteRequestAsync(
                     HttpDeleteArguments.Url);
                 break;
 
-            case Operation.LogTrail:
+            case Shared.Command.LogTrail:
                 exitCode = await new LogTrailCommand(HttpClient).StartLogTrailAsync(
                     LogTrailArguments.Tenant,
                     LogTrailArguments.Interval());
                 break;
 
             // payroll
-            case Operation.PayrollResults:
+            case Shared.Command.PayrollResults:
                 exitCode = await new PayrollResultsCommand(HttpClient).CreateReportAsync(
                     PayrollResultsArguments.Tenant,
                     PayrollResultsArguments.TopFilter(),
                     PayrollResultsArguments.ResultExportMode());
                 break;
-            case Operation.PayrollImport:
+            case Shared.Command.PayrollImport:
                 exitCode = await new PayrollImportCommand(HttpClient).ImportAsync(
                     PayrollImportArguments.FileName,
                     PayrollImportArguments.DataImportMode(),
                     PayrollImportArguments.Namespace);
                 break;
-            case Operation.PayrollImportExcel:
+            case Shared.Command.PayrollImportExcel:
                 exitCode = await new PayrollImportExcelCommand(HttpClient).ImportAsync(
                     PayrollImportExcelArguments.FileName,
                     PayrollImportExcelArguments.DataImportMode(),
                     PayrollImportExcelArguments.Tenant);
                 break;
-            case Operation.PayrollExport:
+            case Shared.Command.PayrollExport:
                 exitCode = await new PayrollExportCommand(HttpClient).ExportAsync(
                     PayrollExportArguments.Tenant,
                     PayrollExportArguments.FileName,
@@ -174,7 +174,7 @@ sealed class Program : ConsoleProgram<Program>
                 break;
 
             // report
-            case Operation.Report:
+            case Shared.Command.Report:
                 exitCode = await new ReportCommand(HttpClient).ReportAsync(
                     ReportArguments.Tenant,
                     ReportArguments.User,
@@ -183,7 +183,7 @@ sealed class Program : ConsoleProgram<Program>
                     ReportArguments.DocumentType(),
                     ReportArguments.Language());
                 break;
-            case Operation.DataReport:
+            case Shared.Command.DataReport:
                 exitCode = await new DataReportCommand(HttpClient).ReportAsync(
                     DataReportArguments.OutputFile,
                     DataReportArguments.Tenant,
@@ -195,21 +195,21 @@ sealed class Program : ConsoleProgram<Program>
                 break;
 
             // test
-            case Operation.CaseTest:
+            case Shared.Command.CaseTest:
                 exitCode = await new CaseTestCommand(HttpClient,
                     CaseTestArguments.TestPrecision()).TestAsync(
                     CaseTestArguments.FileMask,
                     CaseTestArguments.TestDisplayMode());
-                failedOperation = exitCode == ProgramExitCode.FailedTest;
+                failedCommand = exitCode == ProgramExitCode.FailedTest;
                 break;
-            case Operation.ReportTest:
+            case Shared.Command.ReportTest:
                 exitCode = await new ReportTestCommand(HttpClient,
                     ReportTestArguments.TestPrecision()).TestAsync(
                     ReportTestArguments.FileMask,
                     ReportTestArguments.TestDisplayMode());
-                failedOperation = exitCode == ProgramExitCode.FailedTest;
+                failedCommand = exitCode == ProgramExitCode.FailedTest;
                 break;
-            case Operation.PayrunTest:
+            case Shared.Command.PayrunTest:
                 exitCode = await new PayrunTestCommand(HttpClient,
                     PayrunTestArguments.TestPrecision()).TestAsync(
                     PayrunTestArguments.FileMask,
@@ -218,9 +218,9 @@ sealed class Program : ConsoleProgram<Program>
                     PayrunTestArguments.TestResultMode(),
                     PayrunTestArguments.Namespace,
                     PayrunTestArguments.Owner);
-                failedOperation = exitCode == ProgramExitCode.FailedTest;
+                failedCommand = exitCode == ProgramExitCode.FailedTest;
                 break;
-            case Operation.PayrunEmployeeTest:
+            case Shared.Command.PayrunEmployeeTest:
                 exitCode = await new PayrunEmployeeTestCommand(HttpClient,
                     PayrunEmployeeTestArguments.TestPrecision()).TestAsync(
                     PayrunEmployeeTestArguments.FileMask,
@@ -228,19 +228,19 @@ sealed class Program : ConsoleProgram<Program>
                     PayrunEmployeeTestArguments.EmployeeTestMode(),
                     PayrunEmployeeTestArguments.Namespace,
                     PayrunEmployeeTestArguments.Owner);
-                failedOperation = exitCode == ProgramExitCode.FailedTest;
+                failedCommand = exitCode == ProgramExitCode.FailedTest;
                 break;
 
             // statistics
-            case Operation.PayrunStatistics:
+            case Shared.Command.PayrunStatistics:
                 exitCode = await new PayrunStatisticsCommand(HttpClient).PayrunStatisticsAsync(
                     PayrunStatisticsArguments.Tenant,
                     PayrunStatisticsArguments.CreatedSinceMinutes());
-                failedOperation = exitCode == ProgramExitCode.FailedTest;
+                failedCommand = exitCode == ProgramExitCode.FailedTest;
                 break;
 
             // regulation shares
-            case Operation.RegulationShare:
+            case Shared.Command.RegulationShare:
                 exitCode = await new RegulationShareCommand(HttpClient).ChangeAsync(
                     RegulationShareArguments.ProviderTenant,
                     RegulationShareArguments.ProviderRegulation,
@@ -250,36 +250,36 @@ sealed class Program : ConsoleProgram<Program>
                 break;
 
             // data management
-            case Operation.TenantDelete:
+            case Shared.Command.TenantDelete:
                 exitCode = await new TenantDeleteCommand(HttpClient).DeleteAsync(
                     TenantDeleteArguments.Tenant,
                     TenantDeleteArguments.ObjectDeleteMode());
                 break;
-            case Operation.PayrunJobDelete:
+            case Shared.Command.PayrunJobDelete:
                 exitCode = await new PayrunJobDeleteCommand(HttpClient).DeleteAsync(
                     PayrunJobDeleteArguments.Tenant);
                 break;
 
             // scripting
-            case Operation.RegulationRebuild:
+            case Shared.Command.RegulationRebuild:
                 exitCode = await new RegulationRebuildCommand(HttpClient).RebuildAsync(
                     RegulationRebuildArguments.Tenant,
                     RegulationRebuildArguments.RegulationName,
                     RegulationRebuildArguments.ScriptObject,
                     RegulationRebuildArguments.ObjectKey);
                 break;
-            case Operation.PayrunRebuild:
+            case Shared.Command.PayrunRebuild:
                 exitCode = await new PayrunRebuildCommand(HttpClient).RebuildAsync(
                     PayrunRebuildArguments.Tenant,
                     PayrunRebuildArguments.PayrunName);
                 break;
 
-            case Operation.ScriptPublish:
+            case Shared.Command.ScriptPublish:
                 exitCode = await new ScriptPublishCommand(HttpClient).PublishAsync(
                     ScriptPublishArguments.SourceFile,
                     ScriptPublishArguments.SourceScript);
                 break;
-            case Operation.ScriptExport:
+            case Shared.Command.ScriptExport:
                 exitCode = await new ScriptExportCommand(HttpClient).ExportAsync(
                     new()
                     {
@@ -296,10 +296,10 @@ sealed class Program : ConsoleProgram<Program>
                 break;
 
             default:
-                throw new PayrollException($"Unknown operation: {operation}");
+                throw new PayrollException($"Unknown command: {command}");
         }
 
-        ProgramEnd(exitCode, failedOperation);
+        ProgramEnd(exitCode, failedCommand);
     }
 
     /// <summary>Show the help screen</summary>
@@ -309,15 +309,15 @@ sealed class Program : ConsoleProgram<Program>
         return base.HelpAsync();
     }
 
-    private static void ProgramEnd(ProgramExitCode exitCode, bool failedOperation = false)
+    private static void ProgramEnd(ProgramExitCode exitCode, bool failedCommand = false)
     {
         // enforced wait
         SetExitCode(exitCode);
         if (ConsoleTool.WaitMode == PayrollConsoleWaitMode.Wait ||
             // system error
             (exitCode != ProgramExitCode.Ok && ConsoleTool.WaitMode != PayrollConsoleWaitMode.NoWait) ||
-            // failed operation
-            (ConsoleTool.WaitMode == PayrollConsoleWaitMode.WaitError && failedOperation))
+            // failed command
+            (ConsoleTool.WaitMode == PayrollConsoleWaitMode.WaitError && failedCommand))
         {
             PressAnyKey();
         }

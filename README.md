@@ -1,13 +1,13 @@
 <h1>Payroll Engine Console Application</h1>
 
-The Payroll Konsolenapplikation bietet API nahe Operationen an. In den Beispielen und Tests der Payroll Engine finden sich Besipiele, wie dieses Tool verwendet wird. Zum Verständnis der Arbeitskonzepte empfieht sich das **[Payroll Engine White Paper](https://github.com/Payroll-Engine/PayrollEngine/blob/main/Documents/PayrolEnginelWhitePaper.pdf)** zu lesen.
+The Payroll Konsolenapplikation bietet API nahe Kommandos an. In den Beispielen und Tests der Payroll Engine finden sich Besipiele, wie dieses Tool verwendet wird. Zum Verständnis der Arbeitskonzepte empfieht sich das **[Payroll Engine White Paper](https://github.com/Payroll-Engine/PayrollEngine/blob/main/Documents/PayrolEnginelWhitePaper.pdf)** zu lesen.
 
 <br />
 
-## Console Operations
+## Console Commands
 
-Folgende Operationen stehen zur Verfügung:
-| Feature              | Group            | Description                                                  |
+Folgende Kommandos stehen zur Verfügung:
+| Command              | Group            | Description                                                  |
 |--|--|--|
 | *Help*               | Common           | Manage the user tasks                                        |
 | *UserVariable*       | Common           | View and change environment user variable                    |

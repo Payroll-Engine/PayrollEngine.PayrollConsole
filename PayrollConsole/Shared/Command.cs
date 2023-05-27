@@ -1,8 +1,8 @@
 ﻿namespace PayrollEngine.PayrollConsole.Shared;
 
-public enum Operation
+public enum Command
 {
-    // common operations
+    // common commands
     Help,
     UserVariable,
     Stopwatch,
