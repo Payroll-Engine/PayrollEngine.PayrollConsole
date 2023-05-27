@@ -72,7 +72,7 @@ internal sealed class CaseTestCommand : TestCommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- CaseTest");
-        ConsoleTool.DisplayTextLine("      Test case");
+        ConsoleTool.DisplayTextLine("      Test a case");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. JSON file name or file mask");
         ConsoleTool.DisplayTextLine("      Toggles:");

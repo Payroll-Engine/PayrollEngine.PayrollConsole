@@ -169,7 +169,7 @@ internal sealed class DataReportCommand : HttpCommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- DataReport");
-        ConsoleTool.DisplayTextLine("      Report data to json file");
+        ConsoleTool.DisplayTextLine("      Report data to JSON file");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. target file");
         ConsoleTool.DisplayTextLine("          2. tenant identifier");
