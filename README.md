@@ -39,9 +39,9 @@ Folgende Kommandos stehen zur Verfügung:
 <sup>2)</sup> Based on [FastReports](https://github.com/FastReports).<br/>
 
 An example how to import ap payroll from a JSON file:<br />
-`
+```
 C:> PayrollConsole PayrollImport MyPayroll.json /bulk
-`
+```
 <br />
 
 ## Configuration
