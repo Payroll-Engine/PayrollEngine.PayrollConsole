@@ -9,26 +9,26 @@ The Payroll Konsolenapplikation bietet API nahe Kommandos an. In den Beispielen 
 Folgende Kommandos stehen zur Verfügung:
 | Command              | Group            | Description                                                  |
 |--|--|--|
-| *Help*               | Common           | Manage the user tasks                                        |
+| *Help*               | Common           | Show the command reference                                   |
 | *UserVariable*       | Common           | View and change environment user variable                    |
-| *Stopwatch*          | Common           | Time measure based on environment user variable              |
-| *ActionReport*       | Action           | Report assembly actions                                      |
+| *Stopwatch*          | Common           | Stopwatch based on environment user variable                 |
+| *ActionReport*       | Action           | Report actions from an assembly                              |
 | *HttpGet<br/>HttpPost<br/>HttpPut<br />HttpDelete* | System | Execute http GET/POST/PUT/DELETE request |
 | *LogTrail*           | System           | Trail the tenant log <sup>1)</sup>                           |
 | *PayrollResults*     | Payroll          | Report payroll data to screen and/or file                    |
-| *PayrollImport*      | Payroll          | Import payroll data from JSON/ZIP file                       |
+| *PayrollImport*      | Payroll          | Import any payroll data from json/zip file                   |
 | *PayrollImportExcel* | Payroll          | Import payroll data from Excel file                          |
-| *PayrollExport*      | Payroll          | Export payroll data to JSON file                             |
+| *PayrollExport*      | Payroll          | Export any payroll data to json file                         |
 | *Report*             | Report           | Report to file <sup>2)</sup>                                 |
-| *DataReport*         | Report           | Report data to JSON file                                     |
-| *CaseTest*           | Payroll          | Test a case                                                  |
-| *ReportTest*         | Test             | Test a report                                                |
-| *PayrunTest*         | Test             | Test payrun results                                          |
-| *PayrunEmployeeTest* | Test             | Test employee payrun results                                 |
+| *DataReport*         | Report           | Report data to json file                                     |
+| *CaseTest*           | Payroll          | Test case availability, build data and user input validation |
+| *ReportTest*         | Test             | Test the report output data                                  |
+| *PayrunTest*         | Test             | Execute payrun and test the results                          |
+| *PayrunEmployeeTest* | Test             | Execute employee payrun and test the results                 |
 | *PayrunStatistics*   | Statistics       | Show payrun statistics                                       |
 | *RegulationShare*    | Regulation share | Manage the regulation shares                                 |
 | *TenantDelete*       | Data Management  | Delete a tenant                                              |
-| *PayrunJobDelete*    | Data Management  | Delete a payrun jobs with payroll results                    |
+| *PayrunJobDelete*    | Data Management  | Delete a payrun job with payroll results                     |
 | *RegulationRebuild*  | Script           | Rebuild the regulation objects                               |
 | *PayrunRebuild*      | Script           | Rebuild a payrun                                             |
 | *ScriptPublish*      | Script           | Publish scripts from C-Sharp file                            |

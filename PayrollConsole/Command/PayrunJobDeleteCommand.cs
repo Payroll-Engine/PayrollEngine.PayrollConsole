@@ -70,7 +70,7 @@ internal sealed class PayrunJobDeleteCommand : HttpCommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- PayrunJobDelete");
-        ConsoleTool.DisplayTextLine("      Delete a payrun jobs with payroll results");
+        ConsoleTool.DisplayTextLine("      Delete a payrun job with payroll results");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. tenant name");
         ConsoleTool.DisplayTextLine("      Examples:");

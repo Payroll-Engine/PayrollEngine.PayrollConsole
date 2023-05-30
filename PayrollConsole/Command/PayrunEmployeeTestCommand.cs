@@ -98,7 +98,7 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- PayrunEmployeeTest");
-        ConsoleTool.DisplayTextLine("      Test employee payrun results");
+        ConsoleTool.DisplayTextLine("      Execute employee payrun and test the results");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. JSON/ZIP file name or file mask");
         ConsoleTool.DisplayTextLine("          2. namespace (optional)");

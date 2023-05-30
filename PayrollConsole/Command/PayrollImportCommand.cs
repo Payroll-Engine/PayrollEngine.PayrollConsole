@@ -98,14 +98,14 @@ internal sealed class PayrollImportCommand : HttpCommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- PayrollImport");
-        ConsoleTool.DisplayTextLine("      Import payroll data from JSON/ZIP file");
+        ConsoleTool.DisplayTextLine("      Import payroll data from json/zip file");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. source file name (JSON or ZIP)");
-        ConsoleTool.DisplayTextLine("          2. import options file name ExchangeImportOptions JSON (optional)");
+        ConsoleTool.DisplayTextLine("          1. source file name (json or zip)");
+        ConsoleTool.DisplayTextLine("          2. import options file name ExchangeImportOptions json (optional)");
         ConsoleTool.DisplayTextLine("          3. namespace (optional)");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          import mode: /single or /bulk (default: single)");
-        ConsoleTool.DisplayTextLine("      Options (JSON object):");
+        ConsoleTool.DisplayTextLine("      Options (json object):");
         ConsoleTool.DisplayTextLine("          load toggles true/false (default: true):");
         ConsoleTool.DisplayTextLine("              TargetLoad, ScriptLoad, CaseDocumentLoad, ReportTemplateLoad, ReportSchemaLoad, LookupValidation");
         ConsoleTool.DisplayTextLine("      Examples:");

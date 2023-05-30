@@ -83,7 +83,7 @@ internal sealed class StopwatchCommand : CommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- Stopwatch");
-        ConsoleTool.DisplayTextLine("      Time measure based on environment user variable");
+        ConsoleTool.DisplayTextLine("      Stopwatch based on environment user variable");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. Stopwatch name");
         ConsoleTool.DisplayTextLine("      Toggles:");

@@ -72,7 +72,7 @@ internal sealed class ReportTestCommand : TestCommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- ReportTest");
-        ConsoleTool.DisplayTextLine("      Test a report");
+        ConsoleTool.DisplayTextLine("      Test the report output data");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. JSON file name or file mask");
         ConsoleTool.DisplayTextLine("      Toggles:");

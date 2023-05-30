@@ -101,7 +101,7 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- PayrunTest");
-        ConsoleTool.DisplayTextLine("      Test payrun results, existing tenant will be deleted");
+        ConsoleTool.DisplayTextLine("      Execute payrun and test the results, existing tenant will be deleted");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. JSON/ZIP file name or file mask");
         ConsoleTool.DisplayTextLine("          2. namespace (optional)");

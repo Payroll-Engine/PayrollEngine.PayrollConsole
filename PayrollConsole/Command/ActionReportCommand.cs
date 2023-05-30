@@ -310,7 +310,7 @@ internal sealed class ActionReportCommand : CommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- ActionReport");
-        ConsoleTool.DisplayTextLine("      Report assembly actions");
+        ConsoleTool.DisplayTextLine("      Report actions from an assembly");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. action assembly file name");
         ConsoleTool.DisplayTextLine("      Examples:");
