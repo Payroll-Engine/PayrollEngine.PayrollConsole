@@ -1,6 +1,5 @@
 ﻿using System;
 using PayrollEngine.Client;
-using PayrollEngine.Client.Exchange;
 
 namespace PayrollEngine.PayrollConsole.Arguments;
 
@@ -9,22 +8,27 @@ public static class PayrollExportArguments
     public static string Tenant =>
         ConsoleArguments.Get(2);
 
-    public static string FileName =>
+    public static string TargetFileName =>
         ConsoleArguments.Get(3);
 
-    public static string Namespace =>
+    public static string OptionsFileName =>
         ConsoleArguments.Get(4);
 
-    public static ResultExportMode ResultExportMode(ResultExportMode defaultValue = Client.Exchange.ResultExportMode.NoResults) =>
-        ConsoleArguments.GetEnumToggle(defaultValue);
+    public static string Namespace =>
+        ConsoleArguments.Get(5);
 
-    public static Type[] Toggles => new[]
-    {
-        typeof(ResultExportMode)
-    };
+    public static Type[] Toggles => null;
 
     public static string TestArguments()
     {
-        return string.IsNullOrWhiteSpace(Tenant) ? "Missing tenant" : null;
+        if (string.IsNullOrWhiteSpace(Tenant))
+        {
+            return "Missing tenant";
+        }
+        if (string.IsNullOrWhiteSpace(TargetFileName))
+        {
+            return "Missing target file name";
+        }
+        return null;
     }
 }

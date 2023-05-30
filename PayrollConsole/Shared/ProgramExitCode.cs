@@ -6,5 +6,6 @@ internal enum ProgramExitCode
     GenericError = 1,
     ConnectionError = 2,
     HttpError = 3,
-    FailedTest = 4
+    FailedTest = 4,
+    InvalidOptions = 5
 }

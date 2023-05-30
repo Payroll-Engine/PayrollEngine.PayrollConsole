@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 using PayrollEngine.Client;
 using PayrollEngine.Client.Exchange;
@@ -22,15 +23,26 @@ internal sealed class PayrollExportCommand : HttpCommandBase
     /// By default the file name is the tenant name including a timestamp
     /// </summary>
     /// <param name="tenantIdentifier">The identifier of the tenant</param>
-    /// <param name="fileName">The target file</param>
-    /// <param name="exportMode">Exclude payroll results to the target file</param>
+    /// <param name="targetFileName">The target file name</param>
+    /// <param name="optionsFileName">The options file name</param>
     /// <param name="namespace">The export namespace</param>
-    internal async Task<ProgramExitCode> ExportAsync(string tenantIdentifier, string fileName,
-        ResultExportMode exportMode, string @namespace = null)
+    internal async Task<ProgramExitCode> ExportAsync(string tenantIdentifier, string targetFileName,
+        string optionsFileName = null, string @namespace = null)
     {
         if (string.IsNullOrWhiteSpace(tenantIdentifier))
         {
             throw new PayrollException("Missing tenant argument");
+        }
+
+        // target file name
+        var resolvedFileName = targetFileName;
+        if (string.IsNullOrWhiteSpace(targetFileName))
+        {
+            resolvedFileName = $"{tenantIdentifier}_{FileTool.CurrentTimeStamp()}{FileExtensions.Json}";
+        }
+        else if (targetFileName.Contains("{timestamp}", StringComparison.InvariantCultureIgnoreCase))
+        {
+            resolvedFileName = targetFileName.Replace("{timestamp}", FileTool.CurrentTimeStamp());
         }
 
         // display
@@ -40,9 +52,12 @@ internal sealed class PayrollExportCommand : HttpCommandBase
             ConsoleTool.DisplayTextLine($"Namespace        {@namespace}");
         }
         ConsoleTool.DisplayTextLine($"Tenant           {tenantIdentifier}");
-        ConsoleTool.DisplayTextLine($"File             {fileName}");
-        ConsoleTool.DisplayTextLine($"Export mode      {exportMode}");
+        if (!string.IsNullOrWhiteSpace(optionsFileName))
+        {
+            ConsoleTool.DisplayTextLine($"Options file     {optionsFileName}");
+        }
         ConsoleTool.DisplayTextLine($"Url              {HttpClient}");
+        ConsoleTool.DisplayTextLine($"Target file      {resolvedFileName}");
         ConsoleTool.DisplayNewLine();
 
         try
@@ -54,19 +69,22 @@ internal sealed class PayrollExportCommand : HttpCommandBase
                 throw new PayrollException($"Unknown tenant {tenantIdentifier}");
             }
 
-            // target file
-            if (string.IsNullOrWhiteSpace(fileName))
+            // options
+            var options = string.IsNullOrWhiteSpace(optionsFileName)
+                ? new ExchangeExportOptions()
+                : GetExportOptions(optionsFileName);
+            if (options == null)
             {
-                fileName = $"{tenant.Identifier}_{FileTool.CurrentTimeStamp()}{FileExtensions.Json}";
+                return ProgramExitCode.InvalidOptions;
             }
 
             // tenant export
-            var export = new TenantExport(HttpClient, tenant.Id, exportMode, @namespace);
-            var provider = await export.ExportAsync();
-            await PayrollJsonWriter.WriteAsync(provider, fileName);
+            var export = new ExchangeExport(HttpClient, options, @namespace);
+            var exchange = await export.ExportAsync(tenant.Id);
+            await ExchangeWriter.WriteAsync(exchange, resolvedFileName);
 
             // notification
-            ConsoleTool.DisplaySuccessLine($"Exported tenant {tenantIdentifier} into file {new FileInfo(fileName).FullName}");
+            ConsoleTool.DisplaySuccessLine($"Exported tenant {tenantIdentifier} into file {new FileInfo(resolvedFileName).FullName}");
             return ProgramExitCode.Ok;
         }
         catch (Exception exception)
@@ -76,19 +94,44 @@ internal sealed class PayrollExportCommand : HttpCommandBase
         }
     }
 
+    private ExchangeExportOptions GetExportOptions(string optionsFileName)
+    {
+        if (!File.Exists(optionsFileName))
+        {
+            ConsoleTool.DisplayErrorLine($"Invalid export option file {optionsFileName}");
+            return null;
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<ExchangeExportOptions>(File.ReadAllText(optionsFileName));
+        }
+        catch (Exception exception)
+        {
+            ProcessError(exception);
+            return null;
+        }
+    }
+
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- PayrollExport");
-        ConsoleTool.DisplayTextLine("      Export payroll data to JSON file");
+        ConsoleTool.DisplayTextLine("      Export payroll data to JSON/ZIP file");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. tenant name");
+        ConsoleTool.DisplayTextLine("          1. tenant file name");
         ConsoleTool.DisplayTextLine("          2. target JSON file name (default: tenant name)");
-        ConsoleTool.DisplayTextLine("          3. namespace (optional)");
+        ConsoleTool.DisplayTextLine("          3. export options file name ExchangeExportOptions JSON (optional)");
+        ConsoleTool.DisplayTextLine("          4. namespace (optional)");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          export results: /results or /noresults (default: noresults)");
+        ConsoleTool.DisplayTextLine("      Options (JSON object):");
+        ConsoleTool.DisplayTextLine("          type filter, list of identifiers or names:");
+        ConsoleTool.DisplayTextLine("              Users, Divisions, Employees, Tasks, Webhooks, Regulations, Payrolls, Payruns, PayrunJobs");
+        ConsoleTool.DisplayTextLine("          data filter true/false (default: false):");
+        ConsoleTool.DisplayTextLine("              ExportWebhookMessages, ExportGlobalCaseValues, ExportNationalCaseValues, ExportCompanyCaseValues, ExportEmployeeCaseValues, ExportPayrollResults");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          PayrollExport MyTenantName");
-        ConsoleTool.DisplayTextLine("          PayrollExport MyTenantName MyExportFile.json MyNamespace");
-        ConsoleTool.DisplayTextLine("          PayrollExport MyTenantName MyExportFile.json /results");
+        ConsoleTool.DisplayTextLine("          PayrollExport MyTenantName MyExportFile.json MyExportOptions.json MyNamespace");
+        ConsoleTool.DisplayTextLine("          PayrollExport MyTenantName MyExportFile.json MyExportOptions.json /results");
     }
 }

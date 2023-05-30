@@ -47,7 +47,7 @@ internal sealed class PayrollImportExcelCommand : HttpCommandBase
             // read Excel
             var exchange = await new ExchangeExcelReader(HttpClient).ReadAsync(fileName, overrideTenant);
             // import tenant
-            var import = new ExchangeImport(HttpClient, exchange, ScriptParser, importMode);
+            var import = new ExchangeImport(HttpClient, exchange, ScriptParser, importMode: importMode);
             await import.ImportAsync();
 
             ConsoleTool.DisplaySuccessLine($"Payroll successfully imported from {new FileInfo(fileName).FullName}");

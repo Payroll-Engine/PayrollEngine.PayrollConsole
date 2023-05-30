@@ -155,8 +155,9 @@ sealed class Program : ConsoleProgram<Program>
                 break;
             case Shared.Command.PayrollImport:
                 exitCode = await new PayrollImportCommand(HttpClient).ImportAsync(
-                    PayrollImportArguments.FileName,
+                    PayrollImportArguments.SourceFileName,
                     PayrollImportArguments.DataImportMode(),
+                    PayrollImportArguments.OptionsFileName,
                     PayrollImportArguments.Namespace);
                 break;
             case Shared.Command.PayrollImportExcel:
@@ -168,8 +169,8 @@ sealed class Program : ConsoleProgram<Program>
             case Shared.Command.PayrollExport:
                 exitCode = await new PayrollExportCommand(HttpClient).ExportAsync(
                     PayrollExportArguments.Tenant,
-                    PayrollExportArguments.FileName,
-                    PayrollExportArguments.ResultExportMode(),
+                    PayrollExportArguments.TargetFileName,
+                    PayrollExportArguments.OptionsFileName,
                     PayrollExportArguments.Namespace);
                 break;
 

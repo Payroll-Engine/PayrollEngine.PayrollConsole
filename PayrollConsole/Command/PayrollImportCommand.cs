@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 using PayrollEngine.Client;
 using PayrollEngine.Client.Exchange;
@@ -21,15 +22,16 @@ internal sealed class PayrollImportCommand : HttpCommandBase
     /// <summary>
     /// Import a tenant from a JSON file
     /// </summary>
-    /// <param name="fileName">The import file name</param>
+    /// <param name="sourceFileName">The import file name</param>
     /// <param name="importMode">The import mode</param>
+    /// <param name="optionsFileName">The options file name</param>
     /// <param name="namespace">The import namespace</param>
-    internal async Task<ProgramExitCode> ImportAsync(string fileName, DataImportMode importMode,
-        string @namespace = null)
+    internal async Task<ProgramExitCode> ImportAsync(string sourceFileName, DataImportMode importMode,
+        string optionsFileName = null, string @namespace = null)
     {
-        if (string.IsNullOrWhiteSpace(fileName))
+        if (string.IsNullOrWhiteSpace(sourceFileName))
         {
-            throw new PayrollException($"Missing import file {fileName}");
+            throw new PayrollException($"Missing import file {sourceFileName}");
         }
 
         DisplayTitle("Import tenant");
@@ -37,20 +39,34 @@ internal sealed class PayrollImportCommand : HttpCommandBase
         {
             ConsoleTool.DisplayTextLine($"Namespace        {@namespace}");
         }
-        ConsoleTool.DisplayTextLine($"File             {fileName}");
+        ConsoleTool.DisplayTextLine($"Source file      {sourceFileName}");
+        if (!string.IsNullOrWhiteSpace(optionsFileName))
+        {
+            ConsoleTool.DisplayTextLine($"Options file     {optionsFileName}");
+        }
         ConsoleTool.DisplayTextLine($"Import mode      {importMode}");
         ConsoleTool.DisplayTextLine($"Url              {HttpClient}");
         ConsoleTool.DisplayNewLine();
 
         try
         {
-            // read file
-            var exchange = await ExchangeReader.ReadAsync(fileName, @namespace);
+            // read source file
+            var exchange = await ExchangeReader.ReadAsync(sourceFileName, @namespace);
+
+            // options
+            var options = string.IsNullOrWhiteSpace(optionsFileName)
+                ? new ExchangeImportOptions()
+                : GetImportOptions(optionsFileName);
+            if (options == null)
+            {
+                return ProgramExitCode.InvalidOptions;
+            }
+
             // import tenant
-            var import = new ExchangeImport(HttpClient, exchange, ScriptParser, importMode);
+            var import = new ExchangeImport(HttpClient, exchange, ScriptParser, options, importMode);
             await import.ImportAsync();
 
-            ConsoleTool.DisplaySuccessLine($"Payroll successfully imported from {new FileInfo(fileName).FullName}");
+            ConsoleTool.DisplaySuccessLine($"Payroll successfully imported from {new FileInfo(sourceFileName).FullName}");
             return ProgramExitCode.Ok;
         }
         catch (Exception exception)
@@ -60,19 +76,42 @@ internal sealed class PayrollImportCommand : HttpCommandBase
         }
     }
 
+    private ExchangeImportOptions GetImportOptions(string optionsFileName)
+    {
+        if (!File.Exists(optionsFileName))
+        {
+            ConsoleTool.DisplayErrorLine($"Invalid import option file {optionsFileName}");
+            return null;
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<ExchangeImportOptions>(File.ReadAllText(optionsFileName));
+        }
+        catch (Exception exception)
+        {
+            ProcessError(exception);
+            return null;
+        }
+    }
+
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- PayrollImport");
         ConsoleTool.DisplayTextLine("      Import payroll data from JSON/ZIP file");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. JSON/ZIP file name");
-        ConsoleTool.DisplayTextLine("          2. namespace (optional)");
+        ConsoleTool.DisplayTextLine("          1. source file name (JSON or ZIP)");
+        ConsoleTool.DisplayTextLine("          2. import options file name ExchangeImportOptions JSON (optional)");
+        ConsoleTool.DisplayTextLine("          3. namespace (optional)");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          import mode: /single or /bulk (default: single)");
+        ConsoleTool.DisplayTextLine("      Options (JSON object):");
+        ConsoleTool.DisplayTextLine("          load toggles true/false (default: true):");
+        ConsoleTool.DisplayTextLine("              TargetLoad, ScriptLoad, CaseDocumentLoad, ReportTemplateLoad, ReportSchemaLoad, LookupValidation");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          PayrollImport MyImportFile.json");
         ConsoleTool.DisplayTextLine("          PayrollImport MyImportFile.zip");
-        ConsoleTool.DisplayTextLine("          PayrollImport MyImportFile.json MyNamespace");
-        ConsoleTool.DisplayTextLine("          PayrollImport MyImportFile.json /noupdate /bulk");
+        ConsoleTool.DisplayTextLine("          PayrollImport MyImportFile.json MyImportOptions.json MyNamespace");
+        ConsoleTool.DisplayTextLine("          PayrollImport MyImportFile.json MyImportOptions.json /bulk");
     }
 }
