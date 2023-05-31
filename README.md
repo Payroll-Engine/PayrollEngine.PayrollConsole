@@ -31,7 +31,7 @@ Folgende Kommandos stehen zur Verfügung:
 | *PayrunJobDelete*    | Data Management  | Delete a payrun job with payroll results                     |
 | *RegulationRebuild*  | Script           | Rebuild the regulation objects                               |
 | *PayrunRebuild*      | Script           | Rebuild a payrun                                             |
-| *ScriptPublish*      | Script           | Publish scripts from C-Sharp file                            |
+| *ScriptPublish*      | Script           | Publish scripts from C# file                                 |
 | *ScriptExport*       | Script           | Export regulation scripts to folder                          |
 <br/>
 
