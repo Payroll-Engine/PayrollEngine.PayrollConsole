@@ -6,10 +6,10 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class LogTrailArguments
 {
     public static string Tenant =>
-        ConsoleArguments.Get(2);
+        ConsoleArguments.GetMember(2);
 
     public static int Interval(int defaultSeconds = 5) =>
-        ConsoleArguments.GetInt(3, defaultSeconds);
+        ConsoleArguments.GetInt(3, defaultSeconds, nameof(Interval));
 
     public static Type[] Toggles => null;
 

@@ -9,13 +9,13 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class PayrunEmployeeTestArguments
 {
     public static string FileMask =>
-        ConsoleArguments.Get(2);
+        ConsoleArguments.GetMember(2);
 
     public static string Namespace =>
-        ConsoleArguments.Get(3);
+        ConsoleArguments.GetMember(3);
 
     public static string Owner =>
-        ConsoleArguments.Get(4);
+        ConsoleArguments.GetMember(4);
 
     public static EmployeeTestMode EmployeeTestMode(EmployeeTestMode defaultTestMode = Client.Test.Payrun.EmployeeTestMode.InsertEmployee) =>
         ConsoleArguments.GetEnumToggle(defaultTestMode);

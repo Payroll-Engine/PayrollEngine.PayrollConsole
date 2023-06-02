@@ -10,13 +10,13 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class PayrunTestArguments
 {
     public static string FileMask =>
-        ConsoleArguments.Get(2);
+        ConsoleArguments.GetMember(2);
 
     public static string Namespace =>
-        ConsoleArguments.Get(3);
+        ConsoleArguments.GetMember(3);
 
     public static string Owner =>
-        ConsoleArguments.Get(4);
+        ConsoleArguments.GetMember(4);
 
     public static DataImportMode DataImportMode(DataImportMode defaultDataImportMode = Client.Exchange.DataImportMode.Bulk) =>
         ConsoleArguments.GetEnumToggle(defaultDataImportMode);

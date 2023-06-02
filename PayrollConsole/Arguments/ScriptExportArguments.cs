@@ -8,25 +8,25 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class ScriptExportArguments
 {
     public static string TargetFolder =>
-        ConsoleArguments.Get(2);
+        ConsoleArguments.GetMember(2);
 
     public static string Tenant =>
-        ConsoleArguments.Get(3);
+        ConsoleArguments.GetMember(3);
 
     public static string User =>
-        ConsoleArguments.Get(4);
+        ConsoleArguments.GetMember(4);
 
     public static string Employee =>
-        ConsoleArguments.Get(5);
+        ConsoleArguments.GetMember(5);
 
     public static string Payroll =>
-        ConsoleArguments.Get(6);
+        ConsoleArguments.GetMember(6);
 
     public static string Regulation =>
-        ConsoleArguments.Get(7);
+        ConsoleArguments.GetMember(7);
 
     public static string Namespace =>
-        ConsoleArguments.Get(8);
+        ConsoleArguments.GetMember(8);
 
     public static ScriptExportMode ScriptExportMode(ScriptExportMode exportMode = Client.Script.ScriptExportMode.Existing) =>
         ConsoleArguments.GetEnumToggle(exportMode);

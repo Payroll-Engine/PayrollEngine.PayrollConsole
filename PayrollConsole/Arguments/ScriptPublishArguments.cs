@@ -6,10 +6,10 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class ScriptPublishArguments
 {
     public static string SourceFile =>
-        ConsoleArguments.Get(2);
+        ConsoleArguments.GetMember(2);
 
     public static string SourceScript =>
-        ConsoleArguments.Get(3);
+        ConsoleArguments.GetMember(3);
 
     public static Type[] Toggles => null;
 

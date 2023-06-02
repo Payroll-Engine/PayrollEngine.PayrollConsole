@@ -7,16 +7,16 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class RegulationRebuildArguments
 {
     public static string Tenant =>
-        ConsoleArguments.Get(2);
+        ConsoleArguments.GetMember(2);
 
     public static string RegulationName =>
-        ConsoleArguments.Get(3);
+        ConsoleArguments.GetMember(3);
 
     public static string ObjectType =>
-        ConsoleArguments.Get(4);
+        ConsoleArguments.GetMember(4);
 
     public static string ObjectKey =>
-        ConsoleArguments.Get(5);
+        ConsoleArguments.GetMember(5);
 
     public static Type[] Toggles => null;
 

@@ -7,7 +7,7 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class TenantDeleteArguments
 {
     public static string Tenant =>
-        ConsoleArguments.Get(2);
+        ConsoleArguments.GetMember(2);
 
     public static ObjectDeleteMode ObjectDeleteMode(ObjectDeleteMode defaultValue = Shared.ObjectDeleteMode.Delete) =>
         ConsoleArguments.GetEnumToggle(defaultValue);

@@ -7,10 +7,10 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class PayrollResultsArguments
 {
     public static string Tenant =>
-        ConsoleArguments.Get(2);
+        ConsoleArguments.GetMember(2);
 
     public static int TopFilter(int defaultFilter = 1) =>
-        ConsoleArguments.GetInt(3, defaultFilter);
+        ConsoleArguments.GetInt(3, defaultFilter, nameof(TopFilter));
 
     public static ReportExportMode ResultExportMode(ReportExportMode defaultValue = ReportExportMode.NoExport) =>
         ConsoleArguments.GetEnumToggle(defaultValue);
