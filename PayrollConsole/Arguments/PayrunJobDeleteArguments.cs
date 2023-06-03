@@ -6,7 +6,7 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class PayrunJobDeleteArguments
 {
     public static string Tenant =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(PayrunJobDeleteArguments), 2);
 
     public static Type[] Toggles => null;
 

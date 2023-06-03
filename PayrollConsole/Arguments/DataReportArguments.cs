@@ -6,25 +6,25 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class DataReportArguments
 {
     public static string OutputFile =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(DataReportArguments), 2);
 
     public static string Tenant =>
-        ConsoleArguments.GetMember(3);
+        ConsoleArguments.GetMember(typeof(DataReportArguments), 3);
 
     public static string User =>
-        ConsoleArguments.GetMember(4);
+        ConsoleArguments.GetMember(typeof(DataReportArguments), 4);
 
     public static string Regulation =>
-        ConsoleArguments.GetMember(5);
+        ConsoleArguments.GetMember(typeof(DataReportArguments), 5);
 
     public static string Report =>
-        ConsoleArguments.GetMember(6);
+        ConsoleArguments.GetMember(typeof(DataReportArguments), 6);
 
     public static Language Language =>
         ConsoleArguments.GetEnum<Language>(7);
 
     public static string ParametersFile =>
-        ConsoleArguments.GetMember(8);
+        ConsoleArguments.GetMember(typeof(DataReportArguments), 8);
 
     public static Type[] Toggles => null;
 

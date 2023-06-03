@@ -6,16 +6,16 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class PayrollExportArguments
 {
     public static string Tenant =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(PayrollExportArguments), 2);
 
     public static string TargetFileName =>
-        ConsoleArguments.GetMember(3);
+        ConsoleArguments.GetMember(typeof(PayrollExportArguments), 3);
 
     public static string OptionsFileName =>
-        ConsoleArguments.GetMember(4);
+        ConsoleArguments.GetMember(typeof(PayrollExportArguments), 4);
 
     public static string Namespace =>
-        ConsoleArguments.GetMember(5);
+        ConsoleArguments.GetMember(typeof(PayrollExportArguments), 5);
 
     public static Type[] Toggles => null;
 

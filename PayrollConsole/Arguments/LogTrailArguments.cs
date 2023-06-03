@@ -6,7 +6,7 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class LogTrailArguments
 {
     public static string Tenant =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(LogTrailArguments), 2);
 
     public static int Interval(int defaultSeconds = 5) =>
         ConsoleArguments.GetInt(3, defaultSeconds, nameof(Interval));

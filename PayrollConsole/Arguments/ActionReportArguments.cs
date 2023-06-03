@@ -6,7 +6,7 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class ActionReportArguments
 {
     public static string FileName =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(ActionReportArguments), 2);
 
     public static Type[] Toggles => null;
 

@@ -6,10 +6,10 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class PayrunRebuildArguments
 {
     public static string Tenant =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(PayrunRebuildArguments), 2);
 
     public static string PayrunName =>
-        ConsoleArguments.GetMember(3);
+        ConsoleArguments.GetMember(typeof(PayrunRebuildArguments), 3);
 
     public static Type[] Toggles => null;
 

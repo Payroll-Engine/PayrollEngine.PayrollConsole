@@ -7,13 +7,13 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class PayrollImportArguments
 {
     public static string SourceFileName =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(PayrollImportArguments), 2);
 
     public static string OptionsFileName =>
-        ConsoleArguments.GetMember(3);
+        ConsoleArguments.GetMember(typeof(PayrollImportArguments), 3);
 
     public static string Namespace =>
-        ConsoleArguments.GetMember(4);
+        ConsoleArguments.GetMember(typeof(PayrollImportArguments), 4);
 
     public static DataImportMode DataImportMode(DataImportMode defaultValue = Client.Exchange.DataImportMode.Single) =>
         ConsoleArguments.GetEnumToggle(defaultValue);

@@ -7,7 +7,7 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class PayrollResultsArguments
 {
     public static string Tenant =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(PayrollResultsArguments), 2);
 
     public static int TopFilter(int defaultFilter = 1) =>
         ConsoleArguments.GetInt(3, defaultFilter, nameof(TopFilter));

@@ -7,10 +7,10 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class UserVariableArguments
 {
     public static string VariableName =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(UserVariableArguments), 2);
 
     public static string VariableValue =>
-        ConsoleArguments.GetMember(3);
+        ConsoleArguments.GetMember(typeof(UserVariableArguments), 3);
 
     public static UserVariableMode VariableMode(UserVariableMode defaultValue = UserVariableMode.View) =>
         ConsoleArguments.GetEnumToggle(defaultValue);

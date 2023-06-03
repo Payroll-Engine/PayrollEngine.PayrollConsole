@@ -8,7 +8,7 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class CaseTestArguments
 {
     public static string FileMask =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(CaseTestArguments), 2);
 
     public static TestDisplayMode TestDisplayMode(TestDisplayMode defaultImportMode = Shared.TestDisplayMode.ShowFailed) =>
         ConsoleArguments.GetEnumToggle(defaultImportMode);

@@ -7,7 +7,7 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class StopwatchArguments
 {
     public static string VariableName =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(StopwatchArguments), 2);
 
     public static StopwatchMode StopwatchMode(StopwatchMode defaultValue = Shared.StopwatchMode.WatchView) =>
         ConsoleArguments.GetEnumToggle(defaultValue);

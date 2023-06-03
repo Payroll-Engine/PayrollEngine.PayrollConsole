@@ -6,10 +6,10 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class HttpPutArguments
 {
     public static string Url =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(HttpPutArguments), 2);
 
     public static string FileName =>
-        ConsoleArguments.GetMember(3);
+        ConsoleArguments.GetMember(typeof(HttpPutArguments), 3);
 
     public static Type[] Toggles => null;
 

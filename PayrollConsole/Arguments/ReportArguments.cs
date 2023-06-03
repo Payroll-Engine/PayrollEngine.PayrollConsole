@@ -9,19 +9,19 @@ public static class ReportArguments
     public static readonly string DefaultParameterFileName = "parameters.json";
 
     public static string Tenant =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(ReportArguments), 2);
 
     public static string User =>
-        ConsoleArguments.GetMember(3);
+        ConsoleArguments.GetMember(typeof(ReportArguments), 3);
 
     public static string Regulation =>
-        ConsoleArguments.GetMember(4);
+        ConsoleArguments.GetMember(typeof(ReportArguments), 4);
 
     public static string Report =>
-        ConsoleArguments.GetMember(5);
+        ConsoleArguments.GetMember(typeof(ReportArguments), 5);
 
     public static string ParameterFile =>
-        ConsoleArguments.GetMember(6);
+        ConsoleArguments.GetMember(typeof(ReportArguments), 6);
 
     public static Language Language(Language language = PayrollEngine.Language.English) =>
         ConsoleArguments.GetEnumToggle(language);

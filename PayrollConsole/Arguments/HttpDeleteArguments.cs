@@ -6,7 +6,7 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class HttpDeleteArguments
 {
     public static string Url =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(HttpDeleteArguments), 2);
 
     public static Type[] Toggles => null;
 

@@ -7,10 +7,10 @@ namespace PayrollEngine.PayrollConsole.Arguments;
 public static class PayrollImportExcelArguments
 {
     public static string FileName =>
-        ConsoleArguments.GetMember(2);
+        ConsoleArguments.GetMember(typeof(PayrollImportExcelArguments), 2);
 
     public static string Tenant =>
-        ConsoleArguments.GetMember(3);
+        ConsoleArguments.GetMember(typeof(PayrollImportExcelArguments), 3);
 
     public static DataImportMode DataImportMode(DataImportMode defaultValue = Client.Exchange.DataImportMode.Single) =>
         ConsoleArguments.GetEnumToggle(defaultValue);
