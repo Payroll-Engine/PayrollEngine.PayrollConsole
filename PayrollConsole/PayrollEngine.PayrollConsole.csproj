@@ -6,17 +6,13 @@
 		<RootNamespace>PayrollEngine.PayrollConsole</RootNamespace>
 		<UserSecretsId>PayrollConsole</UserSecretsId>
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-		<Authors>Jani Giannoudis</Authors>
-		<Company>Software Consulting Giannoudis</Company>
-		<Copyright>2023 Software Consulting Giannoudis</Copyright>
-		<Product>Payroll Engine</Product>
-		<Description>Payroll Engine Consolle Application</Description>
+		<Description>Payroll Engine Payroll Consolle</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Client.Services" Version="0.5.0-pre-230606-3" />
-		<PackageReference Include="PayrollEngine.Serilog" Version="0.5.0-pre-230606-3" />
-		<PackageReference Include="PayrollEngine.Document" Version="0.5.0-pre-230606-3" />
+		<PackageReference Include="PayrollEngine.Client.Services" Version="0.5.0-pre-230606-4" />
+		<PackageReference Include="PayrollEngine.Serilog" Version="0.5.0-pre-230606-4" />
+		<PackageReference Include="PayrollEngine.Document" Version="0.5.0-pre-230606-4" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Compilers" Version="4.6.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="7.0.0" />
