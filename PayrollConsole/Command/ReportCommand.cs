@@ -15,10 +15,12 @@ using PayrollEngine.Client;
 using PayrollEngine.Client.Model;
 using PayrollEngine.Client.Scripting.Function.Api;
 using PayrollEngine.Client.Service.Api;
+using PayrollEngine.Data;
 using PayrollEngine.Document;
 using PayrollEngine.IO;
 using PayrollEngine.PayrollConsole.Arguments;
 using PayrollEngine.PayrollConsole.Shared;
+using DataSet = System.Data.DataSet;
 
 namespace PayrollEngine.PayrollConsole.Command;
 
@@ -149,21 +151,29 @@ internal sealed class ReportCommand : HttpCommandBase
             };
 
             // data set
-            DataSet dataSet = Data.DataSetExtensions.ToSystemDataSet(response.Result);
+            DataSet dataSet = response.Result.ToSystemDataSet();
+            if (!dataSet.HasRows())
+            {
+                ConsoleTool.DisplayNewLine();
+                ConsoleTool.DisplayNewLine();
+                ConsoleTool.WriteErrorLine("Report without data.");
+                ConsoleTool.DisplayNewLine();
+                return ProgramExitCode.GenericError;
+            }
 
             string outputFile;
-            switch (ReportArguments.DocumentType())
+            switch (documentType)
             {
                 case DocumentType.Word:
                 case DocumentType.Excel:
                 case DocumentType.Pdf:
-                    outputFile = await MergeAsync(tenant, regulation, report, dataSet, documentMetadata, documentType, language);
+                    outputFile = await MergeAsync(tenant, regulation, report, dataSet,
+                        documentMetadata, documentType, language);
                     break;
                 case DocumentType.Xml:
-                    outputFile = await TransformAsync(tenant, regulation, report, dataSet, language);
-                    break;
                 case DocumentType.XmlRaw:
-                    outputFile = await TransformAsync(tenant, regulation, report, dataSet, language, true);
+                    outputFile = await TransformAsync(tenant, regulation, report, dataSet,
+                        language, documentType == DocumentType.XmlRaw);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
