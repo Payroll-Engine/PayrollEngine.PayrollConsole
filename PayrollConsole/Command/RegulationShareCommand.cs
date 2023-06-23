@@ -18,38 +18,41 @@ internal sealed class RegulationShareCommand : HttpCommandBase
     {
     }
 
-    internal async Task<ProgramExitCode> ChangeAsync(string providerTenant,
-        string providerRegulation, string consumerTenant, string consumerDivision, ShareMode shareMode)
+    internal async Task<ProgramExitCode> ChangeAsync(RegulationShareCommandSettings settings)
     {
-        var changeMode = shareMode != ShareMode.View;
-        if (changeMode && string.IsNullOrWhiteSpace(consumerTenant))
+        if (settings == null)
+        {
+            throw new ArgumentNullException(nameof(settings));
+        }
+        var changeMode = settings.ShareMode != ShareMode.View;
+        if (changeMode && string.IsNullOrWhiteSpace(settings.ConsumerTenant))
         {
             throw new ArgumentException("Missing provider tenant");
         }
-        if (changeMode && string.IsNullOrWhiteSpace(providerRegulation))
+        if (changeMode && string.IsNullOrWhiteSpace(settings.ProviderRegulation))
         {
             throw new ArgumentException("Missing provider regulation");
         }
 
         DisplayTitle("Regulation share");
-        if (!string.IsNullOrWhiteSpace(providerTenant))
+        if (!string.IsNullOrWhiteSpace(settings.ProviderTenant))
         {
-            ConsoleTool.DisplayTextLine($"Tenant               {providerTenant}");
+            ConsoleTool.DisplayTextLine($"Tenant               {settings.ProviderTenant}");
         }
-        if (!string.IsNullOrWhiteSpace(providerRegulation))
+        if (!string.IsNullOrWhiteSpace(settings.ProviderRegulation))
         {
-            ConsoleTool.DisplayTextLine($"Regulation           {providerRegulation}");
+            ConsoleTool.DisplayTextLine($"Regulation           {settings.ProviderRegulation}");
         }
-        if (!string.IsNullOrWhiteSpace(consumerTenant))
+        if (!string.IsNullOrWhiteSpace(settings.ConsumerTenant))
         {
-            ConsoleTool.DisplayTextLine($"Share tenant    {consumerTenant}");
+            ConsoleTool.DisplayTextLine($"Share tenant    {settings.ConsumerTenant}");
         }
-        if (!string.IsNullOrWhiteSpace(consumerDivision))
+        if (!string.IsNullOrWhiteSpace(settings.ConsumerDivision))
         {
-            ConsoleTool.DisplayTextLine($"Share division  {consumerDivision}");
+            ConsoleTool.DisplayTextLine($"Share division  {settings.ConsumerDivision}");
         }
         ConsoleTool.DisplayTextLine($"Url                  {HttpClient}");
-        ConsoleTool.DisplayTextLine($"Share mode      {shareMode}");
+        ConsoleTool.DisplayTextLine($"Share mode      {settings.ShareMode}");
         ConsoleTool.DisplayNewLine();
 
         try
@@ -59,12 +62,12 @@ internal sealed class RegulationShareCommand : HttpCommandBase
 
             // tenant
             Tenant tenantObject = null;
-            if (!string.IsNullOrWhiteSpace(providerTenant))
+            if (!string.IsNullOrWhiteSpace(settings.ProviderTenant))
             {
-                tenantObject = await new TenantService(HttpClient).GetAsync<Tenant>(new(), providerTenant);
+                tenantObject = await new TenantService(HttpClient).GetAsync<Tenant>(new(), settings.ProviderTenant);
                 if (tenantObject == null)
                 {
-                    ConsoleTool.DisplayErrorLine($"Unknown tenant {providerTenant}");
+                    ConsoleTool.DisplayErrorLine($"Unknown tenant {settings.ProviderTenant}");
                     return ProgramExitCode.GenericError;
                 }
             }
@@ -76,13 +79,13 @@ internal sealed class RegulationShareCommand : HttpCommandBase
 
             // regulation
             Regulation regulationObject = null;
-            if (tenantObject != null && !string.IsNullOrWhiteSpace(providerRegulation))
+            if (tenantObject != null && !string.IsNullOrWhiteSpace(settings.ProviderRegulation))
             {
                 regulationObject = await new RegulationService(HttpClient).GetAsync<Regulation>(
-                    new(tenantObject.Id), providerRegulation);
+                    new(tenantObject.Id), settings.ProviderRegulation);
                 if (regulationObject == null)
                 {
-                    ConsoleTool.DisplayErrorLine($"Unknown regulation {providerRegulation}");
+                    ConsoleTool.DisplayErrorLine($"Unknown regulation {settings.ProviderRegulation}");
                     return ProgramExitCode.ConnectionError;
                 }
             }
@@ -94,12 +97,12 @@ internal sealed class RegulationShareCommand : HttpCommandBase
 
             // share tenant
             Tenant shareTenantObject = null;
-            if (!string.IsNullOrWhiteSpace(consumerTenant))
+            if (!string.IsNullOrWhiteSpace(settings.ConsumerTenant))
             {
-                shareTenantObject = await new TenantService(HttpClient).GetAsync<Tenant>(new(), consumerTenant);
+                shareTenantObject = await new TenantService(HttpClient).GetAsync<Tenant>(new(), settings.ConsumerTenant);
                 if (shareTenantObject == null)
                 {
-                    ConsoleTool.DisplayErrorLine($"Unknown share tenant {consumerTenant}");
+                    ConsoleTool.DisplayErrorLine($"Unknown share tenant {settings.ConsumerTenant}");
                     return ProgramExitCode.ConnectionError;
                 }
             }
@@ -111,13 +114,13 @@ internal sealed class RegulationShareCommand : HttpCommandBase
 
             // share division (optional)
             Division shareDivisionObject = null;
-            if (shareTenantObject != null && !string.IsNullOrWhiteSpace(consumerDivision))
+            if (shareTenantObject != null && !string.IsNullOrWhiteSpace(settings.ConsumerDivision))
             {
                 shareDivisionObject = await new DivisionService(HttpClient).GetAsync<Division>(
-                    new(shareTenantObject.Id), consumerDivision);
+                    new(shareTenantObject.Id), settings.ConsumerDivision);
                 if (shareDivisionObject == null)
                 {
-                    ConsoleTool.DisplayErrorLine($"Unknown share division {consumerDivision}");
+                    ConsoleTool.DisplayErrorLine($"Unknown share division {settings.ConsumerDivision}");
                     return ProgramExitCode.ConnectionError;
                 }
             }
@@ -146,7 +149,7 @@ internal sealed class RegulationShareCommand : HttpCommandBase
             }
 
             // set share
-            else if (shareMode == ShareMode.Set)
+            else if (settings.ShareMode == ShareMode.Set)
             {
                 var share = BuildRegulationShare(tenantObject, regulationObject, shareTenantObject, shareDivisionObject);
                 if (shares == null || !shares.Any())
@@ -170,7 +173,7 @@ internal sealed class RegulationShareCommand : HttpCommandBase
                 }
             }
             // remove share
-            else if (shareMode == ShareMode.Remove)
+            else if (settings.ShareMode == ShareMode.Remove)
             {
                 await RemoveSharesAsync(shares, sharesService);
             }

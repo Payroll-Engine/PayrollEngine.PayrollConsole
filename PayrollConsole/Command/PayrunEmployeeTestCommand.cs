@@ -28,25 +28,24 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase
     ///   4. Execute payrun jobs
     ///   5. Compare the file results with the calculated employee results (results must be present)
     /// </summary>
-    /// <param name="mask">The test file mask</param>
-    /// <param name="displayMode">Show results</param>
-    /// <param name="employeeTestMode">The employee test mode</param>
-    /// <param name="namespace">The namespace</param>
-    /// <param name="owner">The test owner</param>
-    /// <returns>True if no test failed</returns>
-    internal async Task<ProgramExitCode> TestAsync(string mask, TestDisplayMode displayMode, EmployeeTestMode employeeTestMode,
-        string @namespace = null, string owner = null)
+    /// <param name="settings">The command settings</param>
+    internal async Task<ProgramExitCode> TestAsync(PayrunEmployeeTestCommandSettings settings)
     {
-        if (string.IsNullOrWhiteSpace(mask))
+        // test arguments
+        if (settings == null)
         {
-            throw new PayrollException($"Missing test file {mask}");
+            throw new ArgumentNullException(nameof(settings));
+        }
+        if (string.IsNullOrWhiteSpace(settings.FileMask))
+        {
+            throw new PayrollException($"Missing test file {settings.FileMask}");
         }
 
         // test files by mask
-        var testFileNames = GetTestFileNames(mask);
+        var testFileNames = GetTestFileNames(settings.FileMask);
         if (testFileNames.Count == 0)
         {
-            throw new PayrollException($"Missing test file {mask}");
+            throw new PayrollException($"Missing test file {settings.FileMask}");
         }
 
         try
@@ -54,17 +53,17 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase
             foreach (var testFileName in testFileNames)
             {
                 DisplayTitle("Test employee payrun");
-                if (!string.IsNullOrWhiteSpace(@namespace))
+                if (!string.IsNullOrWhiteSpace(settings.Namespace))
                 {
-                    ConsoleTool.DisplayTextLine($"Namespace          {@namespace}");
+                    ConsoleTool.DisplayTextLine($"Namespace          {settings.Namespace}");
                 }
-                if (!string.IsNullOrWhiteSpace(owner))
+                if (!string.IsNullOrWhiteSpace(settings.Owner))
                 {
-                    ConsoleTool.DisplayTextLine($"Owner              {owner}");
+                    ConsoleTool.DisplayTextLine($"Owner              {settings.Owner}");
                 }
                 ConsoleTool.DisplayTextLine($"File               {testFileName}");
-                ConsoleTool.DisplayTextLine($"Test mode          {employeeTestMode}");
-                ConsoleTool.DisplayTextLine($"Display mode       {displayMode}");
+                ConsoleTool.DisplayTextLine($"Test mode          {settings.TestMode}");
+                ConsoleTool.DisplayTextLine($"Display mode       {settings.DisplayMode}");
                 ConsoleTool.DisplayTextLine($"Url                {HttpClient}");
                 ConsoleTool.DisplayTextLine($"Test precision     {TestPrecision.GetDecimals()}");
                 ConsoleTool.DisplayNewLine();
@@ -72,10 +71,10 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase
                 ConsoleTool.DisplayTextLine("Running test...");
                 // run test
                 var testRunner = new PayrunEmployeeTestRunner(HttpClient, testFileName, ScriptParser,
-                    TestPrecision, owner, employeeTestMode);
-                var results = await testRunner.TestAllAsync(@namespace);
+                    TestPrecision, settings.Owner, settings.TestMode);
+                var results = await testRunner.TestAllAsync(settings.Namespace);
                 // test results
-                DisplayTestResults(testFileName, displayMode, results);
+                DisplayTestResults(testFileName, settings.DisplayMode, results);
 
                 // failed test
                 foreach (var resultValues in results.Values)

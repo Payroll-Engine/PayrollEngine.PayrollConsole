@@ -1,6 +1,7 @@
 ﻿using System;
 using PayrollEngine.Client;
 using PayrollEngine.Document;
+using PayrollEngine.PayrollConsole.Shared;
 
 namespace PayrollEngine.PayrollConsole.Arguments;
 
@@ -29,10 +30,14 @@ public static class ReportArguments
     public static DocumentType DocumentType(DocumentType defaultTestMode = Document.DocumentType.Pdf) =>
         ConsoleArguments.GetEnumToggle(defaultTestMode);
 
+    public static ReportPostAction PostAction(ReportPostAction action = ReportPostAction.NoAction) =>
+        ConsoleArguments.GetEnumToggle(action);
+
     public static Type[] Toggles => new[]
     {
         typeof(Language),
-        typeof(DocumentType)
+        typeof(DocumentType),
+        typeof(ReportPostAction)
     };
 
     public static string TestArguments()

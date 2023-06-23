@@ -31,37 +31,41 @@ internal sealed class ReportCommand : HttpCommandBase
     {
     }
 
-    internal async Task<ProgramExitCode> ReportAsync(string tenantIdentifier,
-        string userIdentifier, string regulationName, string reportName,
-        DocumentType documentType, Language language, string parameterFile = null)
+    internal async Task<ProgramExitCode> ReportAsync(ReportCommandSettings settings)
     {
-        if (string.IsNullOrWhiteSpace(tenantIdentifier))
+        if (settings == null)
+        {
+            throw new ArgumentNullException(nameof(settings));
+        }
+
+        if (string.IsNullOrWhiteSpace(settings.TenantIdentifier))
         {
             throw new PayrollException("Missing tenant");
         }
-        if (string.IsNullOrWhiteSpace(userIdentifier))
+        if (string.IsNullOrWhiteSpace(settings.UserIdentifier))
         {
             throw new PayrollException("Missing user");
         }
-        if (string.IsNullOrWhiteSpace(regulationName))
+        if (string.IsNullOrWhiteSpace(settings.RegulationName))
         {
             throw new PayrollException("Missing regulation");
         }
-        if (string.IsNullOrWhiteSpace(reportName))
+        if (string.IsNullOrWhiteSpace(settings.ReportName))
         {
             throw new PayrollException("Missing report");
         }
 
         DisplayTitle("Report");
-        ConsoleTool.DisplayTextLine($"Tenant           {tenantIdentifier}");
-        ConsoleTool.DisplayTextLine($"User             {userIdentifier}");
-        ConsoleTool.DisplayTextLine($"Regulation       {regulationName}");
-        ConsoleTool.DisplayTextLine($"Report           {reportName}");
-        ConsoleTool.DisplayTextLine($"Document type    {documentType}");
-        ConsoleTool.DisplayTextLine($"Language         {language}");
-        if (!string.IsNullOrWhiteSpace(parameterFile))
+        ConsoleTool.DisplayTextLine($"Tenant           {settings.TenantIdentifier}");
+        ConsoleTool.DisplayTextLine($"User             {settings.UserIdentifier}");
+        ConsoleTool.DisplayTextLine($"Regulation       {settings.RegulationName}");
+        ConsoleTool.DisplayTextLine($"Report           {settings.ReportName}");
+        ConsoleTool.DisplayTextLine($"Document type    {settings.DocumentType}");
+        ConsoleTool.DisplayTextLine($"Language         {settings.Language}");
+        ConsoleTool.DisplayTextLine($"Post action      {settings.PostAction}");
+        if (!string.IsNullOrWhiteSpace(settings.ParameterFile))
         {
-            ConsoleTool.DisplayTextLine($"Parameter file   {parameterFile}");
+            ConsoleTool.DisplayTextLine($"Parameter file   {settings.ParameterFile}");
         }
         ConsoleTool.DisplayTextLine($"Url              {HttpClient}");
         ConsoleTool.DisplayNewLine();
@@ -70,18 +74,18 @@ internal sealed class ReportCommand : HttpCommandBase
         {
             // tenant
             var tenant = await new TenantService(HttpClient)
-                .GetAsync<Tenant>(new(), tenantIdentifier);
+                .GetAsync<Tenant>(new(), settings.TenantIdentifier);
             if (tenant == null)
             {
-                throw new PayrollException($"Invalid tenant {tenantIdentifier}");
+                throw new PayrollException($"Invalid tenant {settings.TenantIdentifier}");
             }
 
             // user
             var user = await new UserService(HttpClient)
-                .GetAsync<User>(new(tenant.Id), userIdentifier);
+                .GetAsync<User>(new(tenant.Id), settings.UserIdentifier);
             if (user == null)
             {
-                throw new PayrollException($"Invalid user {userIdentifier}");
+                throw new PayrollException($"Invalid user {settings.UserIdentifier}");
             }
 
             // document culture
@@ -94,10 +98,10 @@ internal sealed class ReportCommand : HttpCommandBase
 
             // regulation
             var regulation = await new RegulationService(HttpClient)
-                .GetAsync<Regulation>(new(tenant.Id), regulationName);
+                .GetAsync<Regulation>(new(tenant.Id), settings.RegulationName);
             if (regulation == null)
             {
-                throw new PayrollException($"Invalid regulation {regulationName}");
+                throw new PayrollException($"Invalid regulation {settings.RegulationName}");
             }
 
             // report parameters
@@ -106,10 +110,10 @@ internal sealed class ReportCommand : HttpCommandBase
 
             // report
             var report = await new ReportSetService(HttpClient)
-                .GetAsync<ReportSet>(new(tenant.Id, regulation.Id), reportName);
+                .GetAsync<ReportSet>(new(tenant.Id, regulation.Id), settings.ReportName);
             if (report == null)
             {
-                throw new PayrollException($"Invalid report {reportName}");
+                throw new PayrollException($"Invalid report {settings.ReportName}");
             }
 
             ConsoleTool.DisplayText($"Building report {report.Name}...");
@@ -121,14 +125,14 @@ internal sealed class ReportCommand : HttpCommandBase
             ConsoleTool.DisplayNewLine();
             ConsoleTool.DisplayText("Executing report...");
             var response = await ExecuteReport(HttpClient, tenant.Id, regulation.Id, user.Id, report,
-                language, parameters);
+                settings.Language, parameters);
             if (response == null)
             {
-                throw new PayrollException($"Invalid report response on report {reportName}");
+                throw new PayrollException($"Invalid report response on report {settings.ReportName}");
             }
             if (response.Result.Tables.Count == 0)
             {
-                throw new PayrollException($"Invalid report {reportName}");
+                throw new PayrollException($"Invalid report {settings.ReportName}");
             }
             ConsoleTool.DisplayTextLine("done.");
 
@@ -162,18 +166,18 @@ internal sealed class ReportCommand : HttpCommandBase
             }
 
             string outputFile;
-            switch (documentType)
+            switch (settings.DocumentType)
             {
                 case DocumentType.Word:
                 case DocumentType.Excel:
                 case DocumentType.Pdf:
                     outputFile = await MergeAsync(tenant, regulation, report, dataSet,
-                        documentMetadata, documentType, language);
+                        documentMetadata, settings.DocumentType, settings.Language);
                     break;
                 case DocumentType.Xml:
                 case DocumentType.XmlRaw:
                     outputFile = await TransformAsync(tenant, regulation, report, dataSet,
-                        language, documentType == DocumentType.XmlRaw);
+                        settings.Language, settings.DocumentType == DocumentType.XmlRaw);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -182,14 +186,26 @@ internal sealed class ReportCommand : HttpCommandBase
 
             stopwatch.Stop();
 
+            var fileName = new FileInfo(outputFile).FullName;
             ConsoleTool.DisplayNewLine();
-            ConsoleTool.DisplaySuccessLine($"Report file created {new FileInfo(outputFile).FullName}");
+            ConsoleTool.DisplaySuccessLine($"Report file created {fileName}");
             ConsoleTool.DisplayNewLine();
             ConsoleTool.DisplayTextLine("Report statistics:");
             ConsoleTool.DisplayTextLine($"  Execute: {executeTime} ms");
             ConsoleTool.DisplayTextLine($"  Convert: {stopwatch.ElapsedMilliseconds - executeTime} ms");
             ConsoleTool.DisplayTextLine($"  Total:   {stopwatch.ElapsedMilliseconds} ms");
             ConsoleTool.DisplayNewLine();
+
+            // post action
+            switch (settings.PostAction)
+            {
+                case ReportPostAction.ShellOpen:
+                    Process.Start("cmd.exe", $"/C {fileName}");
+                    break;
+                default:
+                case ReportPostAction.NoAction:
+                    break;
+            }
 
             return ProgramExitCode.Ok;
         }
@@ -398,7 +414,7 @@ internal sealed class ReportCommand : HttpCommandBase
         return targetFileName;
     }
 
-    private XmlNode DataSetToXml(DataSet dataSet)
+    private static XmlNode DataSetToXml(DataSet dataSet)
     {
         using MemoryStream stream = new();
         dataSet.WriteXml(stream, XmlWriteMode.WriteSchema);
@@ -421,9 +437,11 @@ internal sealed class ReportCommand : HttpCommandBase
         ConsoleTool.DisplayTextLine("          2. user identifier");
         ConsoleTool.DisplayTextLine("          3. regulation name");
         ConsoleTool.DisplayTextLine("          4. report name");
-        ConsoleTool.DisplayTextLine("          6. language:/language (default: /english)");
-        ConsoleTool.DisplayTextLine("          7. document type: /pdf /xml or /xmlraw (default: /pdf)");
-        ConsoleTool.DisplayTextLine("          8. report parameter file with a json string/string dictionary (optional)");
+        ConsoleTool.DisplayTextLine("          5. report parameter file with a json string/string dictionary (optional)");
+        ConsoleTool.DisplayTextLine("      Toggles:");
+        ConsoleTool.DisplayTextLine("          language: default is english)");
+        ConsoleTool.DisplayTextLine("          document type: /word, /excel, /pdf, /xml, /xmlraw (default: pdf)");
+        ConsoleTool.DisplayTextLine("          post action: /noaction or /shellopen (default: noaction)");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          Report MyTenant MyUser MyRegulation MyReport /german");
         ConsoleTool.DisplayTextLine("          Report MyTenant MyUser MyRegulation MyReport MyParameters.json /french /xml");

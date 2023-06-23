@@ -176,23 +176,30 @@ sealed class Program : ConsoleProgram<Program>
 
             // report
             case Shared.Command.Report:
-                exitCode = await new ReportCommand(HttpClient).ReportAsync(
-                    ReportArguments.Tenant,
-                    ReportArguments.User,
-                    ReportArguments.Regulation,
-                    ReportArguments.Report,
-                    ReportArguments.DocumentType(),
-                    ReportArguments.Language());
+                exitCode = await new ReportCommand(HttpClient).ReportAsync(new()
+                {
+                    TenantIdentifier = ReportArguments.Tenant,
+                    UserIdentifier = ReportArguments.User,
+                    RegulationName = ReportArguments.Regulation,
+                    ReportName = ReportArguments.Report,
+                    DocumentType = ReportArguments.DocumentType(),
+                    Language = ReportArguments.Language(),
+                    PostAction = ReportArguments.PostAction(),
+                    ParameterFile = ReportArguments.ParameterFile
+                });
                 break;
             case Shared.Command.DataReport:
-                exitCode = await new DataReportCommand(HttpClient).ReportAsync(
-                    DataReportArguments.OutputFile,
-                    DataReportArguments.Tenant,
-                    DataReportArguments.User,
-                    DataReportArguments.Regulation,
-                    DataReportArguments.Report,
-                    DataReportArguments.Language,
-                    DataReportArguments.ParametersFile);
+                exitCode = await new DataReportCommand(HttpClient).ReportAsync(new()
+                {
+                    OutputFile = DataReportArguments.OutputFile,
+                    TenantIdentifier = DataReportArguments.Tenant,
+                    UserIdentifier = DataReportArguments.User,
+                    RegulationName = DataReportArguments.Regulation,
+                    ReportName = DataReportArguments.Report,
+                    Language = DataReportArguments.Language(),
+                    PostAction = DataReportArguments.PostAction(),
+                    ParameterFile = ReportArguments.ParameterFile
+                });
                 break;
 
             // test
@@ -212,23 +219,27 @@ sealed class Program : ConsoleProgram<Program>
                 break;
             case Shared.Command.PayrunTest:
                 exitCode = await new PayrunTestCommand(HttpClient,
-                    PayrunTestArguments.TestPrecision()).TestAsync(
-                    PayrunTestArguments.FileMask,
-                    PayrunTestArguments.DataImportMode(),
-                    PayrunTestArguments.TestDisplayMode(),
-                    PayrunTestArguments.TestResultMode(),
-                    PayrunTestArguments.Namespace,
-                    PayrunTestArguments.Owner);
+                    PayrunTestArguments.TestPrecision()).TestAsync(new()
+                    {
+                        FileMask = PayrunTestArguments.FileMask,
+                        ImportMode = PayrunTestArguments.DataImportMode(),
+                        DisplayMode = PayrunTestArguments.TestDisplayMode(),
+                        ResultMode = PayrunTestArguments.TestResultMode(),
+                        Namespace = PayrunTestArguments.Namespace,
+                        Owner = PayrunTestArguments.Owner
+                    });
                 failedCommand = exitCode == ProgramExitCode.FailedTest;
                 break;
             case Shared.Command.PayrunEmployeeTest:
                 exitCode = await new PayrunEmployeeTestCommand(HttpClient,
-                    PayrunEmployeeTestArguments.TestPrecision()).TestAsync(
-                    PayrunEmployeeTestArguments.FileMask,
-                    PayrunEmployeeTestArguments.TestDisplayMode(),
-                    PayrunEmployeeTestArguments.EmployeeTestMode(),
-                    PayrunEmployeeTestArguments.Namespace,
-                    PayrunEmployeeTestArguments.Owner);
+                    PayrunEmployeeTestArguments.TestPrecision()).TestAsync(new()
+                    {
+                        FileMask = PayrunEmployeeTestArguments.FileMask,
+                        DisplayMode = PayrunEmployeeTestArguments.TestDisplayMode(),
+                        TestMode = PayrunEmployeeTestArguments.EmployeeTestMode(),
+                        Namespace = PayrunEmployeeTestArguments.Namespace,
+                        Owner = PayrunEmployeeTestArguments.Owner
+                    });
                 failedCommand = exitCode == ProgramExitCode.FailedTest;
                 break;
 
@@ -242,12 +253,14 @@ sealed class Program : ConsoleProgram<Program>
 
             // regulation shares
             case Shared.Command.RegulationShare:
-                exitCode = await new RegulationShareCommand(HttpClient).ChangeAsync(
-                    RegulationShareArguments.ProviderTenant,
-                    RegulationShareArguments.ProviderRegulation,
-                    RegulationShareArguments.ConsumerTenant,
-                    RegulationShareArguments.ConsumerDivision,
-                    RegulationShareArguments.ShareMode());
+                exitCode = await new RegulationShareCommand(HttpClient).ChangeAsync(new()
+                {
+                    ProviderTenant = RegulationShareArguments.ProviderTenant,
+                    ProviderRegulation = RegulationShareArguments.ProviderRegulation,
+                    ConsumerTenant = RegulationShareArguments.ConsumerTenant,
+                    ConsumerDivision = RegulationShareArguments.ConsumerDivision,
+                    ShareMode = RegulationShareArguments.ShareMode()
+                });
                 break;
 
             // data management

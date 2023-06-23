@@ -1,7 +1,6 @@
 ﻿using System;
 using PayrollEngine.Client;
 using PayrollEngine.Client.Script;
-using PayrollEngine.PayrollConsole.Shared;
 
 namespace PayrollEngine.PayrollConsole.Arguments;
 
@@ -36,8 +35,7 @@ public static class ScriptExportArguments
 
     public static Type[] Toggles => new[]
     {
-        typeof(ScriptExportMode),
-        typeof(ObjectDeleteMode)
+        typeof(ScriptExportMode)
     };
 
     public static string TestArguments()

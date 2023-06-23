@@ -122,8 +122,6 @@ internal sealed class PayrollExportCommand : HttpCommandBase
         ConsoleTool.DisplayTextLine("          2. target json file name (default: tenant name)");
         ConsoleTool.DisplayTextLine("          3. export options file name ExchangeExportOptions json (optional)");
         ConsoleTool.DisplayTextLine("          4. namespace (optional)");
-        ConsoleTool.DisplayTextLine("      Toggles:");
-        ConsoleTool.DisplayTextLine("          export results: /results or /noresults (default: noresults)");
         ConsoleTool.DisplayTextLine("      Options (json object):");
         ConsoleTool.DisplayTextLine("          type filter, list of identifiers or names:");
         ConsoleTool.DisplayTextLine("              Users, Divisions, Employees, Tasks, Webhooks, Regulations, Payrolls, Payruns, PayrunJobs");
@@ -131,7 +129,7 @@ internal sealed class PayrollExportCommand : HttpCommandBase
         ConsoleTool.DisplayTextLine("              ExportWebhookMessages, ExportGlobalCaseValues, ExportNationalCaseValues, ExportCompanyCaseValues, ExportEmployeeCaseValues, ExportPayrollResults");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          PayrollExport MyTenantName");
+        ConsoleTool.DisplayTextLine("          PayrollExport MyTenantName MyExportFile.json MyExportOptions.json");
         ConsoleTool.DisplayTextLine("          PayrollExport MyTenantName MyExportFile.json MyExportOptions.json MyNamespace");
-        ConsoleTool.DisplayTextLine("          PayrollExport MyTenantName MyExportFile.json MyExportOptions.json /results");
     }
 }

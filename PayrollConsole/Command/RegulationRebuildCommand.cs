@@ -88,7 +88,7 @@ internal sealed class RegulationRebuildCommand : HttpCommandBase
         ConsoleTool.DisplayTextLine("          1. tenant name");
         ConsoleTool.DisplayTextLine("          2. regulation name");
         ConsoleTool.DisplayTextLine("          3. object type: Case, CaseRelation, Collector, WageType or Report (default: all)");
-        ConsoleTool.DisplayTextLine("          2. object key, requires the object type");
+        ConsoleTool.DisplayTextLine("          4. object key, requires the object type");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          RegulationRebuild MyTenantName MyRegulationName");
         ConsoleTool.DisplayTextLine("          RegulationRebuild MyTenantName MyRegulationName Case");

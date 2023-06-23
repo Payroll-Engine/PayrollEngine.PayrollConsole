@@ -17,7 +17,7 @@ internal sealed class ScriptExportCommand : HttpCommandBase
     {
     }
 
-    internal async Task<ProgramExitCode> ExportAsync(ExportScriptSettings settings)
+    internal async Task<ProgramExitCode> ExportAsync(ScriptExportCommandSettings settings)
     {
         if (string.IsNullOrWhiteSpace(settings.TargetFolder))
         {

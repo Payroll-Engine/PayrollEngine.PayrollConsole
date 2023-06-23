@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Client;
-using PayrollEngine.Client.Exchange;
 using PayrollEngine.Client.Script;
 using PayrollEngine.Client.Scripting.Script;
 using PayrollEngine.Client.Test;
@@ -29,26 +28,20 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase
     ///   4. Compare the file results with the calculated payrun results (results must be present)
     ///   5. Remove test payroll
     /// </summary>
-    /// <param name="fileMask">The test file mask</param>
-    /// <param name="importMode">The import mode</param>
-    /// <param name="displayMode">Show results</param>
-    /// <param name="resultMode">Keep the test data</param>
-    /// <param name="namespace">The namespace</param>
-    /// <param name="owner">The test owner</param>
+    /// <param name="settings">The command settings</param>
     /// <returns>True if no test failed</returns>
-    internal async Task<ProgramExitCode> TestAsync(string fileMask, DataImportMode importMode,
-        TestDisplayMode displayMode, TestResultMode resultMode, string @namespace = null, string owner = null)
+    internal async Task<ProgramExitCode> TestAsync(ReportTestCommandSettings settings)
     {
-        if (string.IsNullOrWhiteSpace(fileMask))
+        if (string.IsNullOrWhiteSpace(settings.FileMask))
         {
-            throw new PayrollException($"Missing test file {fileMask}");
+            throw new PayrollException($"Missing test file {settings.FileMask}");
         }
 
         // test files by mask
-        var testFileNames = GetTestFileNames(fileMask);
+        var testFileNames = GetTestFileNames(settings.FileMask);
         if (testFileNames.Count == 0)
         {
-            throw new PayrollException($"Missing test file {fileMask}");
+            throw new PayrollException($"Missing test file {settings.FileMask}");
         }
 
         try
@@ -56,18 +49,18 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase
             foreach (var testFileName in testFileNames)
             {
                 DisplayTitle("Test payrun");
-                if (!string.IsNullOrWhiteSpace(@namespace))
+                if (!string.IsNullOrWhiteSpace(settings.Namespace))
                 {
-                    ConsoleTool.DisplayTextLine($"Namespace          {@namespace}");
+                    ConsoleTool.DisplayTextLine($"Namespace          {settings.Namespace}");
                 }
-                if (!string.IsNullOrWhiteSpace(owner))
+                if (!string.IsNullOrWhiteSpace(settings.Owner))
                 {
-                    ConsoleTool.DisplayTextLine($"Owner              {owner}");
+                    ConsoleTool.DisplayTextLine($"Owner              {settings.Owner}");
                 }
                 ConsoleTool.DisplayTextLine($"File               {testFileName}");
-                ConsoleTool.DisplayTextLine($"Import mode        {importMode}");
-                ConsoleTool.DisplayTextLine($"Display mode       {displayMode}");
-                ConsoleTool.DisplayTextLine($"Result mode        {resultMode}");
+                ConsoleTool.DisplayTextLine($"Import mode        {settings.ImportMode}");
+                ConsoleTool.DisplayTextLine($"Display mode       {settings.DisplayMode}");
+                ConsoleTool.DisplayTextLine($"Result mode        {settings.ResultMode}");
                 ConsoleTool.DisplayTextLine($"Url                {HttpClient}");
                 ConsoleTool.DisplayTextLine($"Test precision     {TestPrecision.GetDecimals()}");
                 ConsoleTool.DisplayNewLine();
@@ -75,10 +68,10 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase
                 ConsoleTool.DisplayTextLine("Running test...");
                 // run test
                 var testRunner = new PayrunTestRunner(HttpClient, testFileName, ScriptParser,
-                    TestPrecision, owner, importMode, resultMode);
-                var results = await testRunner.TestAllAsync(@namespace);
+                    TestPrecision, settings.Owner, settings.ImportMode, settings.ResultMode);
+                var results = await testRunner.TestAllAsync(settings.Namespace);
                 // test results
-                DisplayTestResults(testFileName, displayMode, results);
+                DisplayTestResults(testFileName, settings.DisplayMode, results);
 
                 // failed test
                 foreach (var resultValues in results.Values)

@@ -2,7 +2,7 @@
 
 namespace PayrollEngine.PayrollConsole.Command;
 
-internal sealed class ExportScriptSettings
+internal sealed class ScriptExportCommandSettings
 {
     internal string TargetFolder { get; set; }
     internal string TenantIdentifier { get; set; }

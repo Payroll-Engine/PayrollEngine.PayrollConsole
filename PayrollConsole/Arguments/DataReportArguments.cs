@@ -1,5 +1,6 @@
 ﻿using System;
 using PayrollEngine.Client;
+using PayrollEngine.PayrollConsole.Shared;
 
 namespace PayrollEngine.PayrollConsole.Arguments;
 
@@ -20,11 +21,14 @@ public static class DataReportArguments
     public static string Report =>
         ConsoleArguments.GetMember(typeof(DataReportArguments), 6);
 
-    public static Language Language =>
-        ConsoleArguments.GetEnum<Language>(7);
-
     public static string ParametersFile =>
-        ConsoleArguments.GetMember(typeof(DataReportArguments), 8);
+        ConsoleArguments.GetMember(typeof(DataReportArguments), 7);
+
+    public static Language Language(Language language = PayrollEngine.Language.English) =>
+        ConsoleArguments.GetEnumToggle(language);
+
+    public static ReportPostAction PostAction(ReportPostAction language = ReportPostAction.NoAction) =>
+        ConsoleArguments.GetEnumToggle(language);
 
     public static Type[] Toggles => null;
 
