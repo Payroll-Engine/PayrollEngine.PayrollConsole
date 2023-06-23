@@ -161,7 +161,7 @@ internal sealed class DataReportCommand : HttpCommandBase
                 switch (settings.PostAction)
                 {
                     case ReportPostAction.ShellOpen:
-                        Process.Start("cmd.exe", $"/C {fileName}");
+                        Process.Start("cmd.exe", $"/C start {fileName}");
                         break;
                     default:
                     case ReportPostAction.NoAction:
