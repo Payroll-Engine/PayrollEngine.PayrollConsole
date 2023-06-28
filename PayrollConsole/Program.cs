@@ -183,7 +183,7 @@ sealed class Program : ConsoleProgram<Program>
                     RegulationName = ReportArguments.Regulation,
                     ReportName = ReportArguments.Report,
                     DocumentType = ReportArguments.DocumentType(),
-                    Language = ReportArguments.Language(),
+                    Culture = ReportArguments.Culture,
                     PostAction = ReportArguments.PostAction(),
                     ParameterFile = ReportArguments.ParameterFile
                 });
@@ -196,7 +196,7 @@ sealed class Program : ConsoleProgram<Program>
                     UserIdentifier = DataReportArguments.User,
                     RegulationName = DataReportArguments.Regulation,
                     ReportName = DataReportArguments.Report,
-                    Language = DataReportArguments.Language(),
+                    Culture = DataReportArguments.Culture,
                     PostAction = DataReportArguments.PostAction(),
                     ParameterFile = ReportArguments.ParameterFile
                 });

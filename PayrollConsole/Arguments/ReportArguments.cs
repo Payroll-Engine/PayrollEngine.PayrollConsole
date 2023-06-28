@@ -24,8 +24,8 @@ public static class ReportArguments
     public static string ParameterFile =>
         ConsoleArguments.GetMember(typeof(ReportArguments), 6);
 
-    public static Language Language(Language language = PayrollEngine.Language.English) =>
-        ConsoleArguments.GetEnumToggle(language);
+    public static string Culture =>
+        ConsoleArguments.GetMember(typeof(ReportArguments), 7);
 
     public static DocumentType DocumentType(DocumentType defaultTestMode = Document.DocumentType.Pdf) =>
         ConsoleArguments.GetEnumToggle(defaultTestMode);
@@ -35,7 +35,6 @@ public static class ReportArguments
 
     public static Type[] Toggles => new[]
     {
-        typeof(Language),
         typeof(DocumentType),
         typeof(ReportPostAction)
     };

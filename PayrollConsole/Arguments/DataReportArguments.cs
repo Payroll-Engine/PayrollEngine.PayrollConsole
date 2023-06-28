@@ -24,8 +24,8 @@ public static class DataReportArguments
     public static string ParametersFile =>
         ConsoleArguments.GetMember(typeof(DataReportArguments), 7);
 
-    public static Language Language(Language language = PayrollEngine.Language.English) =>
-        ConsoleArguments.GetEnumToggle(language);
+    public static string Culture =>
+        ConsoleArguments.GetMember(typeof(DataReportArguments), 8);
 
     public static ReportPostAction PostAction(ReportPostAction language = ReportPostAction.NoAction) =>
         ConsoleArguments.GetEnumToggle(language);

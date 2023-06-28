@@ -61,7 +61,7 @@ internal sealed class ReportCommand : HttpCommandBase
         ConsoleTool.DisplayTextLine($"Regulation       {settings.RegulationName}");
         ConsoleTool.DisplayTextLine($"Report           {settings.ReportName}");
         ConsoleTool.DisplayTextLine($"Document type    {settings.DocumentType}");
-        ConsoleTool.DisplayTextLine($"Language         {settings.Language}");
+        ConsoleTool.DisplayTextLine($"Culture          {settings.Culture}");
         ConsoleTool.DisplayTextLine($"Post action      {settings.PostAction}");
         if (!string.IsNullOrWhiteSpace(settings.ParameterFile))
         {
@@ -125,7 +125,7 @@ internal sealed class ReportCommand : HttpCommandBase
             ConsoleTool.DisplayNewLine();
             ConsoleTool.DisplayText("Executing report...");
             var response = await ExecuteReport(HttpClient, tenant.Id, regulation.Id, user.Id, report,
-                settings.Language, parameters);
+                settings.Culture, parameters);
             if (response == null)
             {
                 throw new PayrollException($"Invalid report response on report {settings.ReportName}");
@@ -141,14 +141,14 @@ internal sealed class ReportCommand : HttpCommandBase
             // report metadata
             ConsoleTool.DisplayText("Building report...");
             var now = DateTime.Now; // use local time (no UTC)
-            var title = response.Language.GetLocalization(report.NameLocalizations, report.Name);
+            var title = response.Culture.GetLocalization(report.NameLocalizations, report.Name);
             var documentMetadata = new DocumentMetadata
             {
                 Author = user.Identifier,
                 Category = report.Category,
                 Company = tenant.Identifier,
                 Title = title,
-                Keywords = response.Language.ToString(),
+                Keywords = response.Culture,
                 CustomProperties = parameters,
                 Created = now,
                 Modified = now
@@ -172,12 +172,12 @@ internal sealed class ReportCommand : HttpCommandBase
                 case DocumentType.Excel:
                 case DocumentType.Pdf:
                     outputFile = await MergeAsync(tenant, regulation, report, dataSet,
-                        documentMetadata, settings.DocumentType, settings.Language);
+                        documentMetadata, settings.DocumentType, settings.Culture);
                     break;
                 case DocumentType.Xml:
                 case DocumentType.XmlRaw:
                     outputFile = await TransformAsync(tenant, regulation, report, dataSet,
-                        settings.Language, settings.DocumentType == DocumentType.XmlRaw);
+                        settings.Culture, settings.DocumentType == DocumentType.XmlRaw);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -218,12 +218,12 @@ internal sealed class ReportCommand : HttpCommandBase
     }
 
     private async Task<ReportResponse> ExecuteReport(PayrollHttpClient httpClient, int tenantId, int regulationId,
-        int userId, ReportSet report, Language language, Dictionary<string, string> parameters)
+        int userId, ReportSet report, string culture, Dictionary<string, string> parameters)
     {
         var request = new ReportRequest
         {
             UserId = userId,
-            Language = language,
+            Culture = culture,
             Parameters = parameters
         };
 
@@ -279,7 +279,7 @@ internal sealed class ReportCommand : HttpCommandBase
 
     private async Task<string> MergeAsync(Tenant tenant, Regulation regulation,
         ReportSet report, DataSet dataSet, DocumentMetadata documentMetadata,
-        DocumentType documentType, Language language)
+        DocumentType documentType, string culture)
     {
         var merge = new DataMerge();
         if (!merge.IsMergeable(documentType))
@@ -300,7 +300,7 @@ internal sealed class ReportCommand : HttpCommandBase
         else
         {
             // report template
-            var template = await GetReportTemplateAsync(tenant.Id, regulation.Id, report, language);
+            var template = await GetReportTemplateAsync(tenant.Id, regulation.Id, report, culture);
             if (template == null)
             {
                 ConsoleTool.WriteErrorLine($"Invalid report template for report {report.Name}");
@@ -318,10 +318,10 @@ internal sealed class ReportCommand : HttpCommandBase
     }
 
     private async Task<ReportTemplate> GetReportTemplateAsync(int tenantId,
-        int regulationId, Report report, Language language)
+        int regulationId, Report report, string culture)
     {
         var template = (await new ReportTemplateService(HttpClient).QueryAsync<ReportTemplate>(
-                new(tenantId, regulationId, report.Id), new() { Language = language }))
+                new(tenantId, regulationId, report.Id), new() { Culture = culture }))
             .FirstOrDefault();
         if (template == null)
         {
@@ -335,13 +335,13 @@ internal sealed class ReportCommand : HttpCommandBase
     #region Transform
 
     private async Task<string> TransformAsync(Tenant tenant, Regulation regulation,
-        ReportSet report, DataSet dataSet, Language language, bool rawData = false)
+        ReportSet report, DataSet dataSet, string culture, bool rawData = false)
     {
         var rawName = rawData ? "_raw" : string.Empty;
         var targetFileName = $"{report.Name}_{FileTool.CurrentTimeStamp()}{rawName}{FileExtensions.Xml}";
 
         // report template
-        var template = await GetReportTemplateAsync(tenant.Id, regulation.Id, report, language);
+        var template = await GetReportTemplateAsync(tenant.Id, regulation.Id, report, culture);
         if (template == null)
         {
             return null;
@@ -438,6 +438,7 @@ internal sealed class ReportCommand : HttpCommandBase
         ConsoleTool.DisplayTextLine("          3. regulation name");
         ConsoleTool.DisplayTextLine("          4. report name");
         ConsoleTool.DisplayTextLine("          5. report parameter file with a json string/string dictionary (optional)");
+        ConsoleTool.DisplayTextLine("          6. report culture");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          language: default is english)");
         ConsoleTool.DisplayTextLine("          document type: /word, /excel, /pdf, /xml, /xmlraw (default: pdf)");

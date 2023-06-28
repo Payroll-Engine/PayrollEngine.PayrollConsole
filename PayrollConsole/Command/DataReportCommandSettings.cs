@@ -9,7 +9,7 @@ namespace PayrollEngine.PayrollConsole.Command
         internal string UserIdentifier { get; set; }
         internal string RegulationName { get; set; }
         internal string ReportName { get; set; }
-        internal Language Language { get; set; }
+        internal string Culture { get; set; }
         internal ReportPostAction PostAction { get; set; }
         internal string ParameterFile { get; set; }
     }

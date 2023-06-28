@@ -53,7 +53,7 @@ internal sealed class DataReportCommand : HttpCommandBase
         ConsoleTool.DisplayTextLine($"User             {settings.UserIdentifier}");
         ConsoleTool.DisplayTextLine($"Regulation       {settings.RegulationName}");
         ConsoleTool.DisplayTextLine($"Report           {settings.ReportName}");
-        ConsoleTool.DisplayTextLine($"Language         {settings.Language}");
+        ConsoleTool.DisplayTextLine($"Culture          {settings.Culture}");
         ConsoleTool.DisplayTextLine($"Post action      {settings.PostAction}");
         if (!string.IsNullOrWhiteSpace(settings.ParameterFile))
         {
@@ -111,7 +111,7 @@ internal sealed class DataReportCommand : HttpCommandBase
             var reportRequest = new ReportRequest
             {
                 UserId = user.Id,
-                Language = settings.Language,
+                Culture = settings.Culture,
                 Parameters = parameters
             };
 
@@ -191,6 +191,7 @@ internal sealed class DataReportCommand : HttpCommandBase
         ConsoleTool.DisplayTextLine("          4. regulation name");
         ConsoleTool.DisplayTextLine("          5. report name");
         ConsoleTool.DisplayTextLine("          6. report parameter file with a json string/string dictionary (optional)");
+        ConsoleTool.DisplayTextLine("          7. report culture");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          language: default is english)");
         ConsoleTool.DisplayTextLine("          post action: /noaction or /shellopen (default: noaction)");
