@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -162,12 +163,12 @@ internal sealed class ReportCommand : HttpCommandBase
                 case DocumentType.Word:
                 case DocumentType.Excel:
                 case DocumentType.Pdf:
-                    outputFile = await MergeAsync(tenant, regulation, report, dataSet,
+                    outputFile = await MergeAsync(report, dataSet,
                         documentMetadata, settings.DocumentType, settings.Culture);
                     break;
                 case DocumentType.Xml:
                 case DocumentType.XmlRaw:
-                    outputFile = await TransformAsync(tenant, regulation, report, dataSet,
+                    outputFile = await TransformAsync(report, dataSet,
                         settings.Culture, settings.DocumentType == DocumentType.XmlRaw);
                     break;
                 default:
@@ -268,8 +269,7 @@ internal sealed class ReportCommand : HttpCommandBase
 
     #region Merge
 
-    private async Task<string> MergeAsync(Tenant tenant, Regulation regulation,
-        ReportSet report, DataSet dataSet, DocumentMetadata documentMetadata,
+    private async Task<string> MergeAsync(ReportSet report, DataSet dataSet, DocumentMetadata documentMetadata,
         DocumentType documentType, string culture)
     {
         var merge = new DataMerge();
@@ -279,6 +279,7 @@ internal sealed class ReportCommand : HttpCommandBase
             return null;
         }
 
+        // file name
         var targetFileName =
             $"{report.Name}_{FileTool.CurrentTimeStamp()}{documentType.GetFileExtension()}";
 
@@ -291,7 +292,7 @@ internal sealed class ReportCommand : HttpCommandBase
         else
         {
             // report template
-            var template = await GetReportTemplateAsync(tenant.Id, regulation.Id, report, culture);
+            var template = GetReportTemplate(report, culture);
             if (template == null)
             {
                 ConsoleTool.WriteErrorLine($"Invalid report template for report {report.Name}");
@@ -308,31 +309,17 @@ internal sealed class ReportCommand : HttpCommandBase
         return targetFileName;
     }
 
-    private async Task<ReportTemplate> GetReportTemplateAsync(int tenantId,
-        int regulationId, Report report, string culture)
-    {
-        var template = (await new ReportTemplateService(HttpClient).QueryAsync<ReportTemplate>(
-                new(tenantId, regulationId, report.Id), new() { Culture = culture }))
-            .FirstOrDefault();
-        if (template == null)
-        {
-            return null;
-        }
-        return template;
-    }
-
     #endregion
 
     #region Transform
 
-    private async Task<string> TransformAsync(Tenant tenant, Regulation regulation,
-        ReportSet report, DataSet dataSet, string culture, bool rawData = false)
+    private async Task<string> TransformAsync(ReportSet report, DataSet dataSet, string culture, bool rawData = false)
     {
         var rawName = rawData ? "_raw" : string.Empty;
         var targetFileName = $"{report.Name}_{FileTool.CurrentTimeStamp()}{rawName}{FileExtensions.Xml}";
 
         // report template
-        var template = await GetReportTemplateAsync(tenant.Id, regulation.Id, report, culture);
+        var template = GetReportTemplate(report, culture);
         if (template == null)
         {
             return null;
@@ -413,6 +400,31 @@ internal sealed class ReportCommand : HttpCommandBase
         var document = new XmlDocument();
         document.LoadXml(xml);
         return document;
+    }
+
+    #endregion
+
+    #region Tools
+    
+    private static ReportTemplate GetReportTemplate(ReportSet report, string culture)
+    {
+        // ensure culture
+        culture ??= CultureInfo.CurrentCulture.Name;
+
+        // template by culture
+        var template = report.Templates.FirstOrDefault(x => string.Equals(x.Culture, culture));
+
+        // fallback template by base culture
+        if (template == null)
+        {
+            var index = culture.IndexOf('-');
+            if (index >= 0)
+            {
+                var baseCulture = culture.Substring(0, index);
+                template = report.Templates.FirstOrDefault(x => string.Equals(x.Culture, baseCulture));
+            }
+        }
+        return template;
     }
 
     #endregion
