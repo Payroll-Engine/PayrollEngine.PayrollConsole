@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Xsl;
@@ -86,14 +85,6 @@ internal sealed class ReportCommand : HttpCommandBase
             if (user == null)
             {
                 throw new PayrollException($"Invalid user {settings.UserIdentifier}");
-            }
-
-            // document culture
-            if (!string.IsNullOrWhiteSpace(user.Culture))
-            {
-                // https://www.syncfusion.com/kb/7467/how-is-excel-culture-defined-using-xlsio
-                Thread.CurrentThread.CurrentCulture = new(user.Culture);
-                Thread.CurrentThread.CurrentUICulture = new(user.Culture);
             }
 
             // regulation
