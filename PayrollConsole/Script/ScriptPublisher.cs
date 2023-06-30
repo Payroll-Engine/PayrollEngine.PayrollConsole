@@ -16,7 +16,7 @@ namespace PayrollEngine.PayrollConsole.Script;
 
 public class ScriptPublisher
 {
-    public PayrollHttpClient HttpClient { get; }
+    private PayrollHttpClient HttpClient { get; }
 
     public ScriptPublisher(PayrollHttpClient httpClient)
     {

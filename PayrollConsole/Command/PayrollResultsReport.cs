@@ -42,12 +42,12 @@ public class PayrollResultsReport
         new("value", true, 12)
     };
 
-    public static readonly string ExportSeparator = "\t";
+    private static readonly string ExportSeparator = "\t";
     public static readonly string ResultsFolderName = "Results";
 
-    public PayrollHttpClient HttpClient { get; }
-    public int TopFilter { get; }
-    public ReportExportMode ExportMode { get; }
+    private PayrollHttpClient HttpClient { get; }
+    private int TopFilter { get; }
+    private ReportExportMode ExportMode { get; }
 
     public PayrollResultsReport(PayrollHttpClient httpClient, int topFilter, ReportExportMode exportMode)
     {

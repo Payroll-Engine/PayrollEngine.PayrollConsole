@@ -1,4 +1,5 @@
 ﻿
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace PayrollEngine.PayrollConsole;
 
 /// <summary>The Payroll console configuration</summary>

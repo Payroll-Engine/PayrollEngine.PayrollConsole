@@ -7,7 +7,7 @@ namespace PayrollEngine.PayrollConsole.Excel;
 
 public static class SheetExtensions
 {
-    public static int GetMaxPhysicalNumberOfCells(this ISheet worksheet)
+    private static int GetMaxPhysicalNumberOfCells(this ISheet worksheet)
     {
         var maxColumnCount = 0;
         for (var i = 0; i < worksheet.PhysicalNumberOfRows; i++)
@@ -27,7 +27,7 @@ public static class SheetExtensions
     public static List<ICell> HeaderCells(this ISheet worksheet) =>
         worksheet.RowCells(0);
 
-    public static List<ICell> RowCells(this ISheet worksheet, int row)
+    private static List<ICell> RowCells(this ISheet worksheet, int row)
     {
         var cells = new List<ICell>();
         for (var i = 0; i < worksheet.GetMaxPhysicalNumberOfCells(); i++)
@@ -46,7 +46,7 @@ public static class SheetExtensions
         return sheet.GetCellValue<T>(CellRangeAddress.ValueOf(address));
     }
 
-    public static T GetCellValue<T>(this ISheet sheet, CellRangeAddress address)
+    private static T GetCellValue<T>(this ISheet sheet, CellRangeAddress address)
     {
         if (address == null)
         {

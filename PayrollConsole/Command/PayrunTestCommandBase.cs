@@ -18,10 +18,9 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
     {
     }
 
-    protected ProgramExitCode DisplayTestResults(string fileName, TestDisplayMode displayMode,
+    protected void DisplayTestResults(string fileName, TestDisplayMode displayMode,
         Dictionary<Tenant, List<PayrollTestResult>> tenantResults)
     {
-        var exitCode = ProgramExitCode.Ok;
         var culture = CultureInfo.GetCultureInfo("en-US");
         foreach (var tenantResult in tenantResults)
         {
@@ -61,15 +60,12 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
                 {
                     errorCount += failedWageTypeCount + failedCollectorCount + failedPayrunResultCount;
                     ConsoleTool.DisplayErrorLine($"Test {GetLocalFileName(fileName)} failed");
-                    exitCode = ProgramExitCode.FailedTest;
                 }
             }
 
             // statistics
             DisplayStatistics(fileName, results, durations, errorCount);
         }
-
-        return exitCode;
     }
 
     private static int DisplayCollectorResults(PayrollTestResult result, TestDisplayMode displayMode)

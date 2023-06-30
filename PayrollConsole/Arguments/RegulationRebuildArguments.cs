@@ -12,7 +12,7 @@ public static class RegulationRebuildArguments
     public static string RegulationName =>
         ConsoleArguments.GetMember(typeof(RegulationRebuildArguments), 3);
 
-    public static string ObjectType =>
+    private static string ObjectType =>
         ConsoleArguments.GetMember(typeof(RegulationRebuildArguments), 4);
 
     public static string ObjectKey =>

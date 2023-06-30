@@ -1,4 +1,5 @@
 ﻿using PayrollEngine.Client.Script;
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace PayrollEngine.PayrollConsole.Command;
 

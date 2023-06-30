@@ -1,5 +1,6 @@
 ﻿using PayrollEngine.Document;
 using PayrollEngine.PayrollConsole.Shared;
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace PayrollEngine.PayrollConsole.Command
 {

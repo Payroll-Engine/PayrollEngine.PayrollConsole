@@ -21,7 +21,7 @@ public static class WorkbookExtensions
     public static IList<ISheet> GetSheetsOf(this IWorkbook workbook, string mask) =>
         workbook.GetSheets().Where(x => x.SheetName.StartsWith(mask)).ToList();
 
-    public static IList<ISheet> GetSheets(this IWorkbook workbook)
+    private static IList<ISheet> GetSheets(this IWorkbook workbook)
     {
         var sheets = new List<ISheet>();
         for (var i = 0; i < workbook.NumberOfSheets; i++)
@@ -34,7 +34,7 @@ public static class WorkbookExtensions
     public static bool HasSheet(this IWorkbook workbook, string sheetName) =>
         workbook.GetSheets().Any(x => string.Equals(x.SheetName, sheetName));
 
-    public static T GetCellValue<T>(this IWorkbook workbook, string address)
+    private static T GetCellValue<T>(this IWorkbook workbook, string address)
     {
         if (string.IsNullOrWhiteSpace(address))
         {
