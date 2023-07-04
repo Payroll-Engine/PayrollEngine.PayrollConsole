@@ -102,7 +102,7 @@ sealed class Program : ConsoleProgram<Program>
                 ProgramEnd(exitCode);
                 return;
             case Shared.Command.Stopwatch:
-                exitCode = new StopwatchCommand().Stopwatch(
+                exitCode = StopwatchCommand.Stopwatch(
                     StopwatchArguments.VariableName,
                     StopwatchArguments.StopwatchMode());
                 ProgramEnd(exitCode);

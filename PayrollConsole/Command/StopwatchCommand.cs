@@ -9,7 +9,7 @@ internal sealed class StopwatchCommand : CommandBase
     /// <summary>Process the variable</summary>
     /// <param name="variableName">The variable name</param>
     /// <param name="mode">The stopwatch mode</param>
-    internal ProgramExitCode Stopwatch(string variableName, StopwatchMode mode = StopwatchMode.WatchView)
+    internal static ProgramExitCode Stopwatch(string variableName, StopwatchMode mode = StopwatchMode.WatchView)
     {
         if (string.IsNullOrWhiteSpace(variableName))
         {
