@@ -235,7 +235,7 @@ public class PayrollResultsReport
                             FormatValue(collectorResult.CollectorName, "name"),
                             collectorResult.Start.ToPeriodStartString(),
                             collectorResult.End.ToPeriodEndString(),
-                            collectorResult.CollectType,
+                            collectorResult.CollectMode + (collectorResult.Negated ? " (-)" : string.Empty),
                             FormatValue(collectorResult.Attributes.ToText(), "attributes"),
                             FormatValue(collectorResult.Value)
                         };
