@@ -40,7 +40,7 @@ internal sealed class CaseTestCommand : TestCommandBase
             foreach (var testFileName in testFileNames)
             {
                 DisplayTitle("Test case");
-                ConsoleTool.DisplayTextLine($"Path               {Path.GetFileName(new FileInfo(testFileName).DirectoryName)}");
+                ConsoleTool.DisplayTextLine($"Path               {new FileInfo(testFileName).Directory?.FullName}");
                 ConsoleTool.DisplayTextLine($"File               {testFileName}");
                 ConsoleTool.DisplayTextLine($"Display mode       {displayMode}");
                 ConsoleTool.DisplayTextLine($"Url                {HttpClient}");
@@ -52,7 +52,8 @@ internal sealed class CaseTestCommand : TestCommandBase
                 // run test
                 var testRunner = new CaseTestRunner(HttpClient, testFileName);
                 var testResult = await testRunner.TestAsync();
-                DisplayTestResults(testFileName, displayMode, testResult.Results);
+                ConsoleTool.DisplayNewLine();
+                DisplayTestResults(displayMode, testResult.Results);
 
                 // failed test
                 if (testResult.IsFailed())

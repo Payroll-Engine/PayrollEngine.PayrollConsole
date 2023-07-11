@@ -38,25 +38,11 @@ internal abstract class TestCommandBase : HttpCommandBase
         }
         return files;
     }
-
-    protected static string GetLocalFileName(string fileName)
-    {
-        var directoryInfo = new FileInfo(Environment.CurrentDirectory);
-        var fileInfo = new FileInfo(fileName);
-        var localFileName = fileInfo.FullName;
-        // reduce full paths to the parent folder
-        if (localFileName.StartsWith(directoryInfo.FullName))
-        {
-            localFileName = $"{directoryInfo.Name}{localFileName.Substring(directoryInfo.FullName.Length)}";
-        }
-        return localFileName;
-    }
     
-    protected static void DisplayTestResults<TResult>(string fileName, TestDisplayMode displayMode, 
-        ICollection<TResult> results)
+    protected static void DisplayTestResults<TResult>(TestDisplayMode displayMode, ICollection<TResult> results)
         where TResult : ScriptTestResultBase
     {
-        ConsoleTool.DisplayTextLine("Testing result values...");
+        ConsoleTool.DisplayTextLine("Test results...");
         foreach (var testResult in results)
         {
             // hidden succeeded test
@@ -92,14 +78,27 @@ internal abstract class TestCommandBase : HttpCommandBase
             }
         }
 
-        // test without failures
-        if (results.Count(x => x.Failed) == 0)
+        // summary
+        var totalCount = results.Count;
+        var failedCount = results.Count(x => x.Failed);
+        var successCount = totalCount - failedCount;
+        // success
+        if (successCount > 0)
         {
-            ConsoleTool.DisplaySuccessLine("-> no errors");
-            return;
+            var successMessage = $"Passed tests: {successCount}";
+            if (failedCount > 0)
+            {
+                ConsoleTool.DisplayInfoLine(successMessage);
+            }
+            else
+            {
+                ConsoleTool.DisplaySuccessLine(successMessage);
+            }
         }
-
-        // test with failures
-        ConsoleTool.DisplayErrorLine($"Test {GetLocalFileName(fileName)} failed");
+        // failed
+        if (failedCount > 0)
+        { 
+            ConsoleTool.DisplayErrorLine($"Failed tests: {failedCount}");
+        }
     }
 }

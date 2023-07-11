@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Client;
@@ -57,6 +58,7 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase
                 {
                     ConsoleTool.DisplayTextLine($"Owner              {settings.Owner}");
                 }
+                ConsoleTool.DisplayTextLine($"Path               {new FileInfo(testFileName).Directory?.FullName}");
                 ConsoleTool.DisplayTextLine($"File               {testFileName}");
                 ConsoleTool.DisplayTextLine($"Import mode        {settings.ImportMode}");
                 ConsoleTool.DisplayTextLine($"Display mode       {settings.DisplayMode}");
@@ -71,6 +73,7 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase
                     TestPrecision, settings.Owner, settings.ImportMode, settings.ResultMode);
                 var results = await testRunner.TestAllAsync(settings.Namespace);
                 // test results
+                ConsoleTool.DisplayNewLine();
                 DisplayTestResults(testFileName, settings.DisplayMode, results);
 
                 // failed test

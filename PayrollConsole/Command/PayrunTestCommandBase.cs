@@ -32,7 +32,8 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
             var errorCount = 0;
 
             // show results
-            ConsoleTool.DisplayTextLine($"Testing result values for tenant {tenant.Identifier}");
+            ConsoleTool.DisplayTextLine("Test results" + 
+                                        (tenantResults.Count > 1 ? $" for tenant {tenant.Identifier}" : string.Empty) + "...");
             foreach (var result in results)
             {
                 var jobPeriod = new DatePeriod(result.PayrunJob.JobStart, result.PayrunJob.JobEnd);
@@ -52,15 +53,27 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
                 var failedPayrunResultCount = DisplayPayrunResults(result, displayMode);
 
                 // summary
-                if (failedWageTypeCount == 0 && failedCollectorCount == 0 && failedPayrunResultCount == 0)
+                var failedCount = failedWageTypeCount + failedCollectorCount + failedPayrunResultCount;
+                // success
+                var successCount = result.TotalResultCount - failedCount;
+                if (successCount > 0)
                 {
-                    ConsoleTool.DisplaySuccessLine("-> no errors");
+                    var successMessage = $"Passed tests: {successCount}";
+                    if (failedCount > 0)
+                    {
+                        ConsoleTool.DisplayInfoLine(successMessage);
+                    }
+                    else
+                    {
+                        ConsoleTool.DisplaySuccessLine(successMessage);
+                    }
                 }
-                else
+                // failed
+                if (failedCount > 0)
                 {
-                    errorCount += failedWageTypeCount + failedCollectorCount + failedPayrunResultCount;
-                    ConsoleTool.DisplayErrorLine($"Test {GetLocalFileName(fileName)} failed");
+                    ConsoleTool.DisplayErrorLine($"Failed tests: {failedCount}");
                 }
+                errorCount += failedCount;
             }
 
             // statistics
