@@ -115,7 +115,7 @@ internal sealed class ReportCommand : HttpCommandBase
             stopwatch.Start();
 
             ConsoleTool.DisplayNewLine();
-            ConsoleTool.DisplayText("Executing report...");
+            ConsoleTool.DisplayTextLine("Executing report...");
             var response = await ExecuteReport(HttpClient, tenant.Id, regulation.Id, user.Id, report,
                 settings.Culture, parameters);
             if (response == null)
@@ -131,7 +131,7 @@ internal sealed class ReportCommand : HttpCommandBase
             var executeTime = stopwatch.ElapsedMilliseconds;
 
             // report metadata
-            ConsoleTool.DisplayText("Building report...");
+            ConsoleTool.DisplayTextLine("Building report...");
             var now = DateTime.Now; // use local time (no UTC)
             var title = response.Culture.GetLocalization(report.NameLocalizations, report.Name);
             var documentMetadata = new DocumentMetadata
@@ -157,14 +157,16 @@ internal sealed class ReportCommand : HttpCommandBase
                 return ProgramExitCode.GenericError;
             }
 
+            var mergeParameters = new Dictionary<string,object>(parameters.Select(x => new KeyValuePair<string, object>(x.Key, x.Value)));
+
             string outputFile;
             switch (settings.DocumentType)
             {
                 case DocumentType.Word:
                 case DocumentType.Excel:
                 case DocumentType.Pdf:
-                    outputFile = await MergeAsync(report, dataSet,
-                        documentMetadata, settings.DocumentType, settings.Culture);
+                    outputFile = await MergeAsync(report, dataSet, documentMetadata,
+                        settings.DocumentType, settings.Culture, mergeParameters);
                     break;
                 case DocumentType.Xml:
                 case DocumentType.XmlRaw:
@@ -177,6 +179,15 @@ internal sealed class ReportCommand : HttpCommandBase
             ConsoleTool.DisplayTextLine("done.");
 
             stopwatch.Stop();
+
+            ConsoleTool.DisplayNewLine();
+            if (string.IsNullOrWhiteSpace(outputFile))
+            {
+                ConsoleTool.DisplayNewLine();
+                ConsoleTool.DisplayErrorLine("Report failed.");
+                ConsoleTool.DisplayNewLine();
+                return ProgramExitCode.GenericError;
+            }
 
             var fileName = new FileInfo(outputFile).FullName;
             ConsoleTool.DisplayNewLine();
@@ -270,7 +281,7 @@ internal sealed class ReportCommand : HttpCommandBase
     #region Merge
 
     private async Task<string> MergeAsync(ReportSet report, DataSet dataSet, DocumentMetadata documentMetadata,
-        DocumentType documentType, string culture)
+        DocumentType documentType, string culture, IDictionary<string, object> parameters = null)
     {
         var merge = new DataMerge();
         if (!merge.IsMergeable(documentType))
@@ -287,7 +298,7 @@ internal sealed class ReportCommand : HttpCommandBase
         if (documentType == DocumentType.Excel)
         {
             // excel report
-            resultStream = merge.ExcelMerge(dataSet, documentMetadata);
+            resultStream = merge.ExcelMerge(dataSet, documentMetadata, parameters);
         }
         else
         {
@@ -301,7 +312,7 @@ internal sealed class ReportCommand : HttpCommandBase
 
             // report merge into stream
             var contentStream = new MemoryStream(Convert.FromBase64String(template.Content));
-            resultStream = merge.Merge(contentStream, dataSet, documentType, documentMetadata);
+            resultStream = merge.Merge(contentStream, dataSet, documentType, documentMetadata, parameters);
         }
 
         // file save
@@ -354,6 +365,7 @@ internal sealed class ReportCommand : HttpCommandBase
             }
             catch (Exception exception)
             {
+                ConsoleTool.DisplayNewLine();
                 ConsoleTool.WriteErrorLine($"Error transforming XML report {report.Name}: {exception.GetBaseMessage()}");
                 return null;
             }
@@ -363,6 +375,7 @@ internal sealed class ReportCommand : HttpCommandBase
             {
                 try
                 {
+                    ConsoleTool.DisplayNewLine();
                     ConsoleTool.DisplayText("Validating XML...");
 
                     var xsdStream = new MemoryStream(Convert.FromBase64String(template.Schema));
@@ -376,7 +389,9 @@ internal sealed class ReportCommand : HttpCommandBase
                 }
                 catch (Exception exception)
                 {
+                    ConsoleTool.DisplayNewLine();
                     ConsoleTool.WriteErrorLine($"Error validating XML report {report.Name}: {exception.GetBaseMessage()}");
+                    return null;
                 }
             }
         }
@@ -389,6 +404,7 @@ internal sealed class ReportCommand : HttpCommandBase
 
         // target file
         await File.WriteAllTextAsync(targetFileName, XDocument.Parse(xml).ToString());
+
         return targetFileName;
     }
 
@@ -405,7 +421,7 @@ internal sealed class ReportCommand : HttpCommandBase
     #endregion
 
     #region Tools
-    
+
     private static ReportTemplate GetReportTemplate(ReportSet report, string culture)
     {
         // ensure culture
