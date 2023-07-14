@@ -75,7 +75,7 @@ internal sealed class ReportTestCommand : TestCommandBase
         ConsoleTool.DisplayTitleLine("- ReportTest");
         ConsoleTool.DisplayTextLine("      Test the report output data");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. JSON file name or file mask");
+        ConsoleTool.DisplayTextLine("          1. JSON file name or file mask [FileMask]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
         ConsoleTool.DisplayTextLine("          test precision: /TestPrecisionOff or /TestPrecision1 to /TestPrecision6 (default: /TestPrecision2)");

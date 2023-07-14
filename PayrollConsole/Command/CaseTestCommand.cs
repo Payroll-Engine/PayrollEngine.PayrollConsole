@@ -75,7 +75,7 @@ internal sealed class CaseTestCommand : TestCommandBase
         ConsoleTool.DisplayTitleLine("- CaseTest");
         ConsoleTool.DisplayTextLine("      Test case availability, build data and user input validation");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. JSON file name or file mask");
+        ConsoleTool.DisplayTextLine("          1. JSON file name or file mask [FileMask]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
         ConsoleTool.DisplayTextLine("          test precision: /TestPrecisionOff or /TestPrecision1 to /TestPrecision6 (default: /TestPrecision2)");

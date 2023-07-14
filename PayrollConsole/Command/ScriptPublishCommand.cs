@@ -60,8 +60,8 @@ internal sealed class ScriptPublishCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- ScriptPublish");
         ConsoleTool.DisplayTextLine("      Publish scripts from C-Sharp file");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. C-Sharp source file name");
-        ConsoleTool.DisplayTextLine("          2. script key e.g. report name, case name... (default: all scripts in file)");
+        ConsoleTool.DisplayTextLine("          1. C-Sharp source file name [SourceFile]");
+        ConsoleTool.DisplayTextLine("          2. script key e.g. report name, case name... (default: all scripts in file) [SourceScript]");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          ScriptPublish c:\\test\\CaseAvailableFunction.cs");
         ConsoleTool.DisplayTextLine("          ScriptPublish c:\\test\\CaseAvailableFunction.cs MyCaseName");

@@ -100,9 +100,9 @@ internal sealed class PayrollImportCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- PayrollImport");
         ConsoleTool.DisplayTextLine("      Import payroll data from json/zip file");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. source file name (json or zip)");
-        ConsoleTool.DisplayTextLine("          2. import options file name ExchangeImportOptions json (optional)");
-        ConsoleTool.DisplayTextLine("          3. namespace (optional)");
+        ConsoleTool.DisplayTextLine("          1. source file name (json or zip) [SourceFileName]");
+        ConsoleTool.DisplayTextLine("          2. import options file name ExchangeImportOptions json (optional) [OptionsFileName]");
+        ConsoleTool.DisplayTextLine("          3. namespace (optional) [Namespace]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          import mode: /single or /bulk (default: single)");
         ConsoleTool.DisplayTextLine("      Options (json object):");

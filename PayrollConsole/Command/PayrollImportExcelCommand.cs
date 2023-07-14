@@ -65,8 +65,8 @@ internal sealed class PayrollImportExcelCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- PayrollImportExcel");
         ConsoleTool.DisplayTextLine("      Import payroll data from Excel file");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. Excel file name");
-        ConsoleTool.DisplayTextLine("          2. tenant name (optional)");
+        ConsoleTool.DisplayTextLine("          1. Excel file name [FileName]");
+        ConsoleTool.DisplayTextLine("          2. tenant name (optional) [Tenant]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          import mode: /single or /bulk (default: single)");
         ConsoleTool.DisplayTextLine("      Examples:");

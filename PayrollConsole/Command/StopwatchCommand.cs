@@ -85,7 +85,7 @@ internal sealed class StopwatchCommand : CommandBase
         ConsoleTool.DisplayTitleLine("- Stopwatch");
         ConsoleTool.DisplayTextLine("      Stopwatch based on environment user variable");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. Stopwatch name");
+        ConsoleTool.DisplayTextLine("          1. Stopwatch variable name [VariableName]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          stopwatch mode: /watchstart, /watchstop or /watchview (default watchview)");
         ConsoleTool.DisplayTextLine("      Examples:");

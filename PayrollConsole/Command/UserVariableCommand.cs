@@ -127,8 +127,8 @@ internal sealed class UserVariableCommand : CommandBase
         ConsoleTool.DisplayTitleLine("- UserVariable");
         ConsoleTool.DisplayTextLine("      View and change environment user variable");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. Variable name");
-        ConsoleTool.DisplayTextLine("          2. Variable value (optional)");
+        ConsoleTool.DisplayTextLine("          1. Variable name [VariableName]");
+        ConsoleTool.DisplayTextLine("          2. Variable value (optional) [VariableValue]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          variable mode: /view, /set or /remove");
         ConsoleTool.DisplayTextLine("                         (default without value: view)");

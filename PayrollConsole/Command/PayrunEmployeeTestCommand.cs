@@ -102,9 +102,9 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase
         ConsoleTool.DisplayTitleLine("- PayrunEmployeeTest");
         ConsoleTool.DisplayTextLine("      Execute employee payrun and test the results");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. JSON/ZIP file name or file mask");
-        ConsoleTool.DisplayTextLine("          2. namespace (optional)");
-        ConsoleTool.DisplayTextLine("          3. owner name (optional)");
+        ConsoleTool.DisplayTextLine("          1. JSON/ZIP file name or file mask [FileMask]");
+        ConsoleTool.DisplayTextLine("          2. namespace (optional) [Namespace]");
+        ConsoleTool.DisplayTextLine("          3. owner name (optional) [Owner]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          test mode: /insertemployee or /updateemployee (default: insertemployee)");
         ConsoleTool.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");

@@ -110,7 +110,7 @@ internal sealed class HttpRequestCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- HttpGet");
         ConsoleTool.DisplayTextLine("      Execute http GET request");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. End point url");
+        ConsoleTool.DisplayTextLine("          1. End point url [Url]");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          HttpGet tenants");
         ConsoleTool.DisplayTextLine("          HttpGet tenants/1");
@@ -122,8 +122,8 @@ internal sealed class HttpRequestCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- HttpPost");
         ConsoleTool.DisplayTextLine("      Execute http POST request");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. End point url");
-        ConsoleTool.DisplayTextLine("          2. Content file name (optional)");
+        ConsoleTool.DisplayTextLine("          1. End point url [Url]");
+        ConsoleTool.DisplayTextLine("          2. Content file name (optional) [FileName]");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          HttpPost tenants/1 MyTenant.json");
         ConsoleTool.DisplayTextLine("          HttpPost admin/application/stop");
@@ -134,8 +134,8 @@ internal sealed class HttpRequestCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- HttpPut");
         ConsoleTool.DisplayTextLine("      Execute http PUT request");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. End point url");
-        ConsoleTool.DisplayTextLine("          2. Content file name (optional)");
+        ConsoleTool.DisplayTextLine("          1. End point url [Url]");
+        ConsoleTool.DisplayTextLine("          2. Content file name (optional) [FileName]");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          HttpPut tenants/1 MyTenant.json");
     }
@@ -145,7 +145,7 @@ internal sealed class HttpRequestCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- HttpDelete");
         ConsoleTool.DisplayTextLine("      Execute http DELETE request");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. End point url");
+        ConsoleTool.DisplayTextLine("          1. End point url [Url]");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          HttpDelete tenants/1");
     }

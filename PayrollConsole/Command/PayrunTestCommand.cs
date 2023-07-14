@@ -99,9 +99,9 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase
         ConsoleTool.DisplayTitleLine("- PayrunTest");
         ConsoleTool.DisplayTextLine("      Execute payrun and test the results, existing tenant will be deleted");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. JSON/ZIP file name or file mask");
-        ConsoleTool.DisplayTextLine("          2. namespace (optional)");
-        ConsoleTool.DisplayTextLine("          3. owner name (optional)");
+        ConsoleTool.DisplayTextLine("          1. JSON/ZIP file name or file mask [FileMask]");
+        ConsoleTool.DisplayTextLine("          2. namespace (optional) [Namespace]");
+        ConsoleTool.DisplayTextLine("          3. owner name (optional) [Owner]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          import mode: /single or /bulk (default: bulk)");
         ConsoleTool.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");

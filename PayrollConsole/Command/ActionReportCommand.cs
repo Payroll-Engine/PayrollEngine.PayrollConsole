@@ -312,7 +312,7 @@ internal sealed class ActionReportCommand : CommandBase
         ConsoleTool.DisplayTitleLine("- ActionReport");
         ConsoleTool.DisplayTextLine("      Report actions from an assembly");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. action assembly file name");
+        ConsoleTool.DisplayTextLine("          1. action assembly file name [FileName]");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          ActionReport MyAssembly.dll");
     }

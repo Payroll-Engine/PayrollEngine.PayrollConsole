@@ -327,10 +327,10 @@ internal sealed class RegulationShareCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- RegulationShare");
         ConsoleTool.DisplayTextLine("      Manage the regulation shares");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. provider tenant name (optional for /view)");
-        ConsoleTool.DisplayTextLine("          2. provider regulation name (optional for /view)");
-        ConsoleTool.DisplayTextLine("          3. consumer tenant name (mandatory for share /set and /remove)");
-        ConsoleTool.DisplayTextLine("          4. consumer tenant division name (undefined: all tenant divisions)");
+        ConsoleTool.DisplayTextLine("          1. provider tenant name (optional for /view) [ProviderTenant]");
+        ConsoleTool.DisplayTextLine("          2. provider regulation name (optional for /view) [ProviderRegulation]");
+        ConsoleTool.DisplayTextLine("          3. consumer tenant name (mandatory for share /set and /remove) [ConsumerTenant]");
+        ConsoleTool.DisplayTextLine("          4. consumer tenant division name (undefined: all tenant divisions) [ConsumerDivision]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          share mode: /view, /set or /remove (default: view)");
         ConsoleTool.DisplayTextLine("      Examples:");

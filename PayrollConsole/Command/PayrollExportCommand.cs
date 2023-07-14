@@ -118,10 +118,10 @@ internal sealed class PayrollExportCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- PayrollExport");
         ConsoleTool.DisplayTextLine("      Export payroll data to json/zip file");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. tenant file name");
-        ConsoleTool.DisplayTextLine("          2. target json file name (default: tenant name)");
-        ConsoleTool.DisplayTextLine("          3. export options file name ExchangeExportOptions json (optional)");
-        ConsoleTool.DisplayTextLine("          4. namespace (optional)");
+        ConsoleTool.DisplayTextLine("          1. tenant file name [Tenant]");
+        ConsoleTool.DisplayTextLine("          2. target json file name (default: tenant name) [TargetFileName]");
+        ConsoleTool.DisplayTextLine("          3. export options file name ExchangeExportOptions json (optional) [OptionsFileName]");
+        ConsoleTool.DisplayTextLine("          4. namespace (optional) [Namespace]");
         ConsoleTool.DisplayTextLine("      Options (json object):");
         ConsoleTool.DisplayTextLine("          type filter, list of identifiers or names:");
         ConsoleTool.DisplayTextLine("              Users, Divisions, Employees, Tasks, Webhooks, Regulations, Payrolls, Payruns, PayrunJobs");

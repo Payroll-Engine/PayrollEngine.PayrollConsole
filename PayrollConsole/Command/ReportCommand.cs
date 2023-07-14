@@ -452,12 +452,12 @@ internal sealed class ReportCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- Report");
         ConsoleTool.DisplayTextLine("      Report to file");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. tenant identifier");
-        ConsoleTool.DisplayTextLine("          2. user identifier");
-        ConsoleTool.DisplayTextLine("          3. regulation name");
-        ConsoleTool.DisplayTextLine("          4. report name");
-        ConsoleTool.DisplayTextLine("          5. report parameter file with a json string/string dictionary (optional)");
-        ConsoleTool.DisplayTextLine("          6. report culture");
+        ConsoleTool.DisplayTextLine("          1. tenant identifier [Tenant]");
+        ConsoleTool.DisplayTextLine("          2. user identifier [User]");
+        ConsoleTool.DisplayTextLine("          3. regulation name [Regulation]");
+        ConsoleTool.DisplayTextLine("          4. report name [Report]");
+        ConsoleTool.DisplayTextLine("          5. report parameter file with a json string/string dictionary (optional) [ParameterFile]");
+        ConsoleTool.DisplayTextLine("          6. report culture [Culture]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          language: default is english)");
         ConsoleTool.DisplayTextLine("          document type: /word, /excel, /pdf, /xml, /xmlraw (default: pdf)");
