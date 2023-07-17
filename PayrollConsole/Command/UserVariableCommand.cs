@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using PayrollEngine.PayrollConsole.Shared;
 
 namespace PayrollEngine.PayrollConsole.Command;
@@ -13,6 +14,9 @@ internal sealed class UserVariableCommand : CommandBase
         UserVariableMode mode = UserVariableMode.View)
     {
         DisplayTitle("User variable");
+
+        // variable value expressions
+        variableValue = ParseVariableValue(variableValue);
 
         // mode adjustment
         UserVariableMode? changedMode = null;
@@ -115,6 +119,36 @@ internal sealed class UserVariableCommand : CommandBase
         }
     }
 
+    private static string ParseVariableValue(string variableValue)
+    {
+        if (string.IsNullOrWhiteSpace(variableValue))
+        {
+            return null;
+        }
+
+        var assemblyFile = typeof(UserVariableCommand).Assembly.Location;
+        var versionInfo = FileVersionInfo.GetVersionInfo(assemblyFile);
+
+        switch (variableValue)
+        {
+            case "$FileVersion$":
+                return versionInfo.FileVersion;
+            case "$ProductVersion$":
+                return versionInfo.ProductVersion;
+            case "$ProductMajorPart$":
+                return versionInfo.ProductMajorPart.ToString();
+            case "$ProductMinorPart$":
+                return versionInfo.ProductMinorPart.ToString();
+            case "$ProductMajorBuild$":
+                return versionInfo.ProductBuildPart.ToString();
+            case "$ProductName$":
+                return versionInfo.ProductName;
+        }
+
+        // variable value without expression
+        return variableValue;
+    }
+
     private static string GetUserVariable(string variableName) =>
         Environment.GetEnvironmentVariable(variableName, EnvironmentVariableTarget.User);
 
@@ -129,6 +163,13 @@ internal sealed class UserVariableCommand : CommandBase
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. Variable name [VariableName]");
         ConsoleTool.DisplayTextLine("          2. Variable value (optional) [VariableValue]");
+        ConsoleTool.DisplayTextLine("             Expressions:");
+        ConsoleTool.DisplayTextLine("                  $FileVersion$: file version");
+        ConsoleTool.DisplayTextLine("                  $ProductVersion$: product version");
+        ConsoleTool.DisplayTextLine("                  $ProductMajorPart$: product version major part");
+        ConsoleTool.DisplayTextLine("                  $ProductMinorPart$: product version minor part");
+        ConsoleTool.DisplayTextLine("                  $ProductMajorBuild$: product version build part");
+        ConsoleTool.DisplayTextLine("                  $ProductName$: product name");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          variable mode: /view, /set or /remove");
         ConsoleTool.DisplayTextLine("                         (default without value: view)");
