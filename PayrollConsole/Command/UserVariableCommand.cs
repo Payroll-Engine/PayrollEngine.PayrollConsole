@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
 using PayrollEngine.PayrollConsole.Shared;
 
 namespace PayrollEngine.PayrollConsole.Command;
@@ -10,13 +14,13 @@ internal sealed class UserVariableCommand : CommandBase
     /// <param name="variableName">The variable name</param>
     /// <param name="variableValue">The variable value</param>
     /// <param name="mode">The variable mode</param>
-    internal ProgramExitCode ProcessVariable(string variableName, string variableValue = null,
+    internal async Task<ProgramExitCode> ProcessVariableAsync(string variableName, string variableValue = null,
         UserVariableMode mode = UserVariableMode.View)
     {
         DisplayTitle("User variable");
 
         // variable value expressions
-        variableValue = ParseVariableValue(variableValue);
+        variableValue = await ParseVariableValueAsync(variableName, variableValue);
 
         // mode adjustment
         UserVariableMode? changedMode = null;
@@ -119,10 +123,35 @@ internal sealed class UserVariableCommand : CommandBase
         }
     }
 
-    private static string ParseVariableValue(string variableValue)
+    private static async Task<string> ParseVariableValueAsync(string variableName, string variableValue)
     {
         if (string.IsNullOrWhiteSpace(variableValue))
         {
+            return null;
+        }
+
+        // json file
+        if (variableValue.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase))
+        {
+            if (!File.Exists(variableValue))
+            {
+                return null;
+            }
+
+            try
+            {
+                var json = await File.ReadAllTextAsync(variableValue);
+                var jsonContent = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+                if (jsonContent != null && jsonContent.TryGetValue(variableName, out var value))
+                {
+                    return value;
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, exception.GetBaseMessage());
+                return null;
+            }
             return null;
         }
 
@@ -163,7 +192,9 @@ internal sealed class UserVariableCommand : CommandBase
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. Variable name [VariableName]");
         ConsoleTool.DisplayTextLine("          2. Variable value (optional) [VariableValue]");
-        ConsoleTool.DisplayTextLine("             Expressions:");
+        ConsoleTool.DisplayTextLine("             - simple value");
+        ConsoleTool.DisplayTextLine("             - JSON file name, variable name is the field name");
+        ConsoleTool.DisplayTextLine("             - predefined expressions:");
         ConsoleTool.DisplayTextLine("                  $FileVersion$: file version");
         ConsoleTool.DisplayTextLine("                  $ProductVersion$: product version");
         ConsoleTool.DisplayTextLine("                  $ProductMajorPart$: product version major part");

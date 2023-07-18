@@ -95,7 +95,7 @@ sealed class Program : ConsoleProgram<Program>
                 ProgramEnd(ProgramExitCode.Ok);
                 return;
             case Shared.Command.UserVariable:
-                exitCode = new UserVariableCommand().ProcessVariable(
+                exitCode = await new UserVariableCommand().ProcessVariableAsync(
                     UserVariableArguments.VariableName,
                     UserVariableArguments.VariableValue,
                     UserVariableArguments.VariableMode());
