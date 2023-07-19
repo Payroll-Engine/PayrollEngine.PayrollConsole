@@ -75,6 +75,17 @@ sealed class Program : ConsoleProgram<Program>
 
         // execution command
         var command = ArgumentManager.GetCommand(Shared.Command.Help);
+        if (command == Shared.Command.Help)
+        {
+            var firstArgument = ConsoleArguments.Get(1);
+            if (!string.Equals(firstArgument, nameof(Shared.Command.Help), StringComparison.InvariantCultureIgnoreCase))
+            {
+                WriteErrorLine($"Unknown command {firstArgument}");
+                PressAnyKey();
+                return;
+            }
+        }
+
         // test command arguments
         var argumentError = ArgumentManager.TestArguments(command);
         if (!string.IsNullOrWhiteSpace(argumentError))
@@ -272,6 +283,15 @@ sealed class Program : ConsoleProgram<Program>
             case Shared.Command.PayrunJobDelete:
                 exitCode = await new PayrunJobDeleteCommand(HttpClient).DeleteAsync(
                     PayrunJobDeleteArguments.Tenant);
+                break;
+
+            // user
+            case Shared.Command.ChangePassword:
+                exitCode = await new ChangePasswordCommand(HttpClient).ChangeAsync(
+                    ChangePasswordArguments.Tenant,
+                    ChangePasswordArguments.User,
+                    ChangePasswordArguments.NewPassword,
+                    ChangePasswordArguments.ExistingPassword);
                 break;
 
             // scripting

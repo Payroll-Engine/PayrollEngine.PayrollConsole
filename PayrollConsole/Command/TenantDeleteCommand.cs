@@ -80,7 +80,7 @@ internal sealed class TenantDeleteCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- TenantDelete");
         ConsoleTool.DisplayTextLine("      Delete a tenant");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. tenant name [Tenant]");
+        ConsoleTool.DisplayTextLine("          1. tenant identifier [Tenant]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          object delete mode: /delete or /trydelete (default: delete)");
         ConsoleTool.DisplayTextLine("      Examples:");

@@ -61,14 +61,14 @@ internal sealed class ExchangeExcelReader
         var tenantName = workbook.GetNamedValue<string>(Specification.TenantRegionName);
         if (string.IsNullOrWhiteSpace(tenantName))
         {
-            throw new PayrollException("Missing tenant name");
+            throw new PayrollException("Missing tenant identifier");
         }
 
         // get existing tenant
         var tenant = await new TenantService(HttpClient).GetAsync<ExchangeTenant>(new(), tenantName);
         if (tenant == null)
         {
-            throw new PayrollException($"Unknown tenant with name {tenantName}");
+            throw new PayrollException($"Unknown tenant with identifier {tenantName}");
         }
         return tenant;
     }

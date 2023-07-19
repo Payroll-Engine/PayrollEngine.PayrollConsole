@@ -73,7 +73,7 @@ internal sealed class RegulationShareCommand : HttpCommandBase
             }
             if (changeMode && tenantObject == null)
             {
-                ConsoleTool.DisplayErrorLine("Missing tenant name");
+                ConsoleTool.DisplayErrorLine("Missing tenant identifier");
                 return ProgramExitCode.ConnectionError;
             }
 
@@ -108,7 +108,7 @@ internal sealed class RegulationShareCommand : HttpCommandBase
             }
             if (changeMode && shareTenantObject == null)
             {
-                ConsoleTool.DisplayErrorLine("Missing share tenant name");
+                ConsoleTool.DisplayErrorLine("Missing share tenant identifier");
                 return ProgramExitCode.ConnectionError;
             }
 
@@ -327,10 +327,10 @@ internal sealed class RegulationShareCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- RegulationShare");
         ConsoleTool.DisplayTextLine("      Manage the regulation shares");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. provider tenant name (optional for /view) [ProviderTenant]");
+        ConsoleTool.DisplayTextLine("          1. provider tenant identifier (optional for /view) [ProviderTenant]");
         ConsoleTool.DisplayTextLine("          2. provider regulation name (optional for /view) [ProviderRegulation]");
-        ConsoleTool.DisplayTextLine("          3. consumer tenant name (mandatory for share /set and /remove) [ConsumerTenant]");
-        ConsoleTool.DisplayTextLine("          4. consumer tenant division name (undefined: all tenant divisions) [ConsumerDivision]");
+        ConsoleTool.DisplayTextLine("          3. consumer tenant identifier (mandatory for share /set and /remove) [ConsumerTenant]");
+        ConsoleTool.DisplayTextLine("          4. consumer tenant division identifier (undefined: all tenant divisions) [ConsumerDivision]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          share mode: /view, /set or /remove (default: view)");
         ConsoleTool.DisplayTextLine("      Examples:");

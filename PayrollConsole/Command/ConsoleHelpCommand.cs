@@ -58,6 +58,9 @@ internal sealed class ConsoleHelpCommand : CommandBase
         TenantDeleteCommand.ShowHelp();
         PayrunJobDeleteCommand.ShowHelp();
 
+        // user commands
+        ChangePasswordCommand.ShowHelp();
+
         // scripting commands
         RegulationRebuildCommand.ShowHelp();
         PayrunRebuildCommand.ShowHelp();

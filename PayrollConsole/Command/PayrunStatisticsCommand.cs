@@ -116,7 +116,7 @@ internal sealed class PayrunStatisticsCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- PayrunStatistics");
         ConsoleTool.DisplayTextLine("      Show payrun statistics");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. tenant name [Tenant]");
+        ConsoleTool.DisplayTextLine("          1. tenant identifier [Tenant]");
         ConsoleTool.DisplayTextLine("          2. Query interval in minutes (default: 30) [CreatedSinceMinutes]");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          PayrunStatistics MyTenantName");

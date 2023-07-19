@@ -49,7 +49,7 @@ internal sealed class PayrollResultsCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- PayrollReport");
         ConsoleTool.DisplayTextLine("      Report payroll data to screen and/or file");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. tenant name [Tenant]");
+        ConsoleTool.DisplayTextLine("          1. tenant identifier [Tenant]");
         ConsoleTool.DisplayTextLine("          2. result of top <count> payrun jobs (default: 1, max: 100) [TopFilter]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine($"         result export mode: /export or /noexport (CSV report {PayrollResultsReport.ResultsFolderName}, default=noexport)");

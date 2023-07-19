@@ -20,7 +20,7 @@ internal sealed class PayrollExportCommand : HttpCommandBase
 
     /// <summary>
     /// Export a tenant to a JSON file
-    /// By default the file name is the tenant name including a timestamp
+    /// By default the file name is the tenant identifier including a timestamp
     /// </summary>
     /// <param name="tenantIdentifier">The identifier of the tenant</param>
     /// <param name="targetFileName">The target file name</param>

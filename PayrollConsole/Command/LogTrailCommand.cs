@@ -84,7 +84,7 @@ internal sealed class LogTrailCommand : HttpCommandBase
         ConsoleTool.DisplayTitleLine("- LogTrail");
         ConsoleTool.DisplayTextLine("      Trail the payroll log");
         ConsoleTool.DisplayTextLine("      Arguments:");
-        ConsoleTool.DisplayTextLine("          1. tenant name [Tenant]");
+        ConsoleTool.DisplayTextLine("          1. tenant identifier [Tenant]");
         ConsoleTool.DisplayTextLine("          2. Query interval in seconds (default: 5, minimum: 1) [Interval]");
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          LogTrail MyTenantName");

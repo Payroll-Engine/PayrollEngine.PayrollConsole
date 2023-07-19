@@ -353,14 +353,14 @@ internal static class ExchangeExcelCaseReader
         var userIdentifier = workbook.GetNamedValue<string>(Specification.UserRegionName);
         if (string.IsNullOrWhiteSpace(userIdentifier))
         {
-            throw new PayrollException("Missing user name");
+            throw new PayrollException("Missing user identifier");
         }
 
         // get existing user
         var user = await new UserService(httpClient).GetAsync<User>(new(tenantId), userIdentifier);
         if (user == null)
         {
-            throw new PayrollException($"Unknown user with name {userIdentifier}");
+            throw new PayrollException($"Unknown user with identifier {userIdentifier}");
         }
         return user;
     }
@@ -370,14 +370,14 @@ internal static class ExchangeExcelCaseReader
         var divisionName = workbook.GetNamedValue<string>(Specification.DivisionRegionName);
         if (string.IsNullOrWhiteSpace(divisionName))
         {
-            throw new PayrollException("Missing division name");
+            throw new PayrollException("Missing division identifier");
         }
 
         // get existing division
         var division = await new DivisionService(httpClient).GetAsync<Division>(new(tenantId), divisionName);
         if (division == null)
         {
-            throw new PayrollException($"Unknown division with name {divisionName}");
+            throw new PayrollException($"Unknown division with identifier {divisionName}");
         }
         return division;
     }

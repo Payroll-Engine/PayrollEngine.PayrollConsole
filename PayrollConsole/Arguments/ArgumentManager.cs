@@ -130,6 +130,11 @@ public static class ArgumentManager
                 commandToggles = PayrunJobDeleteArguments.Toggles;
                 break;
 
+            // user
+            case Shared.Command.ChangePassword:
+                commandToggles = ChangePasswordArguments.Toggles;
+                break;
+
             // scripting
             case Shared.Command.RegulationRebuild:
                 commandToggles = RegulationRebuildArguments.Toggles;
@@ -197,6 +202,8 @@ public static class ArgumentManager
 
             Shared.Command.TenantDelete => TenantDeleteArguments.TestArguments(),
             Shared.Command.PayrunJobDelete => null,
+            
+            Shared.Command.ChangePassword => ChangePasswordArguments.TestArguments(),
 
             Shared.Command.RegulationRebuild => RegulationRebuildArguments.TestArguments(),
             Shared.Command.PayrunRebuild => PayrunRebuildArguments.TestArguments(),

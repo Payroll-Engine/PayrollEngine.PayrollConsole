@@ -43,6 +43,9 @@ public enum Command
     TenantDelete,
     PayrunJobDelete,
 
+    // user
+    ChangePassword,
+
     // scripting
     RegulationRebuild,
     PayrunRebuild,

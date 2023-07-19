@@ -23,7 +23,7 @@ internal sealed class PayrollImportExcelCommand : HttpCommandBase
     /// </summary>
     /// <param name="fileName">The Excel file</param>
     /// <param name="importMode">The import mode</param>
-    /// <param name="overrideTenant">The override tenant name</param>
+    /// <param name="overrideTenant">The override tenant identifier</param>
     internal async Task<ProgramExitCode> ImportAsync(string fileName, DataImportMode importMode,
         string overrideTenant = null)
     {
