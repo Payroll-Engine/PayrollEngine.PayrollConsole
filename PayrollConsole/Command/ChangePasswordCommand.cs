@@ -88,7 +88,11 @@ internal sealed class ChangePasswordCommand : HttpCommandBase
                 }
 
                 // new password
-                await userService.UpdatePasswordAsync(new(tenant.Id), user.Id, newPassword);
+                await userService.UpdatePasswordAsync(new(tenant.Id), user.Id, new()
+                {
+                    NewPassword = newPassword,
+                    ExistingPassword = existingPassword
+                });
 
                 // notification
                 ConsoleTool.DisplayNewLine();
