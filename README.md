@@ -42,20 +42,20 @@ C:> PayrollConsole PayrollImport MyPayroll.json /bulk
 ```
 <br />
 
-## Configuration
-The server configuration `PayrollConsole\appsetings.json` contains the following settings:
+## Application Settings
+The payroll console configuration `PayrollConsole\appsetings.json` contains the following settings:
 
 **Payroll Console Configuration**
 | Setting      | Description            | Default |
 |:--|:--|:--|
-| `StartupCulture` | The web applicatio process culture (string) | System culture |
+| `StartupCulture` | The payroll console process culture (string) | System culture |
 
 **Payroll Http Configuration**
 | Setting      | Description            | Default |
 |:--|:--|:--|
 | `BaseUrl` | The backend base url (string) | |
 | `Port` | The backend url port (string) | |
-| `Timeout` | The backend request timeout (string) | |
+| `Timeout` | The backend request timeout (TimeSpan) | 100 seconds |
 
 **Serilog**
 File and console log with [Serilog](https://serilog.net/).
