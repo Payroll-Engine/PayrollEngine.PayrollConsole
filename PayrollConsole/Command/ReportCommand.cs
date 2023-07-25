@@ -67,6 +67,10 @@ internal sealed class ReportCommand : HttpCommandBase
         {
             ConsoleTool.DisplayTextLine($"Parameter file   {settings.ParameterFile}");
         }
+        if (!string.IsNullOrWhiteSpace(settings.TargetFile))
+        {
+            ConsoleTool.DisplayTextLine($"Target file      {settings.TargetFile}");
+        }
         ConsoleTool.DisplayTextLine($"Url              {HttpClient}");
         ConsoleTool.DisplayNewLine();
 
@@ -157,7 +161,7 @@ internal sealed class ReportCommand : HttpCommandBase
                 return ProgramExitCode.GenericError;
             }
 
-            var mergeParameters = new Dictionary<string,object>(parameters.Select(x => new KeyValuePair<string, object>(x.Key, x.Value)));
+            var mergeParameters = new Dictionary<string, object>(parameters.Select(x => new KeyValuePair<string, object>(x.Key, x.Value)));
 
             string outputFile;
             switch (settings.DocumentType)
@@ -165,13 +169,23 @@ internal sealed class ReportCommand : HttpCommandBase
                 case DocumentType.Word:
                 case DocumentType.Excel:
                 case DocumentType.Pdf:
-                    outputFile = await MergeAsync(report, dataSet, documentMetadata,
-                        settings.DocumentType, settings.Culture, mergeParameters);
+                    outputFile = await MergeAsync(
+                        report: report,
+                        dataSet: dataSet,
+                        documentMetadata: documentMetadata,
+                        documentType: settings.DocumentType,
+                        culture: settings.Culture,
+                        parameters: mergeParameters,
+                        settings.TargetFile);
                     break;
                 case DocumentType.Xml:
                 case DocumentType.XmlRaw:
-                    outputFile = await TransformAsync(report, dataSet,
-                        settings.Culture, settings.DocumentType == DocumentType.XmlRaw);
+                    outputFile = await TransformAsync(
+                        report: report,
+                        dataSet: dataSet,
+                        culture: settings.Culture,
+                        rawData: settings.DocumentType == DocumentType.XmlRaw,
+                        targetFile: settings.TargetFile);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -281,7 +295,7 @@ internal sealed class ReportCommand : HttpCommandBase
     #region Merge
 
     private async Task<string> MergeAsync(ReportSet report, DataSet dataSet, DocumentMetadata documentMetadata,
-        DocumentType documentType, string culture, IDictionary<string, object> parameters = null)
+        DocumentType documentType, string culture, IDictionary<string, object> parameters = null, string targetFile = null)
     {
         var merge = new DataMerge();
         if (!merge.IsMergeable(documentType))
@@ -290,9 +304,14 @@ internal sealed class ReportCommand : HttpCommandBase
             return null;
         }
 
-        // file name
-        var targetFileName =
-            $"{report.Name}_{FileTool.CurrentTimeStamp()}{documentType.GetFileExtension()}";
+        // target file
+        var targetFileName = targetFile ??
+                             $"{report.Name}_{FileTool.CurrentTimeStamp()}{documentType.GetFileExtension()}";
+        // cleanup
+        if (File.Exists(targetFileName))
+        {
+            File.Delete(targetFileName);
+        }
 
         MemoryStream resultStream;
         if (documentType == DocumentType.Excel)
@@ -324,16 +343,24 @@ internal sealed class ReportCommand : HttpCommandBase
 
     #region Transform
 
-    private async Task<string> TransformAsync(ReportSet report, DataSet dataSet, string culture, bool rawData = false)
+    private async Task<string> TransformAsync(ReportSet report, DataSet dataSet, string culture,
+        bool rawData = false, string targetFile = null)
     {
-        var rawName = rawData ? "_raw" : string.Empty;
-        var targetFileName = $"{report.Name}_{FileTool.CurrentTimeStamp()}{rawName}{FileExtensions.Xml}";
-
         // report template
         var template = GetReportTemplate(report, culture);
         if (template == null)
         {
             return null;
+        }
+
+        // target file
+        var rawName = rawData ? "_raw" : string.Empty;
+        var targetFileName = targetFile ??
+                             $"{report.Name}_{FileTool.CurrentTimeStamp()}{rawName}{FileExtensions.Xml}";
+        // cleanup
+        if (File.Exists(targetFileName))
+        {
+            File.Delete(targetFileName);
         }
 
         // data set to xml
@@ -458,6 +485,7 @@ internal sealed class ReportCommand : HttpCommandBase
         ConsoleTool.DisplayTextLine("          4. report name [Report]");
         ConsoleTool.DisplayTextLine("          5. report parameter file with a json string/string dictionary (optional) [ParameterFile]");
         ConsoleTool.DisplayTextLine("          6. report culture [Culture]");
+        ConsoleTool.DisplayTextLine("          7. target file name [TargetFile]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          language: default is english)");
         ConsoleTool.DisplayTextLine("          document type: /word, /excel, /pdf, /xml, /xmlraw (default: pdf)");
@@ -465,6 +493,7 @@ internal sealed class ReportCommand : HttpCommandBase
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          Report MyTenant MyUser MyRegulation MyReport /german");
         ConsoleTool.DisplayTextLine("          Report MyTenant MyUser MyRegulation MyReport MyParameters.json /french /xml");
+        ConsoleTool.DisplayTextLine("          Report MyTenant MyUser MyRegulation MyReport /pdf targetFile:MyReport.pdf");
     }
 
     #endregion

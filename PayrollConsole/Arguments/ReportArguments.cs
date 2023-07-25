@@ -27,6 +27,9 @@ public static class ReportArguments
     public static string Culture =>
         ConsoleArguments.GetMember(typeof(ReportArguments), 7);
 
+    public static string TargetFile =>
+        ConsoleArguments.GetMember(typeof(ReportArguments), 8);
+
     public static DocumentType DocumentType(DocumentType defaultTestMode = Document.DocumentType.Pdf) =>
         ConsoleArguments.GetEnumToggle(defaultTestMode);
 

@@ -196,7 +196,8 @@ sealed class Program : ConsoleProgram<Program>
                     DocumentType = ReportArguments.DocumentType(),
                     Culture = ReportArguments.Culture,
                     PostAction = ReportArguments.PostAction(),
-                    ParameterFile = ReportArguments.ParameterFile
+                    ParameterFile = ReportArguments.ParameterFile,
+                    TargetFile = ReportArguments.TargetFile
                 });
                 break;
             case Shared.Command.DataReport:
