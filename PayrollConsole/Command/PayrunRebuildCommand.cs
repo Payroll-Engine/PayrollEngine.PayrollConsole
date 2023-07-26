@@ -69,7 +69,7 @@ internal sealed class PayrunRebuildCommand : HttpCommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- PayrunRebuild");
-        ConsoleTool.DisplayTextLine("      Rebuild a payrun (update scripting binaries)");
+        ConsoleTool.DisplayTextLine("      Rebuild payrun (update scripting binaries)");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. tenant identifier [Tenant]");
         ConsoleTool.DisplayTextLine("          2. payrun name [PayrunName]");

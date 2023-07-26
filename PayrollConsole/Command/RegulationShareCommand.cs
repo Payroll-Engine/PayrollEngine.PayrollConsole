@@ -325,7 +325,7 @@ internal sealed class RegulationShareCommand : HttpCommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- RegulationShare");
-        ConsoleTool.DisplayTextLine("      Manage the regulation shares");
+        ConsoleTool.DisplayTextLine("      Manage regulation shares");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. provider tenant identifier (optional for /view) [ProviderTenant]");
         ConsoleTool.DisplayTextLine("          2. provider regulation name (optional for /view) [ProviderRegulation]");

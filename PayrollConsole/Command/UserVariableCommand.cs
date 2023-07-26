@@ -188,7 +188,7 @@ internal sealed class UserVariableCommand : CommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- UserVariable");
-        ConsoleTool.DisplayTextLine("      View and change environment user variable");
+        ConsoleTool.DisplayTextLine("      View and change the environment user variable");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. Variable name [VariableName]");
         ConsoleTool.DisplayTextLine("          2. Variable value (optional) [VariableValue]");
