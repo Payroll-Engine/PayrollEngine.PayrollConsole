@@ -2,7 +2,7 @@
 
 The Payroll Console application provides API-like commands. See the Payroll Engine samples and tests for examples of how to use this tool. For a better understanding of the working concepts, it is recommended to read the [Payroll Engine Whitepaper](https://github.com/Payroll-Engine/PayrollEngine/blob/main/Documents/PayrolEnginelWhitepaper.pdf).
 
-## Console Commands
+## Commands
 Payroll Console commands:
 | Command              | Group            | Description                                                  |
 |--|--|--|
@@ -24,8 +24,8 @@ Payroll Console commands:
 | *PayrunEmployeeTest* | Test             | Execute employee payrun and test the results                 |
 | *PayrunStatistics*   | Statistics       | Display payrun statistics                                    |
 | *RegulationShare*    | Regulation share | Manage regulation shares                                     |
-| *TenantDelete*       | Data Management  | Delete tenant                                                |
-| *PayrunJobDelete*    | Data Management  | Delete payrun job with payroll results                       |
+| *TenantDelete*       | Data management  | Delete tenant                                                |
+| *PayrunJobDelete*    | Data management  | Delete payrun job with payroll results                       |
 | *RegulationRebuild*  | Script           | Rebuild the regulation objects                               |
 | *PayrunRebuild*      | Script           | Rebuild payrun                                               |
 | *ScriptPublish*      | Script           | Publish scripts from C# file                                 |
@@ -41,7 +41,7 @@ C:> PayrollConsole PayrollImport MyPayroll.json /bulk
 ```
 <br />
 
-## Application Settings
+## Application Configuration
 The Payroll Console configuration `PayrollConsole\appsetings.json` contains the following settings:
 
 **Payroll Console Configuration**
@@ -60,3 +60,6 @@ The Payroll Console configuration `PayrollConsole\appsetings.json` contains the 
 File and console logging with [Serilog](https://serilog.net/).
 
 > It is recommended that you save the application settings within your local [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
+
+## Application Logs
+Under Windows, the payroll console stores its logs in the system folder `%ProgramData%\PayrollConsole\logs`.
