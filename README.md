@@ -63,3 +63,7 @@ File and console logging with [Serilog](https://serilog.net/).
 
 ## Application Logs
 Under Windows, the payroll console stores its logs in the system folder `%ProgramData%\PayrollConsole\logs`.
+
+## Third party components
+- Excel conversion with [NPOI](https://github.com/dotnetcore/NPOI/) - licence `Apache 2.0`
+- Logging with [Serilog](https://github.com/serilog/serilog/) - licence `Apache 2.0`
