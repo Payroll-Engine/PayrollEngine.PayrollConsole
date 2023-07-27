@@ -78,7 +78,7 @@ internal sealed class TenantDeleteCommand : HttpCommandBase
     internal static void ShowHelp()
     {
         ConsoleTool.DisplayTitleLine("- TenantDelete");
-        ConsoleTool.DisplayTextLine("      Delete a tenant");
+        ConsoleTool.DisplayTextLine("      Delete tenant");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. tenant identifier [Tenant]");
         ConsoleTool.DisplayTextLine("      Toggles:");
