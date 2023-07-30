@@ -8,6 +8,7 @@ using PayrollEngine.Client.Scripting.Script;
 using PayrollEngine.Client.Test;
 using PayrollEngine.Client.Test.Payrun;
 using PayrollEngine.PayrollConsole.Shared;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.PayrollConsole.Command;
 
@@ -50,10 +51,6 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase
             foreach (var testFileName in testFileNames)
             {
                 DisplayTitle("Test payrun");
-                if (!string.IsNullOrWhiteSpace(settings.Namespace))
-                {
-                    ConsoleTool.DisplayTextLine($"Namespace          {settings.Namespace}");
-                }
                 if (!string.IsNullOrWhiteSpace(settings.Owner))
                 {
                     ConsoleTool.DisplayTextLine($"Owner              {settings.Owner}");
@@ -68,18 +65,27 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase
                 ConsoleTool.DisplayNewLine();
 
                 ConsoleTool.DisplayTextLine("Running test...");
+
+                // load test data
+                var exchange = await JsonSerializer.DeserializeFromFileAsync<Client.Model.Exchange>(testFileName);
+                if (exchange == null)
+                {
+                    throw new PayrollException($"Invalid case test file {testFileName}");
+                }
+
                 // run test
-                var testRunner = new PayrunTestRunner(HttpClient, testFileName, ScriptParser,
+                var testRunner = new PayrunTestRunner(HttpClient, ScriptParser,
                     TestPrecision, settings.Owner, settings.ImportMode, settings.ResultMode);
-                var results = await testRunner.TestAllAsync(settings.Namespace);
-                // test results
+                var results = await testRunner.TestAllAsync(exchange);
+
+                // display test results
                 ConsoleTool.DisplayNewLine();
                 DisplayTestResults(testFileName, settings.DisplayMode, results);
 
                 // failed test
                 foreach (var resultValues in results.Values)
                 {
-                    if (resultValues.Any(x => x.IsFailed()))
+                    if (resultValues.Any(x => x.Failed))
                     {
                         return ProgramExitCode.FailedTest;
                     }

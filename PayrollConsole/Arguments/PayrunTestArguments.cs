@@ -12,11 +12,8 @@ public static class PayrunTestArguments
     public static string FileMask =>
         ConsoleArguments.GetMember(typeof(PayrunTestArguments), 2);
 
-    public static string Namespace =>
-        ConsoleArguments.GetMember(typeof(PayrunTestArguments), 3);
-
     public static string Owner =>
-        ConsoleArguments.GetMember(typeof(PayrunTestArguments), 4);
+        ConsoleArguments.GetMember(typeof(PayrunTestArguments), 3);
 
     public static DataImportMode DataImportMode(DataImportMode defaultDataImportMode = Client.Exchange.DataImportMode.Bulk) =>
         ConsoleArguments.GetEnumToggle(defaultDataImportMode);

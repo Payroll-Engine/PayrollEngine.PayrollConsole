@@ -11,6 +11,5 @@ internal sealed class ReportTestCommandSettings
     internal DataImportMode ImportMode { get; set; }
     internal TestDisplayMode DisplayMode { get; set; }
     internal TestResultMode ResultMode { get; set; }
-    internal string Namespace { get; set; }
     internal string Owner { get; set; }
 }

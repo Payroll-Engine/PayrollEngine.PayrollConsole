@@ -5,6 +5,7 @@ using PayrollEngine.Client;
 using PayrollEngine.Client.Test;
 using PayrollEngine.Client.Test.Report;
 using PayrollEngine.PayrollConsole.Shared;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.PayrollConsole.Command;
 
@@ -49,9 +50,18 @@ internal sealed class ReportTestCommand : TestCommandBase
 
                 ConsoleTool.DisplayTextLine("Running test...");
 
+                // load test data
+                var reportTest = await JsonSerializer.DeserializeFromFileAsync<ReportTest>(testFileName);
+                if (reportTest == null)
+                {
+                    throw new PayrollException($"Invalid case test file {testFileName}");
+                }
+
                 // run test
-                var testRunner = new ReportTestRunner(HttpClient, testFileName);
-                var testResult = await testRunner.TestAsync();
+                var testRunner = new ReportTestRunner(HttpClient);
+                var testResult = await testRunner.TestAsync(reportTest);
+
+                // display test results
                 ConsoleTool.DisplayNewLine();
                 DisplayTestResults(displayMode, testResult.Results);
 

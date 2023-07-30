@@ -237,7 +237,6 @@ sealed class Program : ConsoleProgram<Program>
                         ImportMode = PayrunTestArguments.DataImportMode(),
                         DisplayMode = PayrunTestArguments.TestDisplayMode(),
                         ResultMode = PayrunTestArguments.TestResultMode(),
-                        Namespace = PayrunTestArguments.Namespace,
                         Owner = PayrunTestArguments.Owner
                     });
                 failedCommand = exitCode == ProgramExitCode.FailedTest;
@@ -249,7 +248,6 @@ sealed class Program : ConsoleProgram<Program>
                         FileMask = PayrunEmployeeTestArguments.FileMask,
                         DisplayMode = PayrunEmployeeTestArguments.TestDisplayMode(),
                         TestMode = PayrunEmployeeTestArguments.EmployeeTestMode(),
-                        Namespace = PayrunEmployeeTestArguments.Namespace,
                         Owner = PayrunEmployeeTestArguments.Owner
                     });
                 failedCommand = exitCode == ProgramExitCode.FailedTest;

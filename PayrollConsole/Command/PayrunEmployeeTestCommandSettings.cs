@@ -9,7 +9,6 @@ namespace PayrollEngine.PayrollConsole.Command
         internal string FileMask { get; set; }
         internal TestDisplayMode DisplayMode { get; set; }
         internal EmployeeTestMode TestMode { get; set; }
-        internal string Namespace { get; set; }
         internal string Owner { get; set; }
     }
 }

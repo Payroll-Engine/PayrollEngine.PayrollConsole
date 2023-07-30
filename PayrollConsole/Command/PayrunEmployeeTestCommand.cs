@@ -8,6 +8,7 @@ using PayrollEngine.Client.Scripting.Script;
 using PayrollEngine.Client.Test;
 using PayrollEngine.Client.Test.Payrun;
 using PayrollEngine.PayrollConsole.Shared;
+using PayrollEngine.Serialization;
 
 namespace PayrollEngine.PayrollConsole.Command;
 
@@ -54,10 +55,6 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase
             foreach (var testFileName in testFileNames)
             {
                 DisplayTitle("Test employee payrun");
-                if (!string.IsNullOrWhiteSpace(settings.Namespace))
-                {
-                    ConsoleTool.DisplayTextLine($"Namespace          {settings.Namespace}");
-                }
                 if (!string.IsNullOrWhiteSpace(settings.Owner))
                 {
                     ConsoleTool.DisplayTextLine($"Owner              {settings.Owner}");
@@ -71,18 +68,27 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase
                 ConsoleTool.DisplayNewLine();
 
                 ConsoleTool.DisplayTextLine("Running test...");
+
+                // load test data
+                var exchange = await JsonSerializer.DeserializeFromFileAsync<Client.Model.Exchange>(testFileName);
+                if (exchange == null)
+                {
+                    throw new PayrollException($"Invalid employee payrun test file {testFileName}");
+                }
+
                 // run test
-                var testRunner = new PayrunEmployeeTestRunner(HttpClient, testFileName, ScriptParser,
+                var testRunner = new PayrunEmployeeTestRunner(HttpClient, ScriptParser,
                     TestPrecision, settings.Owner, settings.TestMode);
-                var results = await testRunner.TestAllAsync(settings.Namespace);
-                // test results
+                var results = await testRunner.TestAllAsync(exchange);
+            
+                // display test results
                 ConsoleTool.DisplayNewLine();
                 DisplayTestResults(testFileName, settings.DisplayMode, results);
 
                 // failed test
                 foreach (var resultValues in results.Values)
                 {
-                    if (resultValues.Any(x => x.IsFailed()))
+                    if (resultValues.Any(x => x.Failed))
                     {
                         return ProgramExitCode.FailedTest;
                     }
@@ -103,8 +109,7 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase
         ConsoleTool.DisplayTextLine("      Execute employee payrun and test the results");
         ConsoleTool.DisplayTextLine("      Arguments:");
         ConsoleTool.DisplayTextLine("          1. JSON/ZIP file name or file mask [FileMask]");
-        ConsoleTool.DisplayTextLine("          2. namespace (optional) [Namespace]");
-        ConsoleTool.DisplayTextLine("          3. owner name (optional) [Owner]");
+        ConsoleTool.DisplayTextLine("          2. owner name (optional) [Owner]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          test mode: /insertemployee or /updateemployee (default: insertemployee)");
         ConsoleTool.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
@@ -112,8 +117,6 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase
         ConsoleTool.DisplayTextLine("      Examples:");
         ConsoleTool.DisplayTextLine("          PayrunEmployeeTest Test.json");
         ConsoleTool.DisplayTextLine("          PayrunEmployeeTest *.et.json");
-        ConsoleTool.DisplayTextLine("          PayrunEmployeeTest *.et.json MyNamespace");
-        ConsoleTool.DisplayTextLine("          PayrunEmployeeTest *.et.json MyNamespace MyOwner");
         ConsoleTool.DisplayTextLine("          PayrunEmployeeTest Test.json /showall /TestPrecision3");
     }
 }
