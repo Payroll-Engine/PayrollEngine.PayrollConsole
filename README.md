@@ -1,4 +1,4 @@
-<h1>Payroll Engine Console Application</h1>
+# Payroll Engine Console Application
 
 The Payroll Console application provides API-like commands. See the Payroll Engine samples and tests for examples of how to use this tool. For a better understanding of the working concepts, it is recommended to read the [Payroll Engine Whitepaper](https://github.com/Payroll-Engine/PayrollEngine/blob/main/Documents/PayrolEnginelWhitepaper.pdf).
 
