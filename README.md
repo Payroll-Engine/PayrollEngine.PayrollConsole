@@ -45,19 +45,19 @@ C:> PayrollConsole PayrollImport MyPayroll.json /bulk
 ## Application Configuration
 The Payroll Console configuration `PayrollConsole\appsetings.json` contains the following settings:
 
-**Payroll Console Configuration**
+### Payroll Console Configuration
 | Setting      | Description            | Default |
 |:--|:--|:--|
 | `StartupCulture` | The payroll console process culture (string) | System culture |
 
-**Payroll Http Configuration**
+### Payroll Http Configuration
 | Setting      | Description                          | Default        |
 |:--|:--|:--|
 | `BaseUrl` | The backend base URL (string)           |                |
 | `Port` | The backend url port (string)              |                |
 | `Timeout` | The backend request timeout (TimeSpan)  | 100 seconds    |
 
-**Serilog**
+### Serilog
 File and console logging with [Serilog](https://serilog.net/).
 
 > It is recommended that you save the application settings within your local [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
