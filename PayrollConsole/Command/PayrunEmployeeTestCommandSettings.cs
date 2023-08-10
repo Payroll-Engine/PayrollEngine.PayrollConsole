@@ -2,13 +2,13 @@
 using PayrollEngine.PayrollConsole.Shared;
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 
-namespace PayrollEngine.PayrollConsole.Command
+namespace PayrollEngine.PayrollConsole.Command;
+
+internal sealed class PayrunEmployeeTestCommandSettings
 {
-    internal sealed class PayrunEmployeeTestCommandSettings
-    {
-        internal string FileMask { get; set; }
-        internal TestDisplayMode DisplayMode { get; set; }
-        internal EmployeeTestMode TestMode { get; set; }
-        internal string Owner { get; set; }
-    }
+    internal string FileMask { get; set; }
+    internal TestDisplayMode DisplayMode { get; set; }
+    internal EmployeeTestMode TestMode { get; set; }
+    internal TestRunMode RunMode { get; set; }
+    internal string Owner { get; set; }
 }

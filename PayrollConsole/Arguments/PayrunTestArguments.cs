@@ -17,6 +17,9 @@ public static class PayrunTestArguments
 
     public static DataImportMode DataImportMode(DataImportMode defaultDataImportMode = Client.Exchange.DataImportMode.Bulk) =>
         ConsoleArguments.GetEnumToggle(defaultDataImportMode);
+    
+    public static TestRunMode TestRunMode(TestRunMode defaultRunMode = Client.Test.Payrun.TestRunMode.RunTests) =>
+        ConsoleArguments.GetEnumToggle(defaultRunMode);
 
     public static TestDisplayMode TestDisplayMode(TestDisplayMode defaultImportMode = Shared.TestDisplayMode.ShowFailed) =>
         ConsoleArguments.GetEnumToggle(defaultImportMode);
@@ -30,6 +33,7 @@ public static class PayrunTestArguments
     public static Type[] Toggles => new[]
     {
         typeof(DataImportMode),
+        typeof(TestRunMode),
         typeof(TestDisplayMode),
         typeof(TestResultMode),
         typeof(TestPrecision)

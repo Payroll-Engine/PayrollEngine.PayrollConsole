@@ -17,6 +17,9 @@ public static class PayrunEmployeeTestArguments
     public static EmployeeTestMode EmployeeTestMode(EmployeeTestMode defaultTestMode = Client.Test.Payrun.EmployeeTestMode.InsertEmployee) =>
         ConsoleArguments.GetEnumToggle(defaultTestMode);
 
+    public static TestRunMode TestRunMode(TestRunMode defaultRunMode = Client.Test.Payrun.TestRunMode.RunTests) =>
+        ConsoleArguments.GetEnumToggle(defaultRunMode);
+
     public static TestDisplayMode TestDisplayMode(TestDisplayMode defaultImportMode = Shared.TestDisplayMode.ShowFailed) =>
         ConsoleArguments.GetEnumToggle(defaultImportMode);
 
@@ -26,6 +29,7 @@ public static class PayrunEmployeeTestArguments
     public static Type[] Toggles => new[]
     {
         typeof(EmployeeTestMode),
+        typeof(TestRunMode),
         typeof(TestDisplayMode),
         typeof(TestPrecision)
     };

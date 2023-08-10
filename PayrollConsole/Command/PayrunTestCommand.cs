@@ -58,6 +58,7 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase
                 ConsoleTool.DisplayTextLine($"Path               {new FileInfo(testFileName).Directory?.FullName}");
                 ConsoleTool.DisplayTextLine($"File               {testFileName}");
                 ConsoleTool.DisplayTextLine($"Import mode        {settings.ImportMode}");
+                ConsoleTool.DisplayTextLine($"Running mode       {settings.RunMode}");
                 ConsoleTool.DisplayTextLine($"Display mode       {settings.DisplayMode}");
                 ConsoleTool.DisplayTextLine($"Result mode        {settings.ResultMode}");
                 ConsoleTool.DisplayTextLine($"Url                {HttpClient}");
@@ -74,8 +75,8 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase
                 }
 
                 // run test
-                var testRunner = new PayrunTestRunner(HttpClient, ScriptParser,
-                    TestPrecision, settings.Owner, settings.ImportMode, settings.ResultMode);
+                var testRunner = new PayrunTestRunner(HttpClient, ScriptParser, TestPrecision,
+                    settings.Owner, settings.ImportMode, settings.ResultMode, settings.RunMode);
                 var results = await testRunner.TestAllAsync(exchange);
 
                 // display test results
@@ -110,6 +111,7 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase
         ConsoleTool.DisplayTextLine("          3. owner name (optional) [Owner]");
         ConsoleTool.DisplayTextLine("      Toggles:");
         ConsoleTool.DisplayTextLine("          import mode: /single or /bulk (default: bulk)");
+        ConsoleTool.DisplayTextLine("          running mode: /runtests or /skiptests (default: runtests)");
         ConsoleTool.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
         ConsoleTool.DisplayTextLine("          test result mode: /cleantest or /keeptest (default: cleantest)");
         ConsoleTool.DisplayTextLine("          test precision: /TestPrecisionOff or /TestPrecision1 to /TestPrecision6 (default: /TestPrecision2)");
