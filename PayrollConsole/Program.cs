@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using PayrollEngine.Client;
 using PayrollEngine.PayrollConsole.Arguments;
@@ -24,6 +25,15 @@ sealed class Program : ConsoleProgram<Program>
         Configuration.Configuration.SetupSerilog();
         return base.SetupLogAsync();
     }
+
+    /// <summary>Override the default implementation, allowing access to https</summary>
+    /// <returns>The http client handler</returns>
+    protected override async Task<HttpClientHandler> GetHttpClientHandlerAsync() =>
+        // TODO http client handler by configuration
+        await Task.FromResult(new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+        });
 
     /// <inheritdoc />
     protected override async Task<bool> InitializeAsync()
