@@ -68,6 +68,7 @@ public class PayrollResultsReport
         {
             throw new PayrollException($"Unknown tenant with identifier {tenantIdentifier}");
         }
+        var culture = GetTenantCulture(tenant);
 
         // top filter
         if (TopFilter < 1 || TopFilter > 100)
@@ -280,7 +281,7 @@ public class PayrollResultsReport
                             payrunResult.End.ToPeriodEndString(),
                             payrunResult.ValueType,
                             null, // no attributes
-                            FormatValue(payrunResult.Value, payrunResult.ValueType)
+                            FormatValue(payrunResult.Value, payrunResult.ValueType, culture)
                         };
                         resultValues.Add(values);
                         Console.WriteLine(FormatConsoleResults(values));
@@ -300,6 +301,17 @@ public class PayrollResultsReport
                 }
             }
         }
+    }
+
+    private static CultureInfo GetTenantCulture(Tenant tenant)
+    {
+        var culture = CultureInfo.DefaultThreadCurrentCulture ?? CultureInfo.InvariantCulture;
+        if (!string.IsNullOrWhiteSpace(tenant.Culture) &&
+            !string.Equals(culture.Name, tenant.Culture))
+        {
+            culture = new CultureInfo(tenant.Culture);
+        }
+        return culture;
     }
 
     private static string FormatValue<T>(IEnumerable<T> values, string columnName)
@@ -329,13 +341,13 @@ public class PayrollResultsReport
     private static string FormatValue(decimal? value) =>
         value?.ToString("0.000", CultureInfo.InvariantCulture);
 
-    private static string FormatValue(string value, ValueType valueType)
+    private static string FormatValue(string value, ValueType valueType, CultureInfo culture)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
             return null;
         }
-        var nativeValue = ValueConvert.ToValue(value, valueType);
+        var nativeValue = ValueConvert.ToValue(value, valueType, culture);
         return valueType.IsDecimal() ? FormatValue((decimal)nativeValue) : nativeValue.ToString();
     }
 
