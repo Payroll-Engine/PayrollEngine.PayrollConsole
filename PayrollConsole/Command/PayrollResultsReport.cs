@@ -14,7 +14,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.PayrollConsole.Command;
 
-public class PayrollResultsReport
+public class PayrollResultsReport(PayrollHttpClient httpClient, int topFilter, ReportExportMode exportMode)
 {
     private sealed class ReportColumn
     {
@@ -45,16 +45,9 @@ public class PayrollResultsReport
     private static readonly string ExportSeparator = "\t";
     public static readonly string ResultsFolderName = "Results";
 
-    private PayrollHttpClient HttpClient { get; }
-    private int TopFilter { get; }
-    private ReportExportMode ExportMode { get; }
-
-    public PayrollResultsReport(PayrollHttpClient httpClient, int topFilter, ReportExportMode exportMode)
-    {
-        HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        TopFilter = topFilter;
-        ExportMode = exportMode;
-    }
+    private PayrollHttpClient HttpClient { get; } = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    private int TopFilter { get; } = topFilter;
+    private ReportExportMode ExportMode { get; } = exportMode;
 
     public async Task ConsoleWriteAsync(string tenantIdentifier)
     {

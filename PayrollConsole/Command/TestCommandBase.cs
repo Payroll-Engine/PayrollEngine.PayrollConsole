@@ -8,15 +8,9 @@ using PayrollEngine.PayrollConsole.Shared;
 
 namespace PayrollEngine.PayrollConsole.Command;
 
-internal abstract class TestCommandBase : HttpCommandBase
+internal abstract class TestCommandBase(PayrollHttpClient httpClient, TestPrecision testPrecision) : HttpCommandBase(httpClient)
 {
-    protected TestPrecision TestPrecision { get; }
-
-    protected TestCommandBase(PayrollHttpClient httpClient, TestPrecision testPrecision) :
-        base(httpClient)
-    {
-        TestPrecision = testPrecision;
-    }
+    protected TestPrecision TestPrecision { get; } = testPrecision;
 
     protected static List<string> GetTestFileNames(string fileMask)
     {

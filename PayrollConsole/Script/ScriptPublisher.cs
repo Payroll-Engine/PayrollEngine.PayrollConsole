@@ -14,14 +14,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.PayrollConsole.Script;
 
-public class ScriptPublisher
+public class ScriptPublisher(PayrollHttpClient httpClient)
 {
-    private PayrollHttpClient HttpClient { get; }
-
-    public ScriptPublisher(PayrollHttpClient httpClient)
-    {
-        HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-    }
+    private PayrollHttpClient HttpClient { get; } = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
     #region Publish
 

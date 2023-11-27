@@ -11,13 +11,9 @@ using PayrollEngine.PayrollConsole.Shared;
 
 namespace PayrollEngine.PayrollConsole.Command;
 
-internal abstract class PayrunTestCommandBase : TestCommandBase
+internal abstract class PayrunTestCommandBase
+    (PayrollHttpClient httpClient, TestPrecision testPrecision) : TestCommandBase(httpClient, testPrecision)
 {
-    protected PayrunTestCommandBase(PayrollHttpClient httpClient, TestPrecision testPrecision) :
-        base(httpClient, testPrecision)
-    {
-    }
-
     protected void DisplayTestResults(string fileName, TestDisplayMode displayMode,
         Dictionary<Tenant, List<PayrollTestResult>> tenantResults)
     {
