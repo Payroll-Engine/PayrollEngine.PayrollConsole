@@ -29,7 +29,8 @@ public class PayrollResultsReport(PayrollHttpClient httpClient, int topFilter, R
         internal int Width { get; }
     }
 
-    private static readonly ReportColumn[] ReportColumns = {
+    private static readonly ReportColumn[] ReportColumns =
+    [
         new("source", false, 16),
         new("key", false, 15),
         new("tags", false, 15),
@@ -40,7 +41,7 @@ public class PayrollResultsReport(PayrollHttpClient httpClient, int topFilter, R
         new("type", false, 10),
         new("attributes", false, 36),
         new("value", true, 12)
-    };
+    ];
 
     private static readonly string ExportSeparator = "\t";
     public static readonly string ResultsFolderName = "Results";

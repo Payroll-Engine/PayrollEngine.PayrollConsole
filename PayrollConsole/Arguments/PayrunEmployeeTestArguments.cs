@@ -26,13 +26,13 @@ public static class PayrunEmployeeTestArguments
     public static TestPrecision TestPrecision(TestPrecision defaultTestPrecision = Client.Test.TestPrecision.TestPrecision2) =>
         ConsoleArguments.GetEnumToggle(defaultTestPrecision);
 
-    public static Type[] Toggles => new[]
-    {
+    public static Type[] Toggles =>
+    [
         typeof(EmployeeTestMode),
         typeof(TestRunMode),
         typeof(TestDisplayMode),
         typeof(TestPrecision)
-    };
+    ];
 
     public static string TestArguments() =>
         string.IsNullOrWhiteSpace(FileMask) ? "Missing file name or file mask" : null;

@@ -123,9 +123,9 @@ internal sealed class ActionReportCommand : CommandBase
                     Namespace = providerAttribute.Namespace,
                     Name = GetTypeValue<string>(actionAttribute, nameof(ActionAttribute.Name)),
                     Description = GetTypeValue<string>(actionAttribute, nameof(ActionAttribute.Description)),
-                    Categories = new(GetTypeValue<string[]>(actionAttribute, nameof(ActionAttribute.Categories))),
-                    Parameters = new(),
-                    Issues = new()
+                    Categories = [..GetTypeValue<string[]>(actionAttribute, nameof(ActionAttribute.Categories))],
+                    Parameters = [],
+                    Issues = []
                 };
                 actions.Add(actionInfo);
 
@@ -148,9 +148,9 @@ internal sealed class ActionReportCommand : CommandBase
                         {
                             Name = name,
                             Description = GetTypeValue<string>(parameterAttribute, nameof(ActionParameterAttribute.Description)),
-                            ValueReferences = new(),
-                            ValueSources = new(),
-                            ValueTypes = new()
+                            ValueReferences = [],
+                            ValueSources = [],
+                            ValueTypes = []
                         };
 
                         var valueReferences = GetTypeValue<string[]>(parameterAttribute, nameof(ActionParameterAttribute.ValueReferences));

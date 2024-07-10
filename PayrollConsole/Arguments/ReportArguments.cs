@@ -36,11 +36,11 @@ public static class ReportArguments
     public static ReportPostAction PostAction(ReportPostAction action = ReportPostAction.NoAction) =>
         ConsoleArguments.GetEnumToggle(action);
 
-    public static Type[] Toggles => new[]
-    {
+    public static Type[] Toggles =>
+    [
         typeof(DocumentType),
         typeof(ReportPostAction)
-    };
+    ];
 
     public static string TestArguments()
     {

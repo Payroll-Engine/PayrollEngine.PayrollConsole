@@ -15,10 +15,10 @@ public static class UserVariableArguments
     public static UserVariableMode VariableMode(UserVariableMode defaultValue = UserVariableMode.View) =>
         ConsoleArguments.GetEnumToggle(defaultValue);
 
-    public static Type[] Toggles => new[]
-    {
-        typeof(UserVariableMode),
-    };
+    public static Type[] Toggles =>
+    [
+        typeof(UserVariableMode)
+    ];
 
     public static string TestArguments() =>
         string.IsNullOrWhiteSpace(VariableName) ? "Missing user variable name" : null;

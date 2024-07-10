@@ -22,7 +22,7 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase
     }
 
     /// <summary>
-    /// Test a employee payrun specified in a payroll exchange JSON file
+    /// Test employee payrun specified in a payroll exchange JSON file
     /// The test sequence is:
     ///   1. Import employee case changes, payrun jobs and expected results (payroll, payrun job and employee must be present)
     ///   2. Create test employee, copy of existing employee

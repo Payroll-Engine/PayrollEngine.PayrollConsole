@@ -12,10 +12,10 @@ public static class StopwatchArguments
     public static StopwatchMode StopwatchMode(StopwatchMode defaultValue = Shared.StopwatchMode.WatchView) =>
         ConsoleArguments.GetEnumToggle(defaultValue);
 
-    public static Type[] Toggles => new[]
-    {
-        typeof(StopwatchMode),
-    };
+    public static Type[] Toggles =>
+    [
+        typeof(StopwatchMode)
+    ];
 
     public static string TestArguments() =>
         string.IsNullOrWhiteSpace(VariableName) ? "Missing stopwatch variable name" : null;

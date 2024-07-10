@@ -52,7 +52,7 @@ internal sealed class ExchangeExcelReader
 
         return new()
         {
-            Tenants = new() { tenant }
+            Tenants = [tenant]
         };
     }
 

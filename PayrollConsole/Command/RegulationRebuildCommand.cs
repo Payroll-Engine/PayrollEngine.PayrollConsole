@@ -21,7 +21,7 @@ internal sealed class RegulationRebuildCommand : HttpCommandBase
     /// <param name="tenantIdentifier">The identifier of the tenant</param>
     /// <param name="regulationName">The regulation name</param>
     /// <param name="scriptObject">The scripting object</param>
-    /// <param name="objectKey">The object key, all )</param>
+    /// <param name="objectKey">The object key, all</param>
     internal async Task<ProgramExitCode> RebuildAsync(string tenantIdentifier, string regulationName,
         RegulationScriptObject? scriptObject, string objectKey = null)
     {

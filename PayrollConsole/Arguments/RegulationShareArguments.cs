@@ -21,8 +21,8 @@ public static class RegulationShareArguments
     public static ShareMode ShareMode(ShareMode defaultValue = Shared.ShareMode.View) =>
         ConsoleArguments.GetEnumToggle(defaultValue);
 
-    public static Type[] Toggles => new[]
-    {
+    public static Type[] Toggles =>
+    [
         typeof(ShareMode)
-    };
+    ];
 }

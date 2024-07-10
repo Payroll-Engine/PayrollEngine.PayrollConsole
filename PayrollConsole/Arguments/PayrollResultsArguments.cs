@@ -15,10 +15,10 @@ public static class PayrollResultsArguments
     public static ReportExportMode ResultExportMode(ReportExportMode defaultValue = ReportExportMode.NoExport) =>
         ConsoleArguments.GetEnumToggle(defaultValue);
 
-    public static Type[] Toggles => new[]
-    {
+    public static Type[] Toggles =>
+    [
         typeof(ReportExportMode)
-    };
+    ];
 
     public static string TestArguments() =>
         string.IsNullOrWhiteSpace(Tenant) ? "Missing tenant" : null;

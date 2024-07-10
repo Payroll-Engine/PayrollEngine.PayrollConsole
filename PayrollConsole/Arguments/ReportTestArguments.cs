@@ -16,11 +16,11 @@ public static class ReportTestArguments
     public static TestPrecision TestPrecision(TestPrecision defaultTestPrecision = Client.Test.TestPrecision.TestPrecision2) =>
         ConsoleArguments.GetEnumToggle(defaultTestPrecision);
 
-    public static Type[] Toggles => new[]
-    {
+    public static Type[] Toggles =>
+    [
         typeof(TestDisplayMode),
         typeof(TestPrecision)
-    };
+    ];
 
     public static string TestArguments() => null;
 }

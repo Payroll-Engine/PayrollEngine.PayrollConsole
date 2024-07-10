@@ -23,8 +23,8 @@ internal static class ExchangeExcelCaseReader
 
         // payroll
         var payroll = await GetPayrollAsync(httpClient, workbook, tenant.Id);
-        payroll.Cases = new();
-        tenant.Payrolls ??= new();
+        payroll.Cases = [];
+        tenant.Payrolls ??= [];
         tenant.Payrolls.Add(payroll);
 
         // national case value changes
@@ -161,7 +161,7 @@ internal static class ExchangeExcelCaseReader
             else
             {
                 // related case value
-                caseChangeSetup.Case.RelatedCases ??= new();
+                caseChangeSetup.Case.RelatedCases ??= [];
                 caseChangeSetup.Case.RelatedCases.Add(new()
                 {
                     CaseName = caseValuesByCase.Key,
@@ -226,7 +226,7 @@ internal static class ExchangeExcelCaseReader
             var key = new Tuple<string, string>(identifier, caseChange);
             if (!caseValuesByChanges.ContainsKey(key))
             {
-                caseValuesByChanges.Add(key, new());
+                caseValuesByChanges.Add(key, []);
             }
 
             var caseValue = new CaseValueSetup
@@ -264,7 +264,7 @@ internal static class ExchangeExcelCaseReader
                 throw new PayrollException($"Unknown employee {employeeIdentifier}");
             }
             // ensure employee in tenant
-            tenant.Employees ??= new();
+            tenant.Employees ??= [];
             if (!tenant.Employees.Any(x => string.Equals(x.Identifier, employee.Identifier)))
             {
                 tenant.Employees.Add(employee);
@@ -306,7 +306,7 @@ internal static class ExchangeExcelCaseReader
                 else
                 {
                     // related case value
-                    caseChangeSetup.Case.RelatedCases ??= new();
+                    caseChangeSetup.Case.RelatedCases ??= [];
                     caseChangeSetup.Case.RelatedCases.Add(new()
                     {
                         CaseName = caseValuesByCase.Key,

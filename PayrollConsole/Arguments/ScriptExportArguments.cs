@@ -33,10 +33,10 @@ public static class ScriptExportArguments
     public static ScriptExportObject ScriptObject() =>
         ConsoleArguments.GetEnumToggle(ScriptExportObject.All);
 
-    public static Type[] Toggles => new[]
-    {
+    public static Type[] Toggles =>
+    [
         typeof(ScriptExportMode)
-    };
+    ];
 
     public static string TestArguments()
     {

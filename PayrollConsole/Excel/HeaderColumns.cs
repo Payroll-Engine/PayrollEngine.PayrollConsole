@@ -6,8 +6,8 @@ namespace PayrollEngine.PayrollConsole.Excel;
 
 internal sealed class HeaderColumns
 {
-    internal List<int> KeyColumns { get; } = new();
-    internal List<int> ValueColumns { get; } = new();
+    internal List<int> KeyColumns { get; } = [];
+    internal List<int> ValueColumns { get; } = [];
     internal int? RangeColumn { get; }
     internal int? CreatedColumn { get; }
 

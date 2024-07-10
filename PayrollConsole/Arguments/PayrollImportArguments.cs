@@ -18,10 +18,10 @@ public static class PayrollImportArguments
     public static DataImportMode DataImportMode(DataImportMode defaultValue = Client.Exchange.DataImportMode.Single) =>
         ConsoleArguments.GetEnumToggle(defaultValue);
 
-    public static Type[] Toggles => new[]
-    {
+    public static Type[] Toggles =>
+    [
         typeof(DataImportMode)
-    };
+    ];
 
     public static string TestArguments() =>
         string.IsNullOrWhiteSpace(SourceFileName) ? "Missing source file name or file mask" : null;

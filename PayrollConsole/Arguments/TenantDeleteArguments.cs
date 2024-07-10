@@ -12,10 +12,10 @@ public static class TenantDeleteArguments
     public static ObjectDeleteMode ObjectDeleteMode(ObjectDeleteMode defaultValue = Shared.ObjectDeleteMode.Delete) =>
         ConsoleArguments.GetEnumToggle(defaultValue);
 
-    public static Type[] Toggles => new[]
-    {
+    public static Type[] Toggles =>
+    [
         typeof(ObjectDeleteMode)
-    };
+    ];
 
     public static string TestArguments() =>
         string.IsNullOrWhiteSpace(Tenant) ? "Missing tenant" : null;

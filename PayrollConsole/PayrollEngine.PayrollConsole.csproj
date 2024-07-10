@@ -10,20 +10,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Client.Services" Version="0.8.0-beta.1" />
-		<PackageReference Include="PayrollEngine.Serilog" Version="0.8.0-beta.1" />
-		<PackageReference Include="PayrollEngine.Document" Version="0.8.0-beta.1" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Compilers" Version="4.8.0" />
+		<PackageReference Include="PayrollEngine.Client.Services" Version="0.8.0-beta.2" />
+		<PackageReference Include="PayrollEngine.Serilog" Version="0.8.0-beta.2" />
+		<PackageReference Include="PayrollEngine.Document" Version="0.8.0-beta.2" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Compilers" Version="4.10.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
-		<PackageReference Include="Serilog.Settings.AppSettings" Version="2.2.2" />
-		<PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
-		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
-		<PackageReference Include="Serilog.Sinks.Console" Version="5.0.0" />
-		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-		<PackageReference Include="NPOI" Version="2.6.2" />
+		<PackageReference Include="Serilog.Settings.AppSettings" Version="3.0.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="8.0.1" />
+		<PackageReference Include="Serilog.Sinks.Async" Version="2.0.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+		<PackageReference Include="NPOI" Version="2.7.1" />
 	</ItemGroup>
 
 	<ItemGroup>
