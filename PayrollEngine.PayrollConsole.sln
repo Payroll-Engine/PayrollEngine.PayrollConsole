@@ -4,13 +4,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayrollEngine.PayrollConsole", "PayrollConsole\PayrollEngine.PayrollConsole.csproj", "{E344985D-0CB8-4146-9AEF-2AA9C2978142}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D4F2F169-2A34-4AAD-B537-365C1FBEBD88} = {D4F2F169-2A34-4AAD-B537-365C1FBEBD88}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{40FD1934-D492-4476-8505-7EFC9FA2B869}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
 		README.md = README.md
+		docs\README.pdf = docs\README.pdf
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayrollEngine.PayrollConsole.Commands", "Commands\PayrollEngine.PayrollConsole.Commands.csproj", "{D4F2F169-2A34-4AAD-B537-365C1FBEBD88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,6 +28,10 @@ Global
 		{E344985D-0CB8-4146-9AEF-2AA9C2978142}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E344985D-0CB8-4146-9AEF-2AA9C2978142}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E344985D-0CB8-4146-9AEF-2AA9C2978142}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4F2F169-2A34-4AAD-B537-365C1FBEBD88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4F2F169-2A34-4AAD-B537-365C1FBEBD88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4F2F169-2A34-4AAD-B537-365C1FBEBD88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4F2F169-2A34-4AAD-B537-365C1FBEBD88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

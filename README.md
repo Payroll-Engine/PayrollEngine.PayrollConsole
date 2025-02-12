@@ -3,68 +3,196 @@
 
 The Payroll Console application provides API-like commands. See the Payroll Engine samples and tests for examples of how to use this tool. For a better understanding of the working concepts, it is recommended to read the [Payroll Engine Whitepaper](https://github.com/Payroll-Engine/PayrollEngine/blob/main/Documents/PayrolEnginelWhitepaper.pdf).
 
+The application is controlled by two types of command line arguments:
+- Command: a single command
+- Command file: a file containing several commands.
+
 ## Commands
-Payroll Console commands:
+The Payroll Console provides the following commands:
+
 | Command              | Group            | Description                                                  |
 |--|--|--|
-| *Help*               | Common           | Show the command reference                                   |
-| *UserVariable*       | Common           | View and change the environment user variable                |
-| *Stopwatch*          | Common           | Stopwatch based on environment user variable                 |
-| *ActionReport*       | Action           | Report actions from an assembly                              |
-| *HttpGet<br/>HttpPost<br/>HttpPut<br />HttpDelete* | System | Execute http GET/POST/PUT/DELETE request |
-| *LogTrail*           | System           | Trace the tenant log <sup>1)</sup>                           |
-| *PayrollResults*     | Payroll          | Report payroll data to screen and/or file                    |
-| *PayrollImport*      | Payroll          | Import any payroll data from json/zip file                   |
-| *PayrollImportExcel* | Payroll          | Import payroll data from Excel file                          |
-| *PayrollExport*      | Payroll          | Export any payroll data to json file                         |
-| *Report*             | Report           | Report to file <sup>2)</sup>                                 |
-| *DataReport*         | Report           | Report data to json file                                     |
-| *CaseTest*           | Payroll          | Test case availability, build data and user input validation |
-| *ReportTest*         | Test             | Test report output data                                      |
-| *PayrunTest*         | Test             | Execute payrun and test the results                          |
-| *PayrunEmployeeTest* | Test             | Execute employee payrun and test the results                 |
-| *PayrunStatistics*   | Statistics       | Display payrun statistics                                    |
-| *RegulationShare*    | Regulation share | Manage regulation shares                                     |
-| *TenantDelete*       | Data management  | Delete tenant                                                |
-| *PayrunJobDelete*    | Data management  | Delete payrun job with payroll results                       |
-| *RegulationRebuild*  | Script           | Rebuild the regulation objects                               |
-| *PayrunRebuild*      | Script           | Rebuild payrun                                               |
-| *ScriptPublish*      | Script           | Publish scripts from C# file                                 |
-| *ScriptExport*       | Script           | Export regulation scripts to folder                          |
-<br/>
+| `ActionReport`       | Action           | Report custom actions from an assembly                       |
+| `CaseTest`           | Payroll          | Test case availability, build data and user input validation |
+| `ChangePassword`     | System           | Change a user password                                       |
+| `DataReport`         | Report           | Report data to JSON file                                     |
+| `Help`               | System           | Show the command reference                                   |
+| `HttpGet`<br/>`HttpPost`<br/>`HttpPut`<br />`HttpDelete` | System | Execute HTTP GET, POST, PUT or DELETE request |
+| `LogTrail`           | System           | Trace the tenant log <sup>1)</sup>                           |
+| `PayrollExport`      | Payroll          | Export any payroll data to JSON file                         |
+| `PayrollImport`      | Payroll          | Import any payroll data from JSON/zip file                   |
+| `PayrollImportExcel` | Payroll          | Import payroll data from Excel file                          |
+| `PayrollResults`     | Payroll          | Report payroll data to screen and/or file                    |
+| `PayrunEmployeeTest` | Test             | Execute employee payrun and test the results                 |
+| `PayrunJobDelete`    | Data management  | Delete payrun job with payroll results                       |
+| `PayrunRebuild`      | Script           | Rebuild payrun                                               |
+| `PayrunStatistics`   | Statistics       | Display payrun statistics                                    |
+| `PayrunTest`         | Test             | Execute payrun and test the results                          |
+| `RegulationRebuild`  | Script           | Rebuild the regulation objects                               |
+| `RegulationShare`    | Regulation share | Manage regulation shares                                     |
+| `Report`             | Report           | Report to file <sup>2)</sup>                                 |
+| `ReportTest`         | Test             | Test report output data                                      |
+| `ScriptExport`       | Script           | Export regulation scripts to folder                          |
+| `ScriptPublish`      | Script           | Publish scripts from C# file                                 |
+| `Stopwatch`          | System           | Stopwatch based on environment user variable                 |
+| `TenantDelete`       | Data management  | Delete tenant                                                |
+| `UserVariable`       | System           | View and change the environment user variable                |
+| `Write`              | System           | Write to the console and/or log file                         |
 
 <sup>1)</sup> Tenant logs are generated by the regulations and should not be confused with the application log.<br/>
 <sup>2)</sup> Based on [FastReports](https://github.com/FastReports).<br/>
 
-An example how to import ap payroll from a JSON file:<br />
+The required command parameters and options/toggles are passed after the command name. An example of how to bulk import a payroll from a JSON file:
+```cmd
+PayrollConsole PayrollImport MyPayroll.json /bulk
 ```
-C:> PayrollConsole PayrollImport MyPayroll.json /bulk
+
+The `Help` command describes the commands and their parameters:
+```cmd
+PayrollConsole Help PayrollImport
 ```
-<br />
+
+## Command Files
+The command file is a file with the extension `.pecmd` that contains a series of instructions to the Payroll Engine Console. The lines of the file are executed sequentially and contain the following line types
+- Comment starting with `#`
+- Command instruction
+- Start another command file
+
+Example command file `Delete.pecmd` with a comment and a command statement:
+```txt
+# delete my tenant
+TenantDelete MyTenant /trydelete
+```
+
+The following example uses the `Delete.pecmd` command file and then runs the command to test the payrun:
+```txt
+# clranup and execute test
+Delete.pecmd
+PayrunTest *.pt.json
+```
+
+### Command files access path
+If the called command file is in a different folder, it will be activated before execution:
+```txt
+Test1/Test.pecmd
+Test2/Test.pecmd
+```
+
+This is necessary if the called command file is to be defined with local references. The `keeppath` option prevents directories from being changed:
+```txt
+Tools/Import1.pecmd /keeppath
+Tools/Import2.pecmd /keeppath
+```
+
+In the example above, both import command files are run in the startup folder.
+
+### Command file parameters
+Command files can also be controlled by parameters. Such parameters are used with the placeholder `$Name$` in the commands. In the following example, the command file `OwnerTest.pecmd` has the parameter `Owner`:
+```txt
+# payrun employee test
+# argument owner: job owner
+PayrunEmployeeTest fileMask:*.et.json owner:$owner$ /wait
+```
+
+Calling this command file with the `Owner` parameter looks like this:
+```txt
+OwnerTest.pecmd owner:Test01
+```
+
+### Command files in the operating system
+Command file association in [Windows](https://superuser.com/a/1080459):
+1. Open File Explorer (right click Start -> File Explorer)
+2. Find the file you want to associate
+3. Right click the file and select `Properties`
+4. In this window click `Opens With: Change...`
+5. Select the payroll console program
+
+Command file association in [MacOS](https://support.apple.com/en-sa/guide/mac-help/mh35597/mac):
+1. On your Mac, click the Finder icon in the Dock to open a Finder window.
+2. Select a file, then choose `File` > `Get Info`.
+3. You can also Control-click the file, then choose `Get Info`.
+4. In the Info window, click the arrow next to `Open with`.
+5. Click the pop-up menu, choose an app, then click `Change All`.
+
+> Note: Don’t click `Change All` if you only want the specific file you selected to open with that app.
+
+Command file association in [Linux](https://www.rigacci.org/wiki/doku.php/doc/appunti/linux/tux/mimetype):
+1. TODO
+
+### Global Toggles
+The following toggles apply to all Payroll Console commands:
+
+| Name           | Description                  | Values                                     | Command file                     |
+|:--|:--|:--|:--|
+| Display level  | Command information level    | `full` <sup>1)</sup>, `compact`, `silent`  | Preset for executing commands    |
+| Error mode     | Show failed tests and errors | `errors`<sup>1)</sup>, `noerrors`          | Preset for executing commands    |
+| Wait mode      | Wait at the program end      | `waiterror`<sup>1)</sup>, `wait`, `nowait` | Final application wait mode      |
+| Path mode      | Path change mode             | `changepath`<sup>1)</sup>, `keeppath`      | Only for command files           |
+
+<sup>1)</sup> Default value.<br/>
+
+## Application Extensions
+The Payroll Console provides a plug-in mechanism for integrating custom commands:
+- Command parameters with names and options
+- Access to the Payroll REST API via the Payroll HTTP client
+- Control output to console and logger
+- Program exit code definition
+
+To develop a Payroll Console extension, do the following
+1. Develop the extension library in C# (example [PayrollEngine.Client.Tutorials](https://github.com/Payroll-Engine/PayrollEngine.Client.Tutorials)).
+2. Copy the output DLL of the library into the `extensions` subfolder of the application.
+3. Display the command help `PayrollEngine Help MyCommandName`.
+4. Run the command with `PayrollEngine MyCommandName`.
 
 ## Application Configuration
-The Payroll Console configuration `PayrollConsole\appsetings.json` contains the following settings:
+The Payroll Console configuration `appsetings.json` contains the following settings:
 
-### Payroll Console Configuration
-| Setting      | Description            | Default |
+| Setting          | Description                          | Type                                       | Default        |
 |:--|:--|:--|
-| `StartupCulture` | The payroll console process culture (string) | System culture |
+| `StartupCulture` | The payroll console process culture  | string                                     | System culture |
+| `ApiSettings`    | The payroll backend configuration    | [Http Config](#payroll-http-configuration) |                |
+| `Serilog`        | Logger configuration                 | [Serilog](https://serilog.net/)            |                |
 
-### Payroll Http Configuration
-| Setting      | Description                          | Default        |
-|:--|:--|:--|
-| `BaseUrl` | The backend base URL (string)           |                |
-| `Port` | The backend url port (string)              |                |
-| `Timeout` | The backend request timeout (TimeSpan)  | 100 seconds    |
+### Payroll HTTP Configuration
+
+| Setting   | Description                     | Type       | Default     |
+|:--|:--|:--|:--|
+| `BaseUrl` | The backend base url            | string     |             |
+| `Port`    | The backend url port            | string     |             |
+| `Timeout` | The backend request timeout     | TimeSpan   | 100 seconds |
+| `ApiKey`  | The backend API key             | string     |             |
+
+The Payroll HTTP client configuration can be declared in the following locations.
+
+| Priority | Source                                          | Description                                                        |
+|--|--|--|
+| 1.       | Environment variable `PayrollApiConnection`     | Connection string with the HTTP client configuration               |
+| 2.       | Environment variable `PayrollApiConfiguration`  | HTTP client configuration JSON file name                           |
+| 3.       | File `apisettings.json`                         | HTTP client configuration JSON file located in the program folder  |
+| 4.       | File `appsettings.json`                         | HTTP client configuration from the program configuration JSON file |
 
 ### Serilog
 File and console logging with [Serilog](https://serilog.net/).
 
 > It is recommended that you save the application settings within your local [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
 
+## Api Key
+If a key is required to access the backend API, it must be obtained from one of the following sources (in order of priority):
+
+1. Environment variable `PayrollApiKey`
+2. Payroll HTTP configuration (see `PayrollEngine.Client.Core`)
+
 ## Application Logs
-Under Windows, the payroll console stores its logs in the system folder `%ProgramData%\PayrollConsole\logs`.
+The payroll console stores its logs in the application folder `logs`.
+
+## Solution projects
+The.NET Core application consists of the following projects:
+
+| Name                                     | Type     | Description         |
+|:--|:--|:--|
+| `PayrollEngine.PayrollConsole.Commands`  | Library  | Console commands    |
+| `PayrollEngine.PayrollConsole`           | Exe      | Console application |
 
 ## Third party components
-- Excel conversion with [NPOI](https://github.com/dotnetcore/NPOI/) - licence `Apache 2.0`
-- Logging with [Serilog](https://github.com/serilog/serilog/) - licence `Apache 2.0`
+- Excel conversion with [NPOI](https://github.com/dotnetcore/NPOI/) - license `Apache 2.0`
+- Logging with [Serilog](https://github.com/serilog/serilog/) - license `Apache 2.0`
