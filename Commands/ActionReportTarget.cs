@@ -1,17 +1,17 @@
 ﻿namespace PayrollEngine.PayrollConsole.Commands;
 
 /// <summary>
-/// Test display mode
+/// Action report target
 /// </summary>
-public enum TestDisplayMode
+public enum ActionReportTarget
 {
     /// <summary>
-    /// Show failed tests
+    /// Markdown
     /// </summary>
-    ShowFailed,
+    ActionMarkdown,
 
     /// <summary>
-    /// Show all tests
+    /// Json
     /// </summary>
-    ShowAll
+    ActionJson
 }

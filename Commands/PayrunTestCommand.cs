@@ -11,6 +11,9 @@ using PayrollEngine.Client.Scripting.Script;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Payrun test command
+/// </summary>
 [Command("PayrunTest")]
 // ReSharper disable once UnusedType.Global
 internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParameters>
@@ -26,6 +29,9 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
     ///   4. Compare the file results with the calculated payrun results (results must be present)
     ///   5. Remove test payroll
     /// </summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, PayrunTestParameters parameters)
     {
         if (string.IsNullOrWhiteSpace(parameters.FileMask))
@@ -105,9 +111,11 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
         }
     }
 
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         PayrunTestParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- PayrunTest");

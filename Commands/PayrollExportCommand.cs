@@ -2,20 +2,26 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using PayrollEngine.Client.Command;
 using PayrollEngine.IO;
 using PayrollEngine.Client.Model;
+using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Exchange;
 using PayrollEngine.Client.Service.Api;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Payroll export command
+/// </summary>
 [Command("PayrollExport")]
 // ReSharper disable once UnusedType.Global
 internal sealed class PayrollExportCommand : CommandBase<PayrollExportParameters>
 {
     /// <summary>Export a tenant to a JSON file
     /// By default the file name is the tenant identifier including a timestamp</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, PayrollExportParameters parameters)
     {
         // target file name
@@ -103,9 +109,11 @@ internal sealed class PayrollExportCommand : CommandBase<PayrollExportParameters
         }
     }
 
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         PayrollExportParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- PayrollExport");

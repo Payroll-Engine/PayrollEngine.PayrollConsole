@@ -3,9 +3,9 @@ using NPOI.SS.UserModel;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
-public static class RowExtensions
+internal static class RowExtensions
 {
-    public static bool IsBlank(this IRow row)
+    internal static bool IsBlank(this IRow row)
     {
         if (row == null || !row.Cells.Any())
         {

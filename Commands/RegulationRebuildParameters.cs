@@ -4,26 +4,35 @@ using PayrollEngine.Client.Script;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Regulation rebuild command parameters
+/// </summary>
 public class RegulationRebuildParameters : ICommandParameters
 {
-    public string Tenant{ get; init; }
+    /// <summary>
+    /// Tenant
+    /// </summary>
+    public string Tenant { get; init; }
+
+    /// <summary>
+    /// Regulation
+    /// </summary>
     public string Regulation { get; init; }
+
+    /// <summary>
+    /// Object type
+    /// </summary>
     public string ObjectType { get; init; }
+
+    /// <summary>
+    /// Objectkey
+    /// </summary>
     public string ObjectKey { get; init; }
+
+    /// <inheritdoc />
     public Type[] Toggles => null;
 
-    public RegulationScriptObject? ScriptObject
-    {
-        get
-        {
-            if (Enum.TryParse<RegulationScriptObject>(ObjectType, true, out var scriptObject))
-            {
-                return scriptObject;
-            }
-            return null;
-        }
-    }
-
+    /// <inheritdoc />
     public string Test()
     {
         if (string.IsNullOrWhiteSpace(Tenant))
@@ -36,7 +45,26 @@ public class RegulationRebuildParameters : ICommandParameters
         }
         return string.IsNullOrWhiteSpace(Regulation) ? "Missing regulation name" : null;
     }
-    
+
+    /// <summary>
+    /// Script object
+    /// </summary>
+    public RegulationScriptObject? ScriptObject
+    {
+        get
+        {
+            if (Enum.TryParse<RegulationScriptObject>(ObjectType, true, out var scriptObject))
+            {
+                return scriptObject;
+            }
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Parse command parameters
+    /// </summary>
+    /// <param name="parser">Parameter parser</param>
     public static RegulationRebuildParameters ParserFrom(CommandLineParser parser) =>
         new()
         {

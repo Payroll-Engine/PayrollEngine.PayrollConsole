@@ -8,11 +8,17 @@ using PayrollEngine.Client.Test.Case;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Case test command
+/// </summary>
 [Command("CaseTest")]
 // ReSharper disable once UnusedType.Global
 internal sealed class CaseTestCommand : TestCommandBase<CaseTestParameters>
 {
     /// <summary>Test a case</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, CaseTestParameters parameters)
     {
         if (string.IsNullOrWhiteSpace(parameters.FileMask))
@@ -76,9 +82,12 @@ internal sealed class CaseTestCommand : TestCommandBase<CaseTestParameters>
             return (int)ProgramExitCode.GenericError;
         }
     }
+
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         CaseTestParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- CaseTest");

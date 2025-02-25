@@ -9,6 +9,9 @@ using PayrollEngine.PayrollConsole.Commands.Excel;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Payroll import excel command
+/// </summary>
 [Command("PayrollImportExcel")]
 // ReSharper disable once UnusedType.Global
 internal sealed class PayrollImportExcelCommand : CommandBase<PayrollImportExcelParameters>
@@ -16,6 +19,9 @@ internal sealed class PayrollImportExcelCommand : CommandBase<PayrollImportExcel
     private IScriptParser ScriptParser { get; } = new ScriptParser();
 
     /// <summary>Import a tenant from an Excel file</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, PayrollImportExcelParameters parameters)
     {
         DisplayTitle(context.Console, "Payroll import from Excel");
@@ -51,9 +57,11 @@ internal sealed class PayrollImportExcelCommand : CommandBase<PayrollImportExcel
         }
     }
 
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         PayrollImportExcelParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- PayrollImportExcel");

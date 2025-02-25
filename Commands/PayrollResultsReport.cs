@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Globalization;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using PayrollEngine.Client;
 using PayrollEngine.Client.Model;
 using PayrollEngine.Client.Service;
@@ -13,6 +13,12 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Payroll results report
+/// </summary>
+/// <param name="httpClient">Http client</param>
+/// <param name="topFilter">Top filter count</param>
+/// <param name="exportMode">Export mode</param>
 public class PayrollResultsReport(PayrollHttpClient httpClient, int topFilter, ReportExportMode exportMode)
 {
     private sealed class ReportColumn
@@ -43,12 +49,19 @@ public class PayrollResultsReport(PayrollHttpClient httpClient, int topFilter, R
     ];
 
     private static readonly string ExportSeparator = "\t";
-    public static readonly string ResultsFolderName = "Results";
-
     private PayrollHttpClient HttpClient { get; } = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     private int TopFilter { get; } = topFilter;
     private ReportExportMode ExportMode { get; } = exportMode;
 
+    /// <summary>
+    /// Results folder name
+    /// </summary>
+    public static readonly string ResultsFolderName = "Results";
+
+    /// <summary>
+    /// Console write
+    /// </summary>
+    /// <param name="tenantIdentifier">Tenant</param>
     public async Task ConsoleWriteAsync(string tenantIdentifier)
     {
         // tenant

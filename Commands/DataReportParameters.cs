@@ -3,21 +3,56 @@ using PayrollEngine.Client.Command;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Data report command parameters
+/// </summary>
 public class DataReportParameters : ICommandParameters
 {
+    /// <summary>
+    /// Output file
+    /// </summary>
     public string OutputFile { get; init; }
+
+    /// <summary>
+    /// Tenant
+    /// </summary>
     public string Tenant { get; init; }
+
+    /// <summary>
+    /// User
+    /// </summary>
     public string User { get; init; }
+
+    /// <summary>
+    /// Regulation
+    /// </summary>
     public string Regulation { get; init; }
+
+    /// <summary>
+    /// Report
+    /// </summary>
     public string Report { get; init; }
+
+    /// <summary>
+    /// Parameters file
+    /// </summary>
     public string ParametersFile { get; init; }
+
+    /// <summary>
+    /// Culture
+    /// </summary>
     public string Culture { get; init; }
+
+    /// <summary>
+    /// Post action (default: none)
+    /// </summary>
     public ReportPostAction PostAction { get; private init; } = ReportPostAction.NoAction;
 
+    /// <inheritdoc />
     public Type[] Toggles => null;
-    public string Test() => null;
 
-    public string TestArguments()
+    /// <inheritdoc />
+    public string Test()
     {
         if (string.IsNullOrWhiteSpace(OutputFile))
         {
@@ -42,6 +77,10 @@ public class DataReportParameters : ICommandParameters
         return null;
     }
 
+    /// <summary>
+    /// Parse command parameters
+    /// </summary>
+    /// <param name="parser">Parameter parser</param>
     public static DataReportParameters ParserFrom(CommandLineParser parser) =>
         new()
         {

@@ -5,7 +5,7 @@ using NPOI.SS.Util;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
-public static class SheetExtensions
+internal static class SheetExtensions
 {
     private static int GetMaxPhysicalNumberOfCells(this ISheet worksheet)
     {
@@ -21,10 +21,10 @@ public static class SheetExtensions
         return maxColumnCount;
     }
 
-    public static ICell HeaderCell(this ISheet worksheet, int column) =>
+    internal static ICell HeaderCell(this ISheet worksheet, int column) =>
         worksheet.GetRow(0).GetCell(column);
 
-    public static List<ICell> HeaderCells(this ISheet worksheet) =>
+    internal static List<ICell> HeaderCells(this ISheet worksheet) =>
         worksheet.RowCells(0);
 
     private static List<ICell> RowCells(this ISheet worksheet, int row)
@@ -37,7 +37,7 @@ public static class SheetExtensions
         return cells;
     }
 
-    public static T GetCellValue<T>(this ISheet sheet, string address)
+    internal static T GetCellValue<T>(this ISheet sheet, string address)
     {
         if (string.IsNullOrWhiteSpace(address))
         {
@@ -61,7 +61,7 @@ public static class SheetExtensions
         return cell.GetCellValue<T>();
     }
 
-    public static object GetCellValue(this ICell cell)
+    internal static object GetCellValue(this ICell cell)
     {
         return cell.CellType switch
         {
@@ -80,7 +80,7 @@ public static class SheetExtensions
     /// <param name="cell">The source cell</param>
     /// <param name="provider">The format provider</param>
     /// <returns>The cell value</returns>
-    public static T GetCellValue<T>(this ICell cell, IFormatProvider provider = null)
+    internal static T GetCellValue<T>(this ICell cell, IFormatProvider provider = null)
     {
         if (cell == null)
         {

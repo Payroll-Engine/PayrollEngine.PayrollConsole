@@ -4,15 +4,25 @@ using PayrollEngine.Client.Command;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Help command
+/// </summary>
 [Command("Help")]
 // ReSharper disable once UnusedType.Global
 public sealed class HelpCommand : CommandBase<HelpParameters>
 {
+    /// <summary>Sho help</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override Task<int> Execute(CommandContext context, HelpParameters parameters)
     {
         Show(context.Console, context.CommandManager, parameters.Command);
         return Task.FromResult((int)ProgramExitCode.Ok);
     }
+
+    /// <inheritdoc />
+    public override bool BackendCommand => false;
 
     /// <summary>
     /// Show the application help
@@ -91,6 +101,7 @@ public sealed class HelpCommand : CommandBase<HelpParameters>
         }
     }
 
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         HelpParameters.ParserFrom(parser);
 }

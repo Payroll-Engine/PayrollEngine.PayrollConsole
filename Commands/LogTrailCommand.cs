@@ -12,11 +12,17 @@ using PayrollEngine.Client.Service.Api;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// LOg tail command
+/// </summary>
 [Command("LogTrail")]
 // ReSharper disable once UnusedType.Global
 internal sealed class LogTrailCommand : CommandBase<LogTrailParameters>
 {
     /// <summary>Start log trail</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, LogTrailParameters parameters)
     {
         DisplayTitle(context.Console, "Log trail");
@@ -74,9 +80,11 @@ internal sealed class LogTrailCommand : CommandBase<LogTrailParameters>
         return (int)ProgramExitCode.Ok;
     }
 
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         LogTrailParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- LogTrail");

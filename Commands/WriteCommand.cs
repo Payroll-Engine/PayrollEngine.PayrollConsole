@@ -4,11 +4,17 @@ using PayrollEngine.Client.Command;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Write command
+/// </summary>
 [Command("Write")]
 // ReSharper disable once UnusedType.Global
 internal sealed class WriteCommand : CommandBase<WriteParameters>
 {
     /// <summary>Process the variable</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override Task<int> Execute(CommandContext context, WriteParameters parameters)
     {
         if (string.IsNullOrWhiteSpace(parameters.Text))
@@ -81,9 +87,14 @@ internal sealed class WriteCommand : CommandBase<WriteParameters>
         }
     }
 
+    /// <inheritdoc />
+    public override bool BackendCommand => false;
+
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         WriteParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- Write");

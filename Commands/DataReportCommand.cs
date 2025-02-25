@@ -5,18 +5,24 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using PayrollEngine.Client.Command;
 using PayrollEngine.IO;
 using PayrollEngine.Client.Model;
+using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Service.Api;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Data report command
+/// </summary>
 [Command("DataReport")]
 // ReSharper disable once UnusedType.Global
 internal sealed class DataReportCommand : CommandBase<DataReportParameters>
 {
     /// <summary>Build report</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, DataReportParameters parameters)
     {
         if (string.IsNullOrWhiteSpace(parameters.OutputFile))
@@ -176,9 +182,11 @@ internal sealed class DataReportCommand : CommandBase<DataReportParameters>
         }
     }
 
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         DataReportParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- DataReport");

@@ -23,11 +23,17 @@ using PayrollEngine.Client.Scripting.Function.Api;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Report command
+/// </summary>
 [Command("Report")]
 // ReSharper disable once UnusedType.Global
 internal sealed class ReportCommand : CommandBase<ReportParameters>
 {
     /// <summary>Build report</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, ReportParameters parameters)
     {
         if (string.IsNullOrWhiteSpace(parameters.Tenant))
@@ -490,6 +496,7 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
         return template;
     }
 
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         ReportParameters.ParserFrom(parser);
 
@@ -497,6 +504,7 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
 
     #region Help
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- Report");

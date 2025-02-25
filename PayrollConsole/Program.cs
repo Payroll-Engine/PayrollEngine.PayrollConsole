@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
-using System.Security.Authentication;
 using System.Threading.Tasks;
+using System.Security.Authentication;
 using PayrollEngine.Client;
 using PayrollEngine.Serilog;
 using PayrollEngine.Client.Command;
@@ -14,17 +14,35 @@ sealed class Program : ConsoleProgram<Program>
     private static ILogger Logger { get; } = Log.Logger;
     private static ICommandConsole Console { get; } = new CommandConsole();
 
+    private CommandManager CommandManager { get; set; }
+
     /// <inheritdoc />
     protected override bool LogLifecycle => false;
 
     /// <summary>Mandatory argument: command</summary>
     protected override int MandatoryArgumentCount => 1;
 
+    private Program()
+    {
+    }
+
+    /// <inheritdoc />
+    protected override bool UseHttpClient()
+    {
+        var command = CommandManager.GetCommandLineCommand();
+        return command == null || command.BackendCommand;
+    }
+
     /// <inheritdoc />
     protected override Task SetupLogAsync()
     {
         // logger setup
         Configuration.Configuration.SetupSerilog();
+
+        // command manager
+        CommandManager = new CommandManager(Console, Logger);
+        CommandProvider.RegisterCommands(CommandManager, Logger);
+
         return base.SetupLogAsync();
     }
 
@@ -55,8 +73,7 @@ sealed class Program : ConsoleProgram<Program>
         try
         {
             // execution command
-            var commandManager = CreateCommandManager();
-            var exitCode = await commandManager.ExecuteAsync(HttpClient);
+            var exitCode = await CommandManager.ExecuteAsync(HttpClient);
             ProgramEnd(exitCode);
         }
         catch (Exception exception)
@@ -69,18 +86,11 @@ sealed class Program : ConsoleProgram<Program>
     protected override async Task HelpAsync()
     {
         var context = new CommandContext(
-            commandManager: CreateCommandManager(),
+            commandManager: CommandManager,
             console: Console);
         var helpCommand = new HelpCommand();
         await helpCommand.ExecuteAsync(context, new HelpParameters());
         await base.HelpAsync();
-    }
-
-    private CommandManager CreateCommandManager()
-    {
-        var commandManager = new CommandManager(Console, Logger);
-        CommandProvider.RegisterCommands(commandManager, Logger);
-        return commandManager;
     }
 
     private static void ProgramEnd(int exitCode, bool failedCommand = false)

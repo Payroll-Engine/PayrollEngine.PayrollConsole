@@ -4,5 +4,5 @@ namespace PayrollEngine.PayrollConsole.Commands.Script;
 
 internal interface IScriptPublisher
 {
-    public Task<bool> PublishAsync(PublishContext context);
+    internal Task<bool> PublishAsync(PublishContext context);
 }

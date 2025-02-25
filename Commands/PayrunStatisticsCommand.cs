@@ -3,19 +3,23 @@ using System.Linq;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Model;
+using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Service.Api;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Payrun statistics command
+/// </summary>
 [Command("PayrunStatistics")]
 // ReSharper disable once UnusedType.Global
 internal sealed class PayrunStatisticsCommand : CommandBase<PayrunStatisticsParameters>
 {
-    /// <summary>
-    /// Show the payrun statistics
-    /// </summary>
+    /// <summary>Show the payrun statistics</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, PayrunStatisticsParameters parameters)
     {
         if (string.IsNullOrWhiteSpace(parameters.Tenant))
@@ -108,9 +112,11 @@ internal sealed class PayrunStatisticsCommand : CommandBase<PayrunStatisticsPara
         }
     }
 
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         PayrunStatisticsParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- PayrunStatistics");

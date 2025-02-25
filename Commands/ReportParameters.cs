@@ -4,26 +4,69 @@ using PayrollEngine.Document;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Report command parameters
+/// </summary>
 public class ReportParameters : ICommandParameters
 {
+    /// <summary>
+    /// Default parameter file name
+    /// </summary>
     public readonly string DefaultParameterFileName = "parameters.json";
 
+    /// <summary>
+    /// Tenant
+    /// </summary>
     public string Tenant { get; init; }
+
+    /// <summary>
+    /// USer
+    /// </summary>
     public string User { get; init; }
+
+    /// <summary>
+    /// Regulation
+    /// </summary>
     public string Regulation { get; init; }
+
+    /// <summary>
+    /// Report
+    /// </summary>
     public string Report { get; init; }
+
+    /// <summary>
+    /// Parameter file
+    /// </summary>
     public string ParameterFile { get; init; }
+
+    /// <summary>
+    /// Culture
+    /// </summary>
     public string Culture { get; init; }
+
+    /// <summary>
+    /// Target file
+    /// </summary>
     public string TargetFile { get; init; }
+
+    /// <summary>
+    /// Document type (default: pdf)
+    /// </summary>
     public DocumentType DocumentType { get; private init; } = DocumentType.Pdf;
+
+    /// <summary>
+    /// Report post action(default: none)
+    /// </summary>
     public ReportPostAction PostAction { get; private init; } = ReportPostAction.NoAction;
 
+    /// <inheritdoc />
     public Type[] Toggles =>
     [
         typeof(DocumentType),
         typeof(ReportPostAction)
     ];
 
+    /// <inheritdoc />
     public string Test()
     {
         if (string.IsNullOrWhiteSpace(Tenant))
@@ -45,6 +88,10 @@ public class ReportParameters : ICommandParameters
         return null;
     }
 
+    /// <summary>
+    /// Parse command parameters
+    /// </summary>
+    /// <param name="parser">Parameter parser</param>
     public static ReportParameters ParserFrom(CommandLineParser parser) =>
         new()
         {

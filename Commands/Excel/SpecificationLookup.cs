@@ -1,10 +1,10 @@
 ﻿namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
-public static class SpecificationLookup
+internal static class SpecificationLookup
 {
-    public static readonly string Key = "Key";
-    public static readonly string Created = "Created";
-    public static readonly string Value = "Value";
-    public static readonly string ValueMask = "Value.";
-    public static readonly string Range = "Range";
+    internal static readonly string Key = "Key";
+    internal static readonly string Created = "Created";
+    internal static readonly string Value = "Value";
+    internal static readonly string ValueMask = "Value.";
+    internal static readonly string Range = "Range";
 }

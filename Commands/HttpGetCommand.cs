@@ -9,6 +9,9 @@ namespace PayrollEngine.PayrollConsole.Commands;
 internal sealed class HttpGetCommand : HttpCommandBase<HttpGetParameters>
 {
     /// <summary>Http GET request</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, HttpGetParameters parameters)
     {
         try
@@ -29,9 +32,11 @@ internal sealed class HttpGetCommand : HttpCommandBase<HttpGetParameters>
         }
     }
 
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         HttpGetParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- HttpGet");

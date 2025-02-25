@@ -4,18 +4,24 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Client;
-using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Model;
+using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Service.Api;
 using PayrollEngine.Client.QueryExpression;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Regulation share command
+/// </summary>
 [Command("RegulationShare")]
 // ReSharper disable once UnusedType.Global
 internal sealed class RegulationShareCommand : CommandBase<RegulationShareParameters>
 {
     /// <summary>Regulation share setup</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, RegulationShareParameters parameters)
     {
         var changeMode = parameters.ShareMode != ShareMode.View;
@@ -325,9 +331,11 @@ internal sealed class RegulationShareCommand : CommandBase<RegulationShareParame
             ConsumerDivisionName = consumerDivision?.Name
         };
 
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         RegulationShareParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- RegulationShare");

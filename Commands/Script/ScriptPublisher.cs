@@ -14,13 +14,13 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.PayrollConsole.Commands.Script;
 
-public class ScriptPublisher(PayrollHttpClient httpClient)
+internal class ScriptPublisher(PayrollHttpClient httpClient)
 {
     private PayrollHttpClient HttpClient { get; } = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
     #region Publish
 
-    public async Task<int> Publish(string sourceFile, string sourceScript = null)
+    internal async Task<int> Publish(string sourceFile, string sourceScript = null)
     {
         if (string.IsNullOrWhiteSpace(sourceFile))
         {
@@ -114,7 +114,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class CaseAvailableScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var caseScriptAttribute = context.ScriptAttribute as CaseAvailableScriptAttribute;
             if (context.FunctionAttribute is not CaseAvailableFunctionAttribute caseFunctionAttribute || caseScriptAttribute == null)
@@ -147,7 +147,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class CaseBuildScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var caseFunctionAttribute = context.FunctionAttribute as CaseBuildFunctionAttribute;
             var caseScriptAttribute = context.ScriptAttribute as CaseBuildScriptAttribute;
@@ -181,7 +181,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class CaseValidateScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var caseFunctionAttribute = context.FunctionAttribute as CaseValidateFunctionAttribute;
             var caseScriptAttribute = context.ScriptAttribute as CaseValidateScriptAttribute;
@@ -215,7 +215,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class CaseRelationBuildScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var caseRelationFunctionAttribute = context.FunctionAttribute as CaseRelationBuildFunctionAttribute;
             var caseRelationScriptAttribute = context.ScriptAttribute as CaseRelationBuildScriptAttribute;
@@ -254,7 +254,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class CaseRelationValidateScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var caseRelationFunctionAttribute = context.FunctionAttribute as CaseRelationValidateFunctionAttribute;
             var caseRelationScriptAttribute = context.ScriptAttribute as CaseRelationValidateScriptAttribute;
@@ -293,7 +293,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class CollectorStartScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var collectorFunctionAttribute = context.FunctionAttribute as CollectorStartFunctionAttribute;
             var collectorScriptAttribute = context.ScriptAttribute as CollectorStartScriptAttribute;
@@ -329,7 +329,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class CollectorApplyScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var collectorFunctionAttribute = context.FunctionAttribute as CollectorApplyFunctionAttribute;
             var collectorScriptAttribute = context.ScriptAttribute as CollectorApplyScriptAttribute;
@@ -365,7 +365,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class CollectorEndScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var collectorFunctionAttribute = context.FunctionAttribute as CollectorEndFunctionAttribute;
             var collectorScriptAttribute = context.ScriptAttribute as CollectorEndScriptAttribute;
@@ -401,7 +401,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class WageTypeValueScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var wageTypeFunctionAttribute = context.FunctionAttribute as WageTypeValueFunctionAttribute;
             var wageTypeScriptAttribute = context.ScriptAttribute as WageTypeValueScriptAttribute;
@@ -437,7 +437,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class WageTypeResultScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var wageTypeFunctionAttribute = context.FunctionAttribute as WageTypeResultFunctionAttribute;
             var wageTypeScriptAttribute = context.ScriptAttribute as WageTypeResultScriptAttribute;
@@ -473,7 +473,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class ReportBuildScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var reportFunctionAttribute = context.FunctionAttribute as ReportBuildFunctionAttribute;
             var reportScriptAttribute = context.ScriptAttribute as ReportBuildScriptAttribute;
@@ -509,7 +509,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class ReportStartScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var reportFunctionAttribute = context.FunctionAttribute as ReportStartFunctionAttribute;
             var reportScriptAttribute = context.ScriptAttribute as ReportStartScriptAttribute;
@@ -545,7 +545,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class ReportEndScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var reportFunctionAttribute = context.FunctionAttribute as ReportEndFunctionAttribute;
             var reportScriptAttribute = context.ScriptAttribute as ReportEndScriptAttribute;
@@ -581,7 +581,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class PayrunStartScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var payrunScriptAttribute = context.ScriptAttribute as PayrunStartScriptAttribute;
             if (payrunScriptAttribute == null)
@@ -607,7 +607,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class PayrunEmployeeAvailableScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var payrunScriptAttribute = context.ScriptAttribute as PayrunEmployeeAvailableScriptAttribute;
             if (payrunScriptAttribute == null)
@@ -633,7 +633,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class PayrunEmployeeStartScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var payrunScriptAttribute = context.ScriptAttribute as PayrunEmployeeStartScriptAttribute;
             if (payrunScriptAttribute == null)
@@ -659,7 +659,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class PayrunWageTypeAvailableScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var payrunScriptAttribute = context.ScriptAttribute as PayrunWageTypeAvailableScriptAttribute;
             if (payrunScriptAttribute == null)
@@ -685,7 +685,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class PayrunEmployeeEndScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var payrunScriptAttribute = context.ScriptAttribute as PayrunEmployeeEndScriptAttribute;
             if (payrunScriptAttribute == null)
@@ -711,7 +711,7 @@ public class ScriptPublisher(PayrollHttpClient httpClient)
 
     private sealed class PayrunEndScriptPublisher : IScriptPublisher
     {
-        public async Task<bool> PublishAsync(PublishContext context)
+        async Task<bool> IScriptPublisher.PublishAsync(PublishContext context)
         {
             var payrunScriptAttribute = context.ScriptAttribute as PayrunEndScriptAttribute;
             if (payrunScriptAttribute == null)

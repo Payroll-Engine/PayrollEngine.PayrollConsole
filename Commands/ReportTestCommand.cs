@@ -1,18 +1,24 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Test;
 using PayrollEngine.Serialization;
+using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Test.Report;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Report test command
+/// </summary>
 [Command("ReportTest")]
 // ReSharper disable once UnusedType.Global
 internal sealed class ReportTestCommand : TestCommandBase<ReportTestParameters>
 {
     /// <summary>Test a report</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, ReportTestParameters parameters)
     {
         if (string.IsNullOrWhiteSpace(parameters.FileMask))
@@ -79,9 +85,11 @@ internal sealed class ReportTestCommand : TestCommandBase<ReportTestParameters>
         }
     }
 
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         ReportTestParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- ReportTest");

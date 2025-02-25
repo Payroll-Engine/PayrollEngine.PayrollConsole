@@ -2,13 +2,16 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Script;
+using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Exchange;
 using PayrollEngine.Client.Scripting.Script;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Payroll import command
+/// </summary>
 [Command("PayrollImport")]
 // ReSharper disable once UnusedType.Global
 internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters>
@@ -16,6 +19,9 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
     private IScriptParser ScriptParser { get; } = new ScriptParser();
 
     /// <summary>Import a tenant from a JSON file</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, PayrollImportParameters parameters)
     {
         DisplayTitle(context.Console, "Payroll import");
@@ -85,9 +91,11 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
         }
     }
 
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         PayrollImportParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- PayrollImport");

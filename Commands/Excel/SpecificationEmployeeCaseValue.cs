@@ -1,15 +1,15 @@
 ﻿namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
-public static class SpecificationEmployeeCaseValue
+internal static class SpecificationEmployeeCaseValue
 {
-    public static readonly string Identifier = "Identifier";
-    public static readonly string CaseChange = "CaseChange";
-    public static readonly string CaseName = "CaseName";
-    public static readonly string CaseFieldName = "CaseFieldName";
-    public static readonly string CaseSlot = "CaseSlot";
-    public static readonly string Created = "Created";
-    public static readonly string Value = "Value";
-    public static readonly string Start = "Start";
-    public static readonly string End = "End";
-    public static readonly string Cancellation = "Cancellation";
+    internal static readonly string Identifier = "Identifier";
+    internal static readonly string CaseChange = "CaseChange";
+    internal static readonly string CaseName = "CaseName";
+    internal static readonly string CaseFieldName = "CaseFieldName";
+    internal static readonly string CaseSlot = "CaseSlot";
+    internal static readonly string Created = "Created";
+    internal static readonly string Value = "Value";
+    internal static readonly string Start = "Start";
+    internal static readonly string End = "End";
+    internal static readonly string Cancellation = "Cancellation";
 }

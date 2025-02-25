@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
-using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Model;
+using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Service.Api;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Change password command
+/// </summary>
 [Command("ChangePassword")]
 // ReSharper disable once UnusedType.Global
 internal sealed class ChangePasswordCommand : CommandBase<ChangePasswordParameters>
 {
     /// <summary>Change the user password</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, ChangePasswordParameters parameters)
     {
         if (string.IsNullOrWhiteSpace(parameters.Tenant))
@@ -103,9 +109,12 @@ internal sealed class ChangePasswordCommand : CommandBase<ChangePasswordParamete
             return (int)ProgramExitCode.GenericError;
         }
     }
+
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         ChangePasswordParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- ChangePassword");

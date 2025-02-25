@@ -4,23 +4,25 @@ using PayrollEngine.Client.Command;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Base class for http commands
+/// </summary>
+/// <typeparam name="TArgs"></typeparam>
 internal abstract class HttpCommandBase<TArgs> : CommandBase<TArgs> where TArgs : ICommandParameters, new()
 {
-    /// <summary>
-    /// Get request url-
-    /// </summary>
+    /// <inheritdoc />
+    public override bool BackendCommand => false;
+
+    /// <summary>Get request url</summary>
     /// <param name="url"></param>
-    /// <returns></returns>
     protected string GetRequestUrl(string url)
     {
         url = url.RemoveFromStart("api/");
         return url;
     }
 
-    /// <summary>
-    /// Get the file content.
-    /// </summary>
-    /// <param name="fileName">File name.</param>
+    /// <summary>Get the file content</summary>
+    /// <param name="fileName">File name</param>
     protected static async Task<string> GetFileContent(string fileName)
     {
         var content = string.Empty;

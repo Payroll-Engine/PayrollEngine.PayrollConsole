@@ -4,11 +4,15 @@ using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
 using PayrollEngine.Client.Model;
-using PayrollEngine.Client.Test.Payrun;
 using PayrollEngine.Client.Command;
+using PayrollEngine.Client.Test.Payrun;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Payrun test command base
+/// </summary>
+/// <typeparam name="TArgs">Command argument type</typeparam>
 internal abstract class PayrunTestCommandBase<TArgs> : PayrunTestCommandBase where TArgs : ICommandParameters
 {
     protected abstract System.Threading.Tasks.Task<int> Execute(CommandContext context, TArgs parameters);
@@ -16,6 +20,9 @@ internal abstract class PayrunTestCommandBase<TArgs> : PayrunTestCommandBase whe
         await Execute(context, (TArgs)parameters);
 }
 
+/// <summary>
+/// Payrun test command base
+/// </summary>
 internal abstract class PayrunTestCommandBase : TestCommandBase
 {
     protected void DisplayTestResults(ILogger logger, ICommandConsole console, string fileName,

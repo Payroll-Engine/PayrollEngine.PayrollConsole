@@ -1,5 +1,8 @@
 ﻿namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Program exit code
+/// </summary>
 public enum ProgramExitCode
 {
     /// <summary>
@@ -17,8 +20,23 @@ public enum ProgramExitCode
     /// </summary>
     CommandFile = -2,
 
+    /// <summary>
+    /// Backend connection error
+    /// </summary>
     ConnectionError = 2,
+
+    /// <summary>
+    /// Http error
+    /// </summary>
     HttpError = 3,
+
+    /// <summary>
+    /// Failed test
+    /// </summary>
     FailedTest = 4,
+
+    /// <summary>
+    /// Invalid options
+    /// </summary>
     InvalidOptions = 5
 }

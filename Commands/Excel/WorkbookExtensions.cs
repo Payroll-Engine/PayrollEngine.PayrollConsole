@@ -5,9 +5,9 @@ using NPOI.SS.UserModel;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
-public static class WorkbookExtensions
+internal static class WorkbookExtensions
 {
-    public static T GetNamedValue<T>(this IWorkbook workbook, string nameName)
+    internal static T GetNamedValue<T>(this IWorkbook workbook, string nameName)
     {
         var names = workbook.GetAllNames();
         var name = names.FirstOrDefault(x => string.Equals(x.NameName, nameName));
@@ -18,7 +18,7 @@ public static class WorkbookExtensions
         return workbook.GetCellValue<T>(name.RefersToFormula);
     }
 
-    public static IList<ISheet> GetSheetsOf(this IWorkbook workbook, string mask) =>
+    internal static IList<ISheet> GetSheetsOf(this IWorkbook workbook, string mask) =>
         workbook.GetSheets().Where(x => x.SheetName.StartsWith(mask)).ToList();
 
     private static IList<ISheet> GetSheets(this IWorkbook workbook)
@@ -31,7 +31,7 @@ public static class WorkbookExtensions
         return sheets;
     }
 
-    public static bool HasSheet(this IWorkbook workbook, string sheetName) =>
+    internal static bool HasSheet(this IWorkbook workbook, string sheetName) =>
         workbook.GetSheets().Any(x => string.Equals(x.SheetName, sheetName));
 
     private static T GetCellValue<T>(this IWorkbook workbook, string address)

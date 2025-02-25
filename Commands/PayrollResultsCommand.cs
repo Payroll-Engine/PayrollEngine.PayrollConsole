@@ -4,11 +4,17 @@ using PayrollEngine.Client.Command;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Payroll results command
+/// </summary>
 [Command("PayrollResults")]
 // ReSharper disable once UnusedType.Global
 internal sealed class PayrollResultsCommand : CommandBase<PayrollResultsParameters>
 {
     /// <summary>Show payroll payrun results</summary>
+    /// <param name="context">Command execution context</param>
+    /// <param name="parameters">Command parameters</param>
+    /// <returns>Program exit ok, 0 on success</returns>
     protected override async Task<int> Execute(CommandContext context, PayrollResultsParameters parameters)
     {
         DisplayTitle(context.Console, "Payroll results");
@@ -33,9 +39,11 @@ internal sealed class PayrollResultsCommand : CommandBase<PayrollResultsParamete
         }
     }
 
+    /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         PayrollResultsParameters.ParserFrom(parser);
 
+    /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- PayrollReport");

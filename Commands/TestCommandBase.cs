@@ -8,6 +8,10 @@ using PayrollEngine.Client.Command;
 
 namespace PayrollEngine.PayrollConsole.Commands;
 
+/// <summary>
+/// Test command base
+/// </summary>
+/// <typeparam name="TArgs">Command argument type</typeparam>
 internal abstract class TestCommandBase<TArgs> :
     TestCommandBase where TArgs : ICommandParameters
 {
@@ -16,8 +20,15 @@ internal abstract class TestCommandBase<TArgs> :
         await Execute(context, (TArgs)parameters);
 }
 
+/// <summary>
+/// Test command base
+/// </summary>
 internal abstract class TestCommandBase : CommandBase
 {
+    /// <summary>
+    /// Get test file names
+    /// </summary>
+    /// <param name="fileMask">File mask</param>
     protected static List<string> GetTestFileNames(string fileMask)
     {
         if (string.IsNullOrWhiteSpace(fileMask))
@@ -39,6 +50,13 @@ internal abstract class TestCommandBase : CommandBase
         return files;
     }
 
+    /// <summary>
+    /// Display test results
+    /// </summary>
+    /// <param name="logger">Logger</param>
+    /// <param name="console">Console</param>
+    /// <param name="displayMode">Display mode</param>
+    /// <param name="results">Test results</param>
     protected static void DisplayTestResults<TResult>(ILogger logger, ICommandConsole console,
         TestDisplayMode displayMode, ICollection<TResult> results)
         where TResult : ScriptTestResultBase
