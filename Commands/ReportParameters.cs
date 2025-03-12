@@ -99,9 +99,9 @@ public class ReportParameters : ICommandParameters
             User = parser.Get(3, nameof(User)),
             Regulation = parser.Get(4, nameof(Regulation)),
             Report = parser.Get(5, nameof(Report)),
-            ParameterFile = parser.Get(6, nameof(ParameterFile)),
-            Culture = parser.Get(7, nameof(Culture)),
-            TargetFile = parser.Get(8, nameof(TargetFile)),
+            ParameterFile = parser.GetByName(nameof(ParameterFile)),
+            Culture = parser.GetByName(nameof(Culture)),
+            TargetFile = parser.GetByName(nameof(TargetFile)),
             DocumentType = parser.GetEnumToggle(DocumentType.Pdf),
             PostAction = parser.GetEnumToggle(ReportPostAction.NoAction)
         };

@@ -132,6 +132,7 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
+            // execute report
             context.Console.DisplayNewLine();
             context.Console.DisplayTextLine("Executing report...");
             var response = await ExecuteReport(
@@ -147,11 +148,16 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
             {
                 throw new PayrollException($"Invalid report response on report {parameters.Report}.");
             }
+            context.Console.DisplayTextLine("done.");
+
+            // empty report
             if (response.Result.Tables.Count == 0)
             {
-                throw new PayrollException($"Invalid report {parameters.Report}.");
+                context.Console.DisplayNewLine();
+                context.Console.DisplayErrorLine($"Empty report {parameters.Report}.");
+                context.Console.WaitMode = WaitMode.Wait;
+                return (int)ProgramExitCode.Ok;
             }
-            context.Console.DisplayTextLine("done.");
 
             var executeTime = stopwatch.ElapsedMilliseconds;
 
@@ -251,8 +257,7 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
         }
         catch (Exception exception)
         {
-            context.Console.DisplayNewLine();
-            context.Console.WriteErrorLine($"Report error: {exception.GetBaseMessage().Trim('"')}");
+            ProcessError(context.Console, exception);
             return (int)ProgramExitCode.GenericError;
         }
     }
@@ -356,7 +361,7 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
             }
 
             // report merge into stream
-            var contentStream = new MemoryStream(Convert.FromBase64String(template.Content));
+            var contentStream = new MemoryStream(Encoding.ASCII.GetBytes(template.Content));
             resultStream = merge.Merge(contentStream, dataSet, documentType, documentMetadata, parameters);
         }
 
@@ -405,7 +410,7 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
                 console.DisplayText("Transforming raw XML...");
 
                 // style sheet
-                await using var xslStream = new MemoryStream(Convert.FromBase64String(template.Content));
+                await using var xslStream = new MemoryStream(Encoding.ASCII.GetBytes(template.Content));
                 using var xslReader = XmlReader.Create(xslStream);
                 XslCompiledTransform xslt = new();
                 xslt.Load(xslReader);
@@ -431,7 +436,7 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
                     console.DisplayNewLine();
                     console.DisplayText("Validating XML...");
 
-                    var xsdStream = new MemoryStream(Convert.FromBase64String(template.Schema));
+                    var xsdStream = new MemoryStream(Encoding.ASCII.GetBytes(template.Schema));
                     using var xmlReader = XmlReader.Create(xsdStream);
 
                     var document = new XmlDocument();
