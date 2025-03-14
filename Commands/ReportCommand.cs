@@ -15,9 +15,9 @@ using DataSet = System.Data.DataSet;
 using PayrollEngine.IO;
 using PayrollEngine.Data;
 using PayrollEngine.Client;
-using PayrollEngine.Client.Command;
 using PayrollEngine.Document;
 using PayrollEngine.Client.Model;
+using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Service.Api;
 using PayrollEngine.Client.Scripting.Function.Api;
 
@@ -206,14 +206,18 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
                         parameters: mergeParameters,
                         parameters.TargetFile);
                     break;
+                case DocumentType.Json:
+                    outputFile = await TransformJsonAsync(
+                        report: report,
+                        dataSet: dataSet,
+                        targetFile: parameters.TargetFile);
+                    break;
                 case DocumentType.Xml:
-                case DocumentType.XmlRaw:
-                    outputFile = await TransformAsync(
+                    outputFile = await TransformXmlAsync(
                         console: context.Console,
                         report: report,
                         dataSet: dataSet,
                         culture: parameters.Culture,
-                        rawData: parameters.DocumentType == DocumentType.XmlRaw,
                         targetFile: parameters.TargetFile);
                     break;
                 default:
@@ -374,29 +378,34 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
 
     #region Transform
 
-    private async Task<string> TransformAsync(ICommandConsole console, ReportSet report,
-        DataSet dataSet, string culture, bool rawData = false, string targetFile = null)
+    private async Task<string> TransformJsonAsync(ReportSet report, DataSet dataSet, string targetFile = null)
     {
-        // target file
-        var rawName = rawData ? "_raw" : string.Empty;
         var targetFileName = targetFile ??
-                             $"{report.Name}_{FileTool.CurrentTimeStamp()}{rawName}{FileExtensions.Xml}";
+                             $"{report.Name}_{FileTool.CurrentTimeStamp()}{FileExtensions.Json}";
+        var json = dataSet.Json();
+
+        // target file
+        await File.WriteAllTextAsync(targetFileName, json);
+        return targetFileName;
+    }
+
+    private async Task<string> TransformXmlAsync(ICommandConsole console, ReportSet report,
+        DataSet dataSet, string culture, string targetFile = null)
+    {
+        // report template
+        var template = GetReportTemplate(report, culture);
+        var xslTemplate = template != null && string.Equals(template.ContentType, "application/xsl");
+
+        // target file
+        var rawPostfix = xslTemplate ? string.Empty : "_raw";
+        var targetFileName = targetFile ??
+                             $"{report.Name}_{FileTool.CurrentTimeStamp()}{rawPostfix}{FileExtensions.Xml}";
 
         // data set to xml
         string xml;
         var xmlDocument = DataSetToXml(dataSet);
-        if (rawData)
+        if (xslTemplate)
         {
-            xml = xmlDocument.OuterXml;
-        }
-        else
-        {
-            // report template
-            var template = GetReportTemplate(report, culture);
-            if (template == null)
-            {
-                return null;
-            }
             // cleanup
             if (File.Exists(targetFileName))
             {
@@ -452,6 +461,11 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
                     return null;
                 }
             }
+        }
+        else
+        {
+            // raw xml
+            xml = xmlDocument.OuterXml;
         }
 
         if (string.IsNullOrWhiteSpace(xml))
