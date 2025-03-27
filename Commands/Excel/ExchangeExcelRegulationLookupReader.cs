@@ -70,10 +70,6 @@ internal static class ExchangeExcelRegulationLookupReader
         {
             throw new PayrollException("Missing lookup value column(s).");
         }
-        if (!headerColumns.RangeColumn.HasValue)
-        {
-            throw new PayrollException("Missing lookup range column.");
-        }
 
         // collect lookup values (skip header row)
         DateTime? lookupCreatedDate = null;
@@ -86,12 +82,15 @@ internal static class ExchangeExcelRegulationLookupReader
                 continue;
             }
 
-            var rangeValue = GetCellRangeValue(row, headerColumns.RangeColumn.Value);
+            // range value
+            var rangeValue = headerColumns.RangeColumn.HasValue ?
+                GetCellRangeValue(row, headerColumns.RangeColumn.Value) :
+                null;
 
             // key
-            var keyObjects = GetKeyObjects(headerColumns.KeyColumns, row);
+            var keyValues = GetKeyValues(headerColumns.KeyColumns, row);
             // no keys
-            if (!keyObjects.Any())
+            if (!keyValues.Any())
             {
                 continue;
             }
@@ -104,15 +103,16 @@ internal static class ExchangeExcelRegulationLookupReader
                 continue;
             }
 
+            // lookup value
             var lookupValue = new LookupValue
             {
                 // first key value or key value array
-                Key = keyObjects.Count == 1 ?
-                    ClientJsonSerializer.Serialize(keyObjects.First()) :
-                    ClientJsonSerializer.Serialize(keyObjects.ToArray()),
+                Key = keyValues.Count == 1 ?
+                    $"{keyValues.First()}" :
+                    ClientJsonSerializer.Serialize(keyValues.ToArray()),
                 // first value without name or name/value dictionary
                 Value = values.Count == 1 ?
-                    ClientJsonSerializer.Serialize(values.First().Value) :
+                    $"{values.First().Value}" :
                     ClientJsonSerializer.Serialize(values),
                 RangeValue = rangeValue
             };
@@ -163,7 +163,7 @@ internal static class ExchangeExcelRegulationLookupReader
         return lookupCreatedDate;
     }
 
-    private static List<object> GetKeyObjects(List<int> keyColumns, IRow row)
+    private static List<object> GetKeyValues(List<int> keyColumns, IRow row)
     {
         var keyObjects = new List<object>();
         foreach (var keyColumn in keyColumns)
@@ -180,7 +180,7 @@ internal static class ExchangeExcelRegulationLookupReader
         foreach (var valueColumn in valueColumns)
         {
             var value = GetCellValue(worksheet, row, valueColumn);
-            values.Add(value.Item1, value.Item1);
+            values.Add(value.Item1, value.Item2);
         }
 
         return values;

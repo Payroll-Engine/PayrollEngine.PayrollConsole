@@ -278,15 +278,64 @@
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.ReadAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.IWorkbook,System.String)">
+            <summary>
+            Read case changes from excel file
+            </summary>
+            <param name="httpClient">Http client</param>
+            <param name="tenant">Tenant</param>
+            <param name="workbook">Excel workbook</param>
+            <param name="fileName">Excel file name</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.GetCaseData(NPOI.SS.UserModel.IWorkbook,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,PayrollEngine.Client.Model.PayrollSet,System.String,System.String)">
+            <summary>
+            Get case data
+            </summary>
+            <param name="workbook">Workbook</param>
+            <param name="division">The division</param>
+            <param name="user">The user</param>
+            <param name="payroll">The payroll</param>
+            <param name="reason">The reason</param>
+            <param name="namespace">The case and case field namespace</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.AddCaseData(NPOI.SS.UserModel.ISheet,PayrollEngine.Client.Model.PayrollSet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String,System.String)">
+            <summary>Add case data</summary>
+            <param name="worksheet">The worksheet</param>
+            <param name="payroll">The payroll</param>
+            <param name="division">The division</param>
+            <param name="user">The user</param>
+            <param name="reason">The reason</param>
+            <param name="namespace">The case and case field namespace</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.GetCaseColumns(NPOI.SS.UserModel.ISheet,System.Int32)">
+            <summary>
+            Gets sheet column indexed by column name
+            </summary>
+            <param name="worksheet">The worksheet</param>
+            <param name="firstColumnIndex">The first column index</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.GetCaseChangesAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.IWorkbook,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String,PayrollEngine.Client.Model.PayrollSet)">
+            <summary>
+            Get case changes
+            </summary>
+            <param name="httpClient">Http client</param>
+            <param name="tenant"></param>
+            <param name="workbook"></param>
+            <param name="division"></param>
+            <param name="user"></param>
+            <param name="caseValueReason"></param>
+            <param name="payroll"></param>
+            <returns></returns>
+        </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.GetCaseChange(NPOI.SS.UserModel.ISheet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String)">
             <summary>Gets the case change</summary>
             <param name="worksheet">The worksheet</param>
             <param name="division">The division</param>
             <param name="user">The user</param>
             <param name="reason">The reason</param>
-            <returns>Case change</returns>
+            <returns>Case change setup</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.GetEmployeeCaseChanges(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.ISheet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.GetEmployeeCaseChangesAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.ISheet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String)">
             <summary>Gets the employee case changes grouped by employee identifier</summary>
             <param name="httpClient">The http client</param>
             <param name="tenant">The tenant</param>

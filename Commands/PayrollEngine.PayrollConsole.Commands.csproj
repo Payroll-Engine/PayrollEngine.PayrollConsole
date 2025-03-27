@@ -13,13 +13,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="C:\Users\micro\.nuget\packages\payrollengine.client.services\0.9.0-beta.5\contentFiles\any\net9.0\PayrollEngine.Client.Services.xml" />
-		<None Remove="C:\Users\micro\.nuget\packages\payrollengine.document\0.9.0-beta.5\contentFiles\any\net9.0\PayrollEngine.Document.xml" />
+		<None Remove="C:\Users\micro\.nuget\packages\payrollengine.client.services\0.9.0-beta.6\contentFiles\any\net9.0\PayrollEngine.Client.Services.xml" />
+		<None Remove="C:\Users\micro\.nuget\packages\payrollengine.document\0.9.0-beta.6\contentFiles\any\net9.0\PayrollEngine.Document.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Client.Services" Version="0.9.0-beta.5" />
-		<PackageReference Include="NPOI" Version="2.7.2" />
-		<PackageReference Include="PayrollEngine.Document" Version="0.9.0-beta.5" />
+		<PackageReference Include="PayrollEngine.Client.Services" Version="0.9.0-beta.6" />
+		<PackageReference Include="NPOI" Version="2.7.3" />
+		<PackageReference Include="PayrollEngine.Document" Version="0.9.0-beta.6" />
 	</ItemGroup>
 </Project>

@@ -9,4 +9,5 @@ internal static class Specification
     internal static readonly string PayrollRegionName = "Payroll";
     internal static readonly string RegulationRegionName = "Regulation";
     internal static readonly string CaseValueReasonRegionName = "CaseValueReason";
+    internal static readonly string NamespaceRegionName = "Namespace";
 }

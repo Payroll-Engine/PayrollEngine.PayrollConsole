@@ -61,17 +61,47 @@ internal static class SheetExtensions
         return cell.GetCellValue<T>();
     }
 
+    private static bool IsDateCell(this ICell cell) =>
+        cell.DateCellValue.HasValue && cell.DateCellValue.Value.Year > 1900;
+
+    internal static ValueType GetValueType(this ICell cell)
+    {
+        switch (cell.CellType)
+        {
+            case CellType.Boolean:
+                return ValueType.Boolean;
+            case CellType.Numeric:
+                if (IsDateCell(cell))
+                {
+                    return ValueType.DateTime;
+                }
+                return ValueType.Decimal;
+            default:
+                return ValueType.String;
+        }
+    }
+
     internal static object GetCellValue(this ICell cell)
     {
-        return cell.CellType switch
+        switch (cell.CellType)
         {
-            CellType.Boolean => cell.BooleanCellValue,
-            CellType.Numeric => cell.NumericCellValue,
-            CellType.String => cell.StringCellValue,
-            CellType.Formula => cell.CellFormula,
-            CellType.Error => cell.ErrorCellValue,
-            _ => null
-        };
+            case CellType.Boolean:
+                return cell.BooleanCellValue;
+            case CellType.Numeric:
+                if (IsDateCell(cell))
+                {
+                    return cell.DateCellValue;
+                }
+                return cell.NumericCellValue;
+            case CellType.String:
+                return cell.StringCellValue;
+            case CellType.Formula:
+                return cell.CellFormula;
+            case CellType.Error:
+                return cell.ErrorCellValue;
+            default:
+                return null;
+        }
     }
 
     /// <summary>
