@@ -150,31 +150,46 @@ The Payroll Console configuration `appsetings.json` contains the following setti
 | Setting          | Description                          | Type                                       | Default        |
 |:--|:--|:--|:--|
 | `StartupCulture` | The payroll console process culture  | string                                     | System culture |
-| `ApiSettings`    | The payroll backend configuration    | [Http Config](#payroll-http-configuration) |                |
+| `ApiSettings`    | The backend api configuration        | [Backend API](#backend-api-configuration)  |                |
 | `Serilog`        | Logger configuration                 | [Serilog](https://serilog.net/)            |                |
 
-### Payroll HTTP Configuration
+> It is recommended that you save the application settings within your local [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
+
+### Backend API Configuration
 
 | Setting   | Description                     | Type       | Default     |
 |:--|:--|:--|:--|
 | `BaseUrl` | The backend base url            | string     |             |
 | `Port`    | The backend url port            | string     |             |
 | `Timeout` | The backend request timeout     | TimeSpan   | 100 seconds |
-| `ApiKey`  | The backend API key             | string     |             |
+| `ApiKey`  | The backend [API key](#api-key) | string     |             |
 
-The Payroll HTTP client configuration can be declared in the following locations.
+The backend API configuration can be declared in the following locations.
 
-| Priority | Source                                          | Description                                                        |
+| Priority | Source                                          | Content                                                        |
 |--|--|--|
-| 1.       | Environment variable `PayrollApiConnection`     | Connection string with the HTTP client configuration               |
-| 2.       | Environment variable `PayrollApiConfiguration`  | HTTP client configuration JSON file name                           |
-| 3.       | File `apisettings.json`                         | HTTP client configuration JSON file located in the program folder  |
-| 4.       | File `appsettings.json`                         | HTTP client configuration from the program configuration JSON file |
+| 1.       | Environment variable `PayrollApiConnection`     | Backend API configuration [connection string](#api-configuration-from-connection-string).           |
+| 2.       | Environment variable `PayrollApiConfiguration`  | Path to the backend API configuration [JSON file](#api-configuration-from-json).                    |
+| 3.       | File `apisettings.json`                         | Backend API configuration [JSON file](#api-configuration-from-json) located in the program folder.  |
+| 4.       | File `appsettings.json`                         | `ApiSettings` from the application configuration [JSON file](#api-configuration-from-json). |
 
-### Serilog
-File and console logging with [Serilog](https://serilog.net/).
 
-> It is recommended that you save the application settings within your local [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
+#### API Configuration from connection string
+The following is an example of a backend API configuration within a connection string:
+```txt
+BaseUrl=https://localhost; Port=44354; Timeout=02:46:40; ApiKey=MyApiKey; 
+```
+
+#### API Configuration from JSON
+The following is an example of a JSON-based backend API configuration:
+```json
+{
+    "BaseUrl": "https://localhost",
+    "Port": 44354,
+    "Timeout": "02:46:40",
+    "ApiKey": "MyApiKey"
+}
+```
 
 ## Api Key
 If a key is required to access the backend API, it must be obtained from one of the following sources (in order of priority):
