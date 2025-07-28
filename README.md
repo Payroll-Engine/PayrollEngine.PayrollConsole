@@ -148,7 +148,7 @@ To develop a Payroll Console extension, do the following
 The Payroll Console configuration `appsetings.json` contains the following settings:
 
 | Setting          | Description                          | Type                                       | Default        |
-|:--|:--|:--|
+|:--|:--|:--|:--|
 | `StartupCulture` | The payroll console process culture  | string                                     | System culture |
 | `ApiSettings`    | The payroll backend configuration    | [Http Config](#payroll-http-configuration) |                |
 | `Serilog`        | Logger configuration                 | [Serilog](https://serilog.net/)            |                |
