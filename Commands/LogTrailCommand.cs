@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using PayrollEngine.Client.Command;
 using Task = System.Threading.Tasks.Task;
 using PayrollEngine.Client.Model;
@@ -55,10 +56,22 @@ internal sealed class LogTrailCommand : CommandBase<LogTrailParameters>
         // ReSharper disable once MethodSupportsCancellation
         var keyBoardTask = Task.Run(() =>
         {
-            // listening to key press to cancel
-            var key = Console.ReadKey();
-            if (key.Key == ConsoleKey.X ||
-                key.Key == ConsoleKey.C && key.Modifiers == ConsoleModifiers.Control)
+            bool cancel;
+            var osx = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+            if (osx)
+            {
+                // no read-key support on macOS
+                var key = Console.Read();
+                cancel = key == 'X' || key == 'x';
+            }
+            else
+            {
+                // listening to key press to cancel
+                var key = Console.ReadKey();
+                cancel = key.Key == ConsoleKey.X ||
+                         key.Key == ConsoleKey.C && key.Modifiers == ConsoleModifiers.Control;
+            }
+            if (cancel)
             {
                 // cancel log
                 // ReSharper disable once AccessToDisposedClosure

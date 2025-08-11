@@ -59,13 +59,13 @@ internal sealed class ActionReportCommand : CommandBase<ActionReportParameters>
                         var mdFileInfo = new FileInfo(parameters.FileName);
                         var mdFileName = mdFileInfo.Name.Replace(mdFileInfo.Extension, ".md");
                         File.WriteAllText(mdFileName, markdown);
-                        context.Console.DisplaySuccessLine($"{actions.Count} actions successfully exported to {mdFileName}");
+                        context.Console.DisplaySuccessLine($"{actions.Count} actions successfully exported to {new FileInfo(mdFileName).FullName}.");
                         break;
                     case ActionReportTarget.ActionJson:
                         var jsonFileInfo = new FileInfo(parameters.FileName);
                         var jsonFileName = jsonFileInfo.Name.Replace(jsonFileInfo.Extension, ".json");
                         WriteJsonFile(jsonFileName, actions);
-                        context.Console.DisplaySuccessLine($"{actions.Count} actions successfully exported to {jsonFileName}");
+                        context.Console.DisplaySuccessLine($"{actions.Count} actions successfully exported to {new FileInfo(jsonFileName).FullName}.");
                         break;
                 }
             }
@@ -114,7 +114,10 @@ internal sealed class ActionReportCommand : CommandBase<ActionReportParameters>
         console.DisplayTextLine("      Report actions from an assembly");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. action assembly file name [FileName]");
+        console.DisplayTextLine("      Toggles:");
+        console.DisplayTextLine("          action report targets: /actionMarkdown or /actionJson (default: actionMarkdown)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          ActionReport MyAssembly.dll");
+        console.DisplayTextLine("          ActionReport MyAssembly.dll /actionJson");
     }
 }
