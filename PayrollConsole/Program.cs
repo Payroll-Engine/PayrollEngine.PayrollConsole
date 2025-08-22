@@ -16,7 +16,7 @@ sealed class Program : ConsoleProgram<Program>
 
     private CommandManager CommandManager { get; set; }
 
-    /// <inheritdoc />
+    /// <summary>Disable lifecycle log</summary>
     protected override bool LogLifecycle => false;
 
     /// <summary>Mandatory argument: command</summary>
@@ -79,6 +79,8 @@ sealed class Program : ConsoleProgram<Program>
         catch (Exception exception)
         {
             Log.Critical(exception, exception.GetBaseException().Message);
+            Console.DisplayErrorLine(exception.GetBaseException().Message);
+            PressAnyKey();
         }
     }
 

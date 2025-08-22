@@ -4,7 +4,7 @@
         <name>PayrollEngine.PayrollConsole.Commands</name>
     </assembly>
     <members>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ActionReportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ActionReportParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportParameters)">
             <summary>
             Execute action report
             </summary>
@@ -12,7 +12,7 @@
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ActionReportCommand.WriteJsonFile(System.String,System.Collections.Generic.List{PayrollEngine.Client.Model.ActionInfo})">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportCommand.WriteJsonFile(System.String,System.Collections.Generic.List{PayrollEngine.Client.Model.ActionInfo})">
             <summary>
             Save action to JSON file
             </summary>
@@ -20,259 +20,339 @@
             <param name="actions">Actions to write</param>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ActionReportCommand.BackendCommand">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportCommand.BackendCommand">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ActionReportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ActionReportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ActionReportParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportParameters">
             <summary>
             Action report command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ActionReportParameters.FileName">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportParameters.FileName">
             <summary>
             Action report file name
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ActionReportParameters.ReportTarget">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportParameters.ReportTarget">
             <summary>
             Action report target (default: markdown)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ActionReportParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ActionReportParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ActionReportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ActionReportTarget">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportTarget">
             <summary>
             Action report target
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ActionReportTarget.ActionMarkdown">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportTarget.ActionMarkdown">
             <summary>
             Markdown
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ActionReportTarget.ActionJson">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportTarget.ActionJson">
             <summary>
             Json
             </summary>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.CaseTestCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestCommand">
             <summary>
             Case test command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseTestCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.CaseTestParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestParameters)">
             <summary>Test a case</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseTestCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseTestCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.CaseTestParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestParameters">
             <summary>
             Case test command parameter
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.CaseTestParameters.FileMask">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestParameters.FileMask">
             <summary>
             File mask
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.CaseTestParameters.DisplayMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestParameters.DisplayMode">
             <summary>
             Display mode
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.CaseTestParameters.Precision">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestParameters.Precision">
             <summary>
             Test precision (default: 2)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.CaseTestParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseTestParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseTestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ChangePasswordCommand">
-            <summary>
-            Change password command
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ChangePasswordCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ChangePasswordParameters)">
-            <summary>Change the user password</summary>
-            <param name="context">Command execution context</param>
-            <param name="parameters">Command parameters</param>
-            <returns>Program exit ok, 0 on success</returns>
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ChangePasswordCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ChangePasswordCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
-            <inheritdoc />
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ChangePasswordParameters">
-            <summary>
-            Change password command parameters
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ChangePasswordParameters.Tenant">
-            <summary>
-            Tenant
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ChangePasswordParameters.User">
-            <summary>
-            User
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ChangePasswordParameters.NewPassword">
-            <summary>
-            New password
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ChangePasswordParameters.ExistingPassword">
-            <summary>
-            Existing password
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ChangePasswordParameters.Toggles">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ChangePasswordParameters.Test">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ChangePasswordParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
-            <summary>
-            Parse command parameters
-            </summary>
-            <param name="parser">Parameter parser</param>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ConsoleWriteMode">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.ConsoleWriteMode">
             <summary>
             Console write mode
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ConsoleWriteMode.ConsoleNormal">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.ConsoleWriteMode.ConsoleNormal">
             <summary>
             Normal
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ConsoleWriteMode.ConsoleTitle">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.ConsoleWriteMode.ConsoleTitle">
             <summary>
             Title
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ConsoleWriteMode.ConsoleSuccess">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.ConsoleWriteMode.ConsoleSuccess">
             <summary>
             Success
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ConsoleWriteMode.ConsoleInfo">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.ConsoleWriteMode.ConsoleInfo">
             <summary>
             Info
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ConsoleWriteMode.ConsoleError">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.ConsoleWriteMode.ConsoleError">
             <summary>
             Error
             </summary>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.DataReportCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailCommand">
             <summary>
-            Data report command
+            LOg tail command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.DataReportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.DataReportParameters)">
-            <summary>Build report</summary>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailParameters)">
+            <summary>Start log trail</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.DataReportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.DataReportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.DataReportParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailParameters">
             <summary>
-            Data report command parameters
+            Log tail command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.DataReportParameters.OutputFile">
-            <summary>
-            Output file
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.DataReportParameters.Tenant">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailParameters.Tenant">
             <summary>
             Tenant
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.DataReportParameters.User">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailParameters.Interval">
             <summary>
-            User
+            Interval in seconds (default: 5)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.DataReportParameters.Regulation">
-            <summary>
-            Regulation
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.DataReportParameters.Report">
-            <summary>
-            Report
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.DataReportParameters.ParametersFile">
-            <summary>
-            Parameters file
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.DataReportParameters.Culture">
-            <summary>
-            Culture
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.DataReportParameters.PostAction">
-            <summary>
-            Post action (default: none)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.DataReportParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.DataReportParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.DataReportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+            <param name="parser">Parameter parser</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogWriteMode">
+            <summary>
+            Log write mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogWriteMode.LogInfo">
+            <summary>
+            Info level
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogWriteMode.LogWarning">
+            <summary>
+            Warning level
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogWriteMode.LogError">
+            <summary>
+            Error level
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchCommand">
+            <summary>
+            Stopwatch command
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchParameters)">
+            <summary>Process the variable</summary>
+            <param name="context">Command execution context</param>
+            <param name="parameters">Command parameters</param>
+            <returns>Program exit ok, 0 on success</returns>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchMode">
+            <summary>
+            Stopwatch mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchMode.WatchView">
+            <summary>
+            View watch
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchMode.WatchStart">
+            <summary>
+            Start watch
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchMode.WatchStop">
+            <summary>
+            Stop watch
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchParameters">
+            <summary>
+            Stopwatch command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchParameters.VariableName">
+            <summary>
+            Variable name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchParameters.StopwatchMode">
+            <summary>
+            Stopwatch mode (default: watch view)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.StopwatchParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+            <param name="parser">Parameter parser</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteCommand">
+            <summary>
+            Write command
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteParameters)">
+            <summary>Process the variable</summary>
+            <param name="context">Command execution context</param>
+            <param name="parameters">Command parameters</param>
+            <returns>Program exit ok, 0 on success</returns>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteMode">
+            <summary>
+            Write mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteMode.Console">
+            <summary>
+            Write to console
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteMode.Log">
+            <summary>
+            Write to log
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteMode.LogAndConsole">
+            <summary>
+            Write to log and console
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteParameters">
+            <summary>
+            Write command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteParameters.Text">
+            <summary>
+            Write text
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteParameters.WriteMode">
+            <summary>
+            Write mode (default: console)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteParameters.ConsoleWriteMode">
+            <summary>
+            Console write mode (default: normal)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteParameters.LogWriteMode">
+            <summary>
+            Log write mode (default: info)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.WriteParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
@@ -409,471 +489,392 @@
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpCommandBase`1">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpCommandBase`1">
             <summary>
             Base class for http commands
             </summary>
             <typeparam name="TArgs"></typeparam>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommandBase`1.BackendCommand">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpCommandBase`1.BackendCommand">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommandBase`1.GetRequestUrl(System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpCommandBase`1.GetRequestUrl(System.String)">
             <summary>Get request url</summary>
             <param name="url"></param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommandBase`1.GetFileContent(System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpCommandBase`1.GetFileContent(System.String)">
             <summary>Get the file content</summary>
             <param name="fileName">File name</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpDeleteCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpDeleteCommand">
             <summary>
             Http delete command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpDeleteCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.HttpDeleteParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpDeleteCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpDeleteParameters)">
             <summary>Http DELETE request</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpDeleteCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpDeleteCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpDeleteCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpDeleteCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpDeleteParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpDeleteParameters">
             <summary>
             Http delete command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpDeleteParameters.Url">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpDeleteParameters.Url">
             <summary>
             Url
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpDeleteParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpDeleteParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpDeleteParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpDeleteParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpDeleteParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpDeleteParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpGetCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.HttpGetParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetParameters)">
             <summary>Http GET request</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpGetCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpGetCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpGetParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetParameters">
             <summary>
             Http get command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpGetParameters.Url">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetParameters.Url">
             <summary>
             Url
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpGetParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpGetParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpGetParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpPostCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPostCommand">
             <summary>
             Http post command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpPostCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.HttpPostParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPostCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPostParameters)">
             <summary>Http POST request</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpPostCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPostCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpPostCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPostCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpPostParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPostParameters">
             <summary>
             Http post command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpPostParameters.Url">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPostParameters.Url">
             <summary>
             Url
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpPostParameters.FileName">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPostParameters.FileName">
             <summary>
             File name
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpPostParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPostParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpPostParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPostParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpPostParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPostParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpPutCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPutCommand">
             <summary>
             Http put command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpPutCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.HttpPutParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPutCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPutParameters)">
             <summary>Http PUT request</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpPutCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPutCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpPutCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPutCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpPutParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPutParameters">
             <summary>
             Http put command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpPutParameters.Url">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPutParameters.Url">
             <summary>
             Url
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpPutParameters.FileName">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPutParameters.FileName">
             <summary>
             File name
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpPutParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPutParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpPutParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPutParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpPutParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpPutParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.LogTrailCommand">
-            <summary>
-            LOg tail command
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.LogTrailCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.LogTrailParameters)">
-            <summary>Start log trail</summary>
-            <param name="context">Command execution context</param>
-            <param name="parameters">Command parameters</param>
-            <returns>Program exit ok, 0 on success</returns>
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.LogTrailCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.LogTrailCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
-            <inheritdoc />
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.LogTrailParameters">
-            <summary>
-            Log tail command parameters
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.LogTrailParameters.Tenant">
-            <summary>
-            Tenant
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.LogTrailParameters.Interval">
-            <summary>
-            Interval in seconds (default: 5)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.LogTrailParameters.Toggles">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.LogTrailParameters.Test">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.LogTrailParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
-            <summary>
-            Parse command parameters
-            </summary>
-            <param name="parser">Parameter parser</param>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.LogWriteMode">
-            <summary>
-            Log write mode
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.LogWriteMode.LogInfo">
-            <summary>
-            Info level
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.LogWriteMode.LogWarning">
-            <summary>
-            Warning level
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.LogWriteMode.LogError">
-            <summary>
-            Error level
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ObjectDeleteMode">
-            <summary>
-            Object delete mode
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ObjectDeleteMode.Delete">
-            <summary>
-            Delete
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ObjectDeleteMode.TryDelete">
-            <summary>
-            Try delete
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollExportCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportCommand">
             <summary>
             Payroll export command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollExportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrollExportParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportParameters)">
             <summary>Export a tenant to a JSON file
             By default the file name is the tenant identifier including a timestamp</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollExportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollExportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollExportParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportParameters">
             <summary>
             Payroll export command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollExportParameters.Tenant">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportParameters.Tenant">
             <summary>
             Tenant
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollExportParameters.TargetFileName">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportParameters.TargetFileName">
             <summary>
             Target file name
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollExportParameters.OptionsFileName">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportParameters.OptionsFileName">
             <summary>
             Options file name
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollExportParameters.Namespace">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportParameters.Namespace">
             <summary>
             Export namespace
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollExportParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollExportParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollExportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollImportCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportCommand">
             <summary>
             Payroll import command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollImportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrollImportParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportParameters)">
             <summary>Import a tenant from a JSON file</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollImportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollImportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollImportExcelCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelCommand">
             <summary>
             Payroll import excel command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollImportExcelCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrollImportExcelParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters)">
             <summary>Import a tenant from an Excel file</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollImportExcelCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollImportExcelCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollImportExcelParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters">
             <summary>
             Payroll import excel command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollImportExcelParameters.FileName">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters.FileName">
             <summary>
             File name
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollImportExcelParameters.Tenant">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters.Tenant">
             <summary>
             Tenant
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollImportExcelParameters.ImportMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters.ImportMode">
             <summary>
             Import mode (default: single)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollImportExcelParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollImportExcelParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollImportExcelParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollImportParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportParameters">
             <summary>
             Payroll import command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollImportParameters.SourceFileName">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportParameters.SourceFileName">
             <summary>
             Source file name
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollImportParameters.OptionsFileName">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportParameters.OptionsFileName">
             <summary>
             Options file name
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollImportParameters.Namespace">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportParameters.Namespace">
             <summary>
             Namespace
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollImportParameters.ImportMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportParameters.ImportMode">
             <summary>
             Import mode (default: single)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollImportParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollImportParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollImportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollResultsCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsCommand">
             <summary>
             Payroll results command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollResultsCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrollResultsParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsParameters)">
             <summary>Show payroll payrun results</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollResultsCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollResultsCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollResultsParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsParameters">
             <summary>
             Payroll results command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollResultsParameters.Tenant">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsParameters.Tenant">
             <summary>
             Tenant
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollResultsParameters.TopFilter">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsParameters.TopFilter">
             <summary>
             Top filter count
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollResultsParameters.ResultExportMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsParameters.ResultExportMode">
             <summary>
             Result export mode (default: no export)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollResultsParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollResultsParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollResultsParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollResultsReport">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsReport">
             <summary>
             Payroll results report
             </summary>
@@ -881,7 +882,7 @@
             <param name="topFilter">Top filter count</param>
             <param name="exportMode">Export mode</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollResultsReport.#ctor(PayrollEngine.Client.PayrollHttpClient,System.Int32,PayrollEngine.PayrollConsole.Commands.ReportExportMode)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsReport.#ctor(PayrollEngine.Client.PayrollHttpClient,System.Int32,PayrollEngine.PayrollConsole.Commands.PayrollCommands.ReportExportMode)">
             <summary>
             Payroll results report
             </summary>
@@ -889,23 +890,38 @@
             <param name="topFilter">Top filter count</param>
             <param name="exportMode">Export mode</param>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.PayrollResultsReport.ResultsFolderName">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsReport.ResultsFolderName">
             <summary>
             Results folder name
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollResultsReport.ConsoleWriteAsync(System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsReport.ConsoleWriteAsync(System.String)">
             <summary>
             Console write
             </summary>
             <param name="tenantIdentifier">Tenant</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.ReportExportMode">
+            <summary>
+            Report export mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.PayrollCommands.ReportExportMode.NoExport">
+            <summary>
+            No export
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.PayrollCommands.ReportExportMode.Export">
+            <summary>
+            Export
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestCommand">
             <summary>
             Payrun employee test command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters)">
             <summary>
             Test employee payrun specified in a payroll exchange JSON file
             The test sequence is:
@@ -919,192 +935,192 @@
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters">
             <summary>
             Payrun employee test command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestParameters.FileMask">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.FileMask">
             <summary>
             File mask
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestParameters.Owner">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.Owner">
             <summary>
             Test owner
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestParameters.TestMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.TestMode">
             <summary>
             Test mode (default: insert employee)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestParameters.RunMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.RunMode">
             <summary>
             Test run mode (default: run tests)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestParameters.DisplayMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.DisplayMode">
             <summary>
             Test display mode (default: show failed)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestParameters.Precision">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.Precision">
             <summary>
             Test precision (default: 2)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunEmployeeTestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunJobDeleteCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunJobDeleteCommand">
             <summary>
             Payrun job delete command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunJobDeleteCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrunJobDeleteParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunJobDeleteCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunJobDeleteParameters)">
             <summary>Delete payrun job</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunJobDeleteCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunJobDeleteCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunJobDeleteCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunJobDeleteCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunJobDeleteParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunJobDeleteParameters">
             <summary>
             Payrun job delete command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunJobDeleteParameters.Tenant">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunJobDeleteParameters.Tenant">
             <summary>
             Tenant
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunJobDeleteParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunJobDeleteParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunJobDeleteParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunJobDeleteParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunJobDeleteParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunJobDeleteParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunRebuildCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunRebuildCommand">
             <summary>
             Payrun rebuild command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunRebuildCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrunRebuildParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunRebuildCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunRebuildParameters)">
             <summary>Rebuild the payrun</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunRebuildCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunRebuildCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunRebuildCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunRebuildCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunRebuildParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunRebuildParameters">
             <summary>
             Payrun rebuild command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunRebuildParameters.Tenant">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunRebuildParameters.Tenant">
             <summary>
             Tenant
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunRebuildParameters.Payrun">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunRebuildParameters.Payrun">
             <summary>
             Payrun
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunRebuildParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunRebuildParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunRebuildParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunRebuildParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunRebuildParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunRebuildParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunStatisticsCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunStatisticsCommand">
             <summary>
             Payrun statistics command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunStatisticsCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrunStatisticsParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunStatisticsCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunStatisticsParameters)">
             <summary>Show the payrun statistics</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunStatisticsCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunStatisticsCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunStatisticsCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunStatisticsCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunStatisticsParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunStatisticsParameters">
             <summary>
             Payrun statistics command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunStatisticsParameters.Tenant">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunStatisticsParameters.Tenant">
             <summary>
             Tenant
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunStatisticsParameters.CreatedSinceMinutes">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunStatisticsParameters.CreatedSinceMinutes">
             <summary>
             Created since minutes (default: 30)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunStatisticsParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunStatisticsParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunStatisticsParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunStatisticsParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunStatisticsParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunStatisticsParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunTestCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommand">
             <summary>
             Payrun test command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunTestCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrunTestParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters)">
             <summary>
             Test a payrun specified in a payroll exchange JSON file
             The test sequence is:
@@ -1118,70 +1134,70 @@
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunTestCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunTestCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunTestCommandBase`1">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommandBase">
+            <summary>
+            Payrun test command base
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommandBase`1">
             <summary>
             Payrun test command base
             </summary>
             <typeparam name="TArgs">Command argument type</typeparam>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunTestCommandBase">
-            <summary>
-            Payrun test command base
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunTestParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters">
             <summary>
             Payrun test command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunTestParameters.FileMask">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters.FileMask">
             <summary>
             File mask
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunTestParameters.Owner">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters.Owner">
             <summary>
             Test owner
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunTestParameters.ImportMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters.ImportMode">
             <summary>
             Test import mode (default: bulk)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunTestParameters.RunMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters.RunMode">
             <summary>
             Test run mode (default: run tests)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunTestParameters.DisplayMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters.DisplayMode">
             <summary>
             Test display mode (default: show failed)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunTestParameters.ResultMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters.ResultMode">
             <summary>
             Test result mode (default: clean test)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunTestParameters.Precision">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters.Precision">
             <summary>
             Test precision (default: 2)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunTestParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunTestParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunTestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
@@ -1227,564 +1243,565 @@
             Invalid options
             </summary>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationRebuildCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildCommand">
             <summary>
             Regulation rebuild command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationRebuildCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationRebuildParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildParameters)">
             <summary>Rebuild the regulation</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationRebuildCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationRebuildCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationRebuildParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildParameters">
             <summary>
             Regulation rebuild command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationRebuildParameters.Tenant">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildParameters.Tenant">
             <summary>
             Tenant
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationRebuildParameters.Regulation">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildParameters.Regulation">
             <summary>
             Regulation
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationRebuildParameters.ObjectType">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildParameters.ObjectType">
             <summary>
             Object type
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationRebuildParameters.ObjectKey">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildParameters.ObjectKey">
             <summary>
             Objectkey
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationRebuildParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationRebuildParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildParameters.Test">
             <inheritdoc />
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationRebuildParameters.ScriptObject">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildParameters.ScriptObject">
             <summary>
             Script object
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationRebuildParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationShareCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareCommand">
             <summary>
             Regulation share command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationShareCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationShareParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareParameters)">
             <summary>Regulation share setup</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationShareCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationShareCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationShareParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareParameters">
             <summary>
             Regulation share command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationShareParameters.ProviderTenant">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareParameters.ProviderTenant">
             <summary>
             Provider tenant
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationShareParameters.ProviderRegulation">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareParameters.ProviderRegulation">
             <summary>
             Provider regulation
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationShareParameters.ConsumerTenant">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareParameters.ConsumerTenant">
             <summary>
             Consumer tenant
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationShareParameters.ConsumerDivision">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareParameters.ConsumerDivision">
             <summary>
             Consumer division
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationShareParameters.ShareMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareParameters.ShareMode">
             <summary>
             Regulation share mode (default: view)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationShareParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationShareParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationShareParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationShareParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.ShareMode">
             <summary>
-            Report command
+            Share mode
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ReportParameters)">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.ShareMode.View">
+            <summary>
+            View share
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.ShareMode.Set">
+            <summary>
+            Set share
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.ShareMode.Remove">
+            <summary>
+            Remove share
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportCommand">
+            <summary>
+            Data report command
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportParameters)">
             <summary>Build report</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportExportMode">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportParameters">
             <summary>
-            Report export mode
+            Data report command parameters
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ReportExportMode.NoExport">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportParameters.OutputFile">
             <summary>
-            No export
+            Output file
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ReportExportMode.Export">
-            <summary>
-            Export
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportParameters">
-            <summary>
-            Report command parameters
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ReportParameters.DefaultParameterFileName">
-            <summary>
-            Default parameter file name
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportParameters.Tenant">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportParameters.Tenant">
             <summary>
             Tenant
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportParameters.User">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportParameters.User">
             <summary>
-            USer
+            User
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportParameters.Regulation">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportParameters.Regulation">
             <summary>
             Regulation
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportParameters.Report">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportParameters.Report">
             <summary>
             Report
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportParameters.ParameterFile">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportParameters.ParametersFile">
             <summary>
-            Parameter file
+            Parameters file
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportParameters.Culture">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportParameters.Culture">
             <summary>
             Culture
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportParameters.TargetFile">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportParameters.PostAction">
             <summary>
-            Target file
+            Post action (default: none)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportParameters.DocumentType">
-            <summary>
-            Document type (default: pdf)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportParameters.PostAction">
-            <summary>
-            Report post action(default: none)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.DataReportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportPostAction">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportCommand">
+            <summary>
+            Report command
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters)">
+            <summary>Build report</summary>
+            <param name="context">Command execution context</param>
+            <param name="parameters">Command parameters</param>
+            <returns>Program exit ok, 0 on success</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters">
+            <summary>
+            Report command parameters
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.DefaultParameterFileName">
+            <summary>
+            Default parameter file name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.Tenant">
+            <summary>
+            Tenant
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.User">
+            <summary>
+            USer
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.Regulation">
+            <summary>
+            Regulation
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.Report">
+            <summary>
+            Report
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.ParameterFile">
+            <summary>
+            Parameter file
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.Culture">
+            <summary>
+            Culture
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.TargetFile">
+            <summary>
+            Target file
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.DocumentType">
+            <summary>
+            Document type (default: pdf)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.PostAction">
+            <summary>
+            Report post action(default: none)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+            <param name="parser">Parameter parser</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportPostAction">
             <summary>
             Report post action
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ReportPostAction.NoAction">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportPostAction.NoAction">
             <summary>
             No action
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ReportPostAction.ShellOpen">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportPostAction.ShellOpen">
             <summary>
             Report shell open
             </summary>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportTestCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestCommand">
             <summary>
             Report test command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportTestCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ReportTestParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestParameters)">
             <summary>Test a report</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportTestCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportTestCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportTestParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestParameters">
             <summary>
             Report test command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportTestParameters.FileMask">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestParameters.FileMask">
             <summary>
             File mask
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportTestParameters.DisplayMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestParameters.DisplayMode">
             <summary>
             Test display mode (default: show failed)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportTestParameters.Precision">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestParameters.Precision">
             <summary>
             Test precision (default: 2)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportTestParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportTestParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportTestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ScriptExportCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportCommand">
             <summary>
             Script export command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptExportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ScriptExportParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters)">
             <summary>Export script</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptExportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptExportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ScriptExportParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters">
             <summary>
             Script export command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptExportParameters.TargetFolder">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.TargetFolder">
             <summary>
             Target folder
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptExportParameters.Tenant">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.Tenant">
             <summary>
             Tenant
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptExportParameters.User">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.User">
             <summary>
             User
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptExportParameters.Employee">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.Employee">
             <summary>
             Employee
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptExportParameters.Payroll">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.Payroll">
             <summary>
             Payroll
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptExportParameters.Regulation">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.Regulation">
             <summary>
             Regulation
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptExportParameters.Namespace">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.Namespace">
             <summary>
             Namespace
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptExportParameters.ExportMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.ExportMode">
             <summary>
             EExport mode (default: existing)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptExportParameters.ScriptObject">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.ScriptObject">
             <summary>
             Script object (default : all)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptExportParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptExportParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptExportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ScriptPublishCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptPublishCommand">
             <summary>
             Script publish command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptPublishCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ScriptPublishParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptPublishCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptPublishParameters)">
             <summary>Publish script</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptPublishCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptPublishCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptPublishCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptPublishCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ScriptPublishParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptPublishParameters">
             <summary>
             Script publish command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptPublishParameters.SourceFile">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptPublishParameters.SourceFile">
             <summary>
             Source file
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptPublishParameters.SourceScript">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptPublishParameters.SourceScript">
             <summary>
             Source script
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptPublishParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptPublishParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptPublishParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptPublishParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptPublishParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptPublishParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Script.ScriptPublisher.PublishAllFunctions(System.Collections.Generic.IEnumerable{PayrollEngine.Client.Scripting.Script.ScriptClass})">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Script.Publisher.PublishAllFunctions(System.Collections.Generic.IEnumerable{PayrollEngine.Client.Scripting.Script.ScriptClass})">
             <summary>Publishes all script functions</summary>
             <param name="classes">The script parsed classes</param>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Script.ScriptPublisher.PublishFunction(System.Collections.Generic.IEnumerable{PayrollEngine.Client.Scripting.Script.ScriptClass},System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Script.Publisher.PublishFunction(System.Collections.Generic.IEnumerable{PayrollEngine.Client.Scripting.Script.ScriptClass},System.String)">
             <summary>Publishes function script by name</summary>
             <param name="classes">The script parsed classes</param>
             <param name="scriptKey">The script key</param>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Script.ScriptPublisher.PublishFunction(PayrollEngine.Client.Scripting.FunctionAttribute,PayrollEngine.Client.Scripting.ScriptAttribute,Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Script.Publisher.PublishFunction(PayrollEngine.Client.Scripting.FunctionAttribute,PayrollEngine.Client.Scripting.ScriptAttribute,Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax)">
             <summary>Publishes function script by line number</summary>
             <param name="functionAttribute">The function attribute syntax</param>
             <param name="scriptAttribute">The script attribute syntax</param>
             <param name="method">The file line number</param>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.ShareMode">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.TenantCommands.ObjectDeleteMode">
             <summary>
-            Share mode
+            Object delete mode
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ShareMode.View">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.TenantCommands.ObjectDeleteMode.Delete">
             <summary>
-            View share
+            Delete
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ShareMode.Set">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.TenantCommands.ObjectDeleteMode.TryDelete">
             <summary>
-            Set share
+            Try delete
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.ShareMode.Remove">
-            <summary>
-            Remove share
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.StopwatchCommand">
-            <summary>
-            Stopwatch command
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.StopwatchCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.StopwatchParameters)">
-            <summary>Process the variable</summary>
-            <param name="context">Command execution context</param>
-            <param name="parameters">Command parameters</param>
-            <returns>Program exit ok, 0 on success</returns>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.StopwatchCommand.BackendCommand">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.StopwatchCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.StopwatchCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
-            <inheritdoc />
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.StopwatchMode">
-            <summary>
-            Stopwatch mode
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.StopwatchMode.WatchView">
-            <summary>
-            View watch
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.StopwatchMode.WatchStart">
-            <summary>
-            Start watch
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.StopwatchMode.WatchStop">
-            <summary>
-            Stop watch
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.StopwatchParameters">
-            <summary>
-            Stopwatch command parameters
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.StopwatchParameters.VariableName">
-            <summary>
-            Variable name
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.StopwatchParameters.StopwatchMode">
-            <summary>
-            Stopwatch mode (default: watch view)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.StopwatchParameters.Toggles">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.StopwatchParameters.Test">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.StopwatchParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
-            <summary>
-            Parse command parameters
-            </summary>
-            <param name="parser">Parameter parser</param>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.TenantDeleteCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.TenantCommands.TenantDeleteCommand">
             <summary>
             Tenant delete command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.TenantDeleteCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.TenantDeleteParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.TenantCommands.TenantDeleteCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.TenantCommands.TenantDeleteParameters)">
             <summary>Delete tenant</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.TenantDeleteCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.TenantCommands.TenantDeleteCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.TenantDeleteCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.TenantCommands.TenantDeleteCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.TenantDeleteParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.TenantCommands.TenantDeleteParameters">
             <summary>
             Tenant delete command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.TenantDeleteParameters.Tenant">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.TenantCommands.TenantDeleteParameters.Tenant">
             <summary>
             Tenant
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.TenantDeleteParameters.DeleteMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.TenantCommands.TenantDeleteParameters.DeleteMode">
             <summary>
             Tenant delete mode (default: delete)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.TenantDeleteParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.TenantCommands.TenantDeleteParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.TenantDeleteParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.TenantCommands.TenantDeleteParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.TenantDeleteParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.TenantCommands.TenantDeleteParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.TestCommandBase`1">
-            <summary>
-            Test command base
-            </summary>
-            <typeparam name="TArgs">Command argument type</typeparam>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.TestCommandBase">
             <summary>
@@ -1806,6 +1823,12 @@
             <param name="displayMode">Display mode</param>
             <param name="results">Test results</param>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.TestCommandBase`1">
+            <summary>
+            Test command base
+            </summary>
+            <typeparam name="TArgs">Command argument type</typeparam>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.TestDisplayMode">
             <summary>
             Test display mode
@@ -1821,150 +1844,127 @@
             Show all tests
             </summary>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.UserVariableCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordCommand">
             <summary>
-            User variable command
+            Change password command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.UserVariableCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.UserVariableParameters)">
-            <summary>Process the variable</summary>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordParameters)">
+            <summary>Change the user password</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.UserVariableCommand.BackendCommand">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.UserVariableCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.UserVariableCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordParameters">
+            <summary>
+            Change password command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordParameters.Tenant">
+            <summary>
+            Tenant
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordParameters.User">
+            <summary>
+            User
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordParameters.NewPassword">
+            <summary>
+            New password
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordParameters.ExistingPassword">
+            <summary>
+            Existing password
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.UserVariableMode">
-            <summary>
-            USer variable mode
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.UserVariableMode.View">
-            <summary>
-            View variable
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.UserVariableMode.Set">
-            <summary>
-            Set variable
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.UserVariableMode.Remove">
-            <summary>
-            Remove variable
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.UserVariableParameters">
-            <summary>
-            User variable command parameters
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.UserVariableParameters.VariableName">
-            <summary>
-            Variable name
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.UserVariableParameters.VariableValue">
-            <summary>
-            Variable value
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.UserVariableParameters.VariableMode">
-            <summary>
-            Variable mode (default: view)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.UserVariableParameters.Toggles">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.UserVariableParameters.Test">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.UserVariableParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.WriteCommand">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableCommand">
             <summary>
-            Write command
+            User variable command
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.WriteCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.WriteParameters)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableParameters)">
             <summary>Process the variable</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.WriteCommand.BackendCommand">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableCommand.BackendCommand">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.WriteCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.WriteCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.WriteMode">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableMode">
             <summary>
-            Write mode
+            USer variable mode
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.WriteMode.Console">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableMode.View">
             <summary>
-            Write to console
+            View variable
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.WriteMode.Log">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableMode.Set">
             <summary>
-            Write to log
+            Set variable
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.WriteMode.LogAndConsole">
+        <member name="F:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableMode.Remove">
             <summary>
-            Write to log and console
+            Remove variable
             </summary>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.WriteParameters">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableParameters">
             <summary>
-            Write command parameters
+            User variable command parameters
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.WriteParameters.Text">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableParameters.VariableName">
             <summary>
-            Write text
+            Variable name
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.WriteParameters.WriteMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableParameters.VariableValue">
             <summary>
-            Write mode (default: console)
+            Variable value
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.WriteParameters.ConsoleWriteMode">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableParameters.VariableMode">
             <summary>
-            Console write mode (default: normal)
+            Variable mode (default: view)
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.WriteParameters.LogWriteMode">
-            <summary>
-            Log write mode (default: info)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.WriteParameters.Toggles">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableParameters.Toggles">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.WriteParameters.Test">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableParameters.Test">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.WriteParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
             </summary>
