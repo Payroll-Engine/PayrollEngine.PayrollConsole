@@ -3,18 +3,17 @@ using System.IO;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Script;
-using PayrollEngine.Client.Exchange;
 using PayrollEngine.Client.Scripting.Script;
 using PayrollEngine.PayrollConsole.Commands.Excel;
 
-namespace PayrollEngine.PayrollConsole.Commands.PayrollCommands;
+namespace PayrollEngine.PayrollConsole.Commands.CaseCommands;
 
 /// <summary>
-/// Payroll import excel command
+/// Case change import from excel command
 /// </summary>
-[Command("PayrollImportExcel")]
+[Command("CaseChangeExcelImport")]
 // ReSharper disable once UnusedType.Global
-internal sealed class PayrollImportExcelCommand : CommandBase<PayrollImportExcelParameters>
+internal sealed class CaseChangeExcelImportCommand : CommandBase<CaseChangeExcelImportParameters>
 {
     private IScriptParser ScriptParser { get; } = new ScriptParser();
 
@@ -22,9 +21,9 @@ internal sealed class PayrollImportExcelCommand : CommandBase<PayrollImportExcel
     /// <param name="context">Command execution context</param>
     /// <param name="parameters">Command parameters</param>
     /// <returns>Program exit ok, 0 on success</returns>
-    protected override async Task<int> Execute(CommandContext context, PayrollImportExcelParameters parameters)
+    protected override async Task<int> Execute(CommandContext context, CaseChangeExcelImportParameters parameters)
     {
-        DisplayTitle(context.Console, "Payroll import from Excel");
+        DisplayTitle(context.Console, "Case change import from Excel");
         if (context.DisplayLevel == DisplayLevel.Full)
         {
             if (!string.IsNullOrWhiteSpace(parameters.Tenant))
@@ -42,9 +41,10 @@ internal sealed class PayrollImportExcelCommand : CommandBase<PayrollImportExcel
         try
         {
             // read Excel
-            var exchange = await new ExchangeExcelReader(context.HttpClient).ReadAsync(parameters.FileName, parameters.Tenant);
+            var exchange = await new CaseChangeImport(context.HttpClient).ReadCaseChangesAsync(parameters.FileName, parameters.Tenant);
+
             // import tenant
-            var import = new ExchangeImport(context.HttpClient, exchange, ScriptParser, importMode: parameters.ImportMode);
+            var import = new Client.Exchange.ExchangeImport(context.HttpClient, exchange, ScriptParser, importMode: parameters.ImportMode);
             await import.ImportAsync();
 
             context.Console.DisplaySuccessLine($"Payroll successfully imported from {new FileInfo(parameters.FileName).FullName}");
@@ -59,20 +59,20 @@ internal sealed class PayrollImportExcelCommand : CommandBase<PayrollImportExcel
 
     /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
-        PayrollImportExcelParameters.ParserFrom(parser);
+        CaseChangeExcelImportParameters.ParserFrom(parser);
 
     /// <inheritdoc />
     public override void ShowHelp(ICommandConsole console)
     {
-        console.DisplayTitleLine("- PayrollImportExcel");
-        console.DisplayTextLine("      Import payroll data from Excel file");
+        console.DisplayTitleLine("- CaseChangeExcelImport");
+        console.DisplayTextLine("      Import case changes from Excel file");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. Excel file name [FileName]");
-        console.DisplayTextLine("          2. tenant name (optional) [Tenant]");
+        console.DisplayTextLine("          2. Tenant name (optional) [Tenant]");
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          import mode: /single or /bulk (default: single)");
         console.DisplayTextLine("      Examples:");
-        console.DisplayTextLine("          PayrollImportExcel MyImportFile.xlsx");
-        console.DisplayTextLine("          PayrollImportExcel MyImportFile.xlsx /noupdate /bulk");
+        console.DisplayTextLine("          CaseChangeExcelImport MyImportFile.xlsx");
+        console.DisplayTextLine("          CaseChangeExcelImport MyImportFile.xlsx /noupdate /bulk");
     }
 }

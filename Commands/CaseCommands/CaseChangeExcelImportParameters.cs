@@ -2,12 +2,12 @@
 using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Exchange;
 
-namespace PayrollEngine.PayrollConsole.Commands.PayrollCommands;
+namespace PayrollEngine.PayrollConsole.Commands.CaseCommands;
 
 /// <summary>
-/// Payroll import excel command parameters
+/// Case change import excel command parameters
 /// </summary>
-public class PayrollImportExcelParameters : ICommandParameters
+public class CaseChangeExcelImportParameters : ICommandParameters
 {
     /// <summary>
     /// File name
@@ -38,7 +38,7 @@ public class PayrollImportExcelParameters : ICommandParameters
     /// Parse command parameters
     /// </summary>
     /// <param name="parser">Parameter parser</param>
-    public static PayrollImportExcelParameters ParserFrom(CommandLineParser parser) =>
+    public static CaseChangeExcelImportParameters ParserFrom(CommandLineParser parser) =>
         new()
         {
             FileName = parser.Get(2, nameof(FileName)),

@@ -25,7 +25,7 @@ public class RegulationRebuildParameters : ICommandParameters
     public string ObjectType { get; init; }
 
     /// <summary>
-    /// Objectkey
+    /// Object key
     /// </summary>
     public string ObjectKey { get; init; }
 

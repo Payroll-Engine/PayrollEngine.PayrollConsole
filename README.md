@@ -10,34 +10,35 @@ The application is controlled by two types of command line arguments:
 ## Commands
 The Payroll Console provides the following commands:
 
-| Command              | Group            | Description                                                  |
+| Command                 | Group            | Description                                                  |
 |--|--|--|
-| `ActionReport`       | Action           | Report custom actions from an assembly                       |
-| `CaseTest`           | Payroll          | Test case availability, build data and user input validation |
-| `ChangePassword`     | System           | Change a user password                                       |
-| `DataReport`         | Report           | Report data to JSON file                                     |
-| `Help`               | System           | Show the command reference                                   |
-| `HttpGet`<br/>`HttpPost`<br/>`HttpPut`<br />`HttpDelete` | System | Execute HTTP GET, POST, PUT or DELETE request |
-| `LogTrail`           | System           | Trace the tenant log <sup>1)</sup>                           |
-| `PayrollExport`      | Payroll          | Export any payroll data to JSON file                         |
-| `PayrollImport`      | Payroll          | Import any payroll data from JSON/zip file                   |
-| `PayrollImportExcel` | Payroll          | Import payroll data from Excel file                          |
-| `PayrollResults`     | Payroll          | Report payroll data to screen and/or file                    |
-| `PayrunEmployeeTest` | Test             | Execute employee payrun and test the results                 |
-| `PayrunJobDelete`    | Data management  | Delete payrun job with payroll results                       |
-| `PayrunRebuild`      | Script           | Rebuild payrun                                               |
-| `PayrunStatistics`   | Statistics       | Display payrun statistics                                    |
-| `PayrunTest`         | Test             | Execute payrun and test the results                          |
-| `RegulationRebuild`  | Script           | Rebuild the regulation objects                               |
-| `RegulationShare`    | Regulation share | Manage regulation shares                                     |
-| `Report`             | Report           | Report to file <sup>2)</sup>                                 |
-| `ReportTest`         | Test             | Test report output data                                      |
-| `ScriptExport`       | Script           | Export regulation scripts to folder                          |
-| `ScriptPublish`      | Script           | Publish scripts from C# file                                 |
-| `Stopwatch`          | System           | Stopwatch based on environment user variable                 |
-| `TenantDelete`       | Data management  | Delete tenant                                                |
-| `UserVariable`       | System           | View and change the environment user variable                |
-| `Write`              | System           | Write to the console and/or log file                         |
+| `ActionReport`          | Action           | Report custom actions from an assembly                       |
+| `CaseChangeExcelImport` | Case             | Import payroll case change from Excel file                   |
+| `CaseTest`              | Case             | Test case availability, build data and user input validation |
+| `LogTrail`              | Diagnostics      | Trace the tenant log <sup>1)</sup>                           |
+| `Stopwatch`             | Diagnostics      | Stopwatch based on environment user variable                 |
+| `Write`                 | Diagnostics      | Write to the console and/or log file                         |
+| `HttpGet`<br/>`HttpPost`<br/>`HttpPut`<br />`HttpDelete` | Http | Execute HTTP GET, POST, PUT or DELETE request |
+| `PayrollExport`         | Payroll          | Export any payroll data to JSON file                         |
+| `PayrollImport`         | Payroll          | Import any payroll data from JSON/zip file                   |
+| `PayrollResults`        | Payroll          | Report payroll data to screen and/or file                    |
+| `PayrunEmployeeTest`    | Payrun           | Execute employee payrun and test the results                 |
+| `PayrunJobDelete`       | Payrun           | Delete payrun job with payroll results                       |
+| `PayrunRebuild`         | Payrun           | Rebuild payrun                                               |
+| `PayrunStatistics`      | Payrun           | Display payrun statistics                                    |
+| `PayrunTest`            | Payrun           | Execute payrun and test the results                          |
+| `RegulationExcelImport` | Regulation       | Transfer Excel regulation to the file or backend             |
+| `RegulationRebuild`     | Regulation       | Rebuild the regulation objects                               |
+| `RegulationShare`       | Regulation       | Manage regulation shares                                     |
+| `DataReport`            | Report           | Report data to JSON file                                     |
+| `Report`                | Report           | Report to file <sup>2)</sup>                                 |
+| `ReportTest`            | Report           | Test report output data                                      |
+| `ScriptExport`          | Script           | Export regulation scripts to folder                          |
+| `ScriptPublish`         | Script           | Publish scripts from C# file                                 |
+| `TenantDelete`          | Tenant           | Delete tenant                                                |
+| `ChangePassword`        | User             | Change a user password                                       |
+| `UserVariable`          | User             | View and change the environment user variable                |
+| `Help`                  | App              | Show the command reference                                   |
 
 <sup>1)</sup> Tenant logs are generated by the regulations and should not be confused with the application log.<br/>
 <sup>2)</sup> Based on [FastReports](https://github.com/FastReports).<br/>

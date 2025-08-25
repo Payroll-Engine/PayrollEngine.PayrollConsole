@@ -1,6 +1,6 @@
 ﻿namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
-internal static class SpecificationCaseValue
+internal static class CaseValueSheetSpecification
 {
     internal static readonly string CaseChange = "CaseChange";
     internal static readonly string CaseName = "CaseName";

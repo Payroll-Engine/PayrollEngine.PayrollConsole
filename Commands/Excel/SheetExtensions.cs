@@ -1,12 +1,84 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
-using NPOI.SS.UserModel;
 using NPOI.SS.Util;
+using NPOI.SS.UserModel;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
 internal static class SheetExtensions
 {
+    internal static int? GetHeaderColumn(this ISheet worksheet, string name)
+    {
+        foreach (var cell in worksheet.HeaderCells())
+        {
+            if (cell == null)
+            {
+                continue;
+            }
+            if (cell.StringCellValue.Trim().Equals(name, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return cell.ColumnIndex;
+            }
+        }
+        return null;
+    }
+
+    internal static Dictionary<int, string> GetHeaderMultiColumns(this ISheet worksheet, string name, bool dotSeparator = true)
+    {
+        var columns = new Dictionary<int, string>();
+        if (dotSeparator)
+        {
+            name = name.EnsureEnd(".");
+        }
+        foreach (var cell in worksheet.HeaderCells())
+        {
+            if (cell == null)
+            {
+                continue;
+            }
+            var value = cell.StringCellValue.Trim();
+            if (value.StartsWith(name, StringComparison.InvariantCultureIgnoreCase))
+            {
+                columns.Add(cell.ColumnIndex, value.RemoveFromStart(name));
+            }
+        }
+        return columns;
+    }
+
+    /// <summary>
+    /// Gets sheet column indexed by column name
+    /// </summary>
+    /// <param name="worksheet">The worksheet</param>
+    /// <param name="titles">The column titles</param>
+    internal static IDictionary<string, int> GetColumnIndexes(this ISheet worksheet, ICollection<string> titles)
+    {
+        var columns = new Dictionary<string, int>();
+        foreach (var cell in worksheet.HeaderCells())
+        {
+            if (cell == null)
+            {
+                continue;
+            }
+            var columnName = cell.StringCellValue.Trim();
+            if (titles.Contains(columnName))
+            {
+                columns.Add(columnName, cell.ColumnIndex);
+            }
+        }
+
+        // verify that all columns are present
+        foreach (var title in titles)
+        {
+            if (!columns.ContainsKey(title))
+            {
+                throw new PayrollException($"Missing Excel column {title}.");
+            }
+        }
+
+        return columns;
+    }
+
     private static int GetMaxPhysicalNumberOfCells(this ISheet worksheet)
     {
         var maxColumnCount = 0;
@@ -62,7 +134,7 @@ internal static class SheetExtensions
     }
 
     private static bool IsDateCell(this ICell cell) =>
-        cell.DateCellValue.HasValue && cell.DateCellValue.Value.Year > 1900;
+        cell.DateCellValue.HasValue && cell.DateCellValue.Value.Year > 1950;
 
     internal static ValueType GetValueType(this ICell cell)
     {
@@ -112,7 +184,7 @@ internal static class SheetExtensions
     /// <returns>The cell value</returns>
     internal static T GetCellValue<T>(this ICell cell, IFormatProvider provider = null)
     {
-        if (cell == null)
+        if (cell == null || cell.CellType == CellType.Blank)
         {
             return default;
         }
@@ -166,6 +238,32 @@ internal static class SheetExtensions
             }
             var date = DateTime.Parse(cell.StringCellValue, provider);
             return (T)(object)date;
+        }
+
+        // int
+        if (typeof(T) == typeof(int))
+        {
+            TestCellType(cell, CellType.Numeric);
+            return (T)Convert.ChangeType((int)cell.NumericCellValue, typeof(T));
+        }
+        if (typeof(T) == typeof(int?))
+        {
+            TestCellType(cell, CellType.Numeric);
+            var value = int.Parse(cell.NumericCellValue.ToString(CultureInfo.InvariantCulture));
+            return (T)(object)value;
+        }
+
+        // decimal
+        if (typeof(T) == typeof(decimal))
+        {
+            TestCellType(cell, CellType.Numeric);
+            return (T)Convert.ChangeType((decimal)cell.NumericCellValue, typeof(T));
+        }
+        if (typeof(T) == typeof(decimal?))
+        {
+            TestCellType(cell, CellType.Numeric);
+            var value = decimal.Parse(cell.NumericCellValue.ToString(CultureInfo.InvariantCulture), provider: CultureInfo.InvariantCulture);
+            return (T)(object)value;
         }
 
         // double

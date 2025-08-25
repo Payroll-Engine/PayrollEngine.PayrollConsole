@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.IO;
 using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using PayrollEngine.Client;
 using PayrollEngine.Client.Model;
 using PayrollEngine.Client.Service;
@@ -11,8 +13,66 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
-internal static class ExchangeExcelCaseReader
+internal sealed class CaseChangeImport
 {
+    private PayrollHttpClient HttpClient { get; }
+
+    internal CaseChangeImport(PayrollHttpClient httpClient)
+    {
+        HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    }
+
+    internal async Task<Exchange> ReadCaseChangesAsync(string fileName, string overrideTenant = null)
+    {
+        if (string.IsNullOrWhiteSpace(fileName))
+        {
+            throw new ArgumentException(nameof(fileName));
+        }
+
+        // import file
+        if (!File.Exists(fileName))
+        {
+            throw new PayrollException($"Missing Payroll Excel file {fileName}.");
+        }
+
+        // workbook (file share to load open/locked excel document)
+        await using var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        IWorkbook workbook = new XSSFWorkbook(stream);
+
+        // import tenant
+        var tenant = await GetTenantAsync(workbook);
+        // tenant override
+        if (!string.IsNullOrWhiteSpace(overrideTenant))
+        {
+            tenant.Identifier = overrideTenant;
+        }
+
+        // import case changes
+        await ReadAsync(HttpClient, tenant, workbook, fileName);
+
+        return new()
+        {
+            Tenants = [tenant]
+        };
+    }
+
+    private async Task<ExchangeTenant> GetTenantAsync(IWorkbook workbook)
+    {
+        var tenantName = workbook.GetNamedValue<string>(RegionNames.TenantRegionName);
+        if (string.IsNullOrWhiteSpace(tenantName))
+        {
+            throw new PayrollException("Missing tenant identifier.");
+        }
+
+        // get existing tenant
+        var tenant = await new TenantService(HttpClient).GetAsync<ExchangeTenant>(new(), tenantName);
+        if (tenant == null)
+        {
+            throw new PayrollException($"Unknown tenant with identifier {tenantName}.");
+        }
+        return tenant;
+    }
+
     /// <summary>
     /// Read case changes from excel file
     /// </summary>
@@ -20,7 +80,7 @@ internal static class ExchangeExcelCaseReader
     /// <param name="tenant">Tenant</param>
     /// <param name="workbook">Excel workbook</param>
     /// <param name="fileName">Excel file name</param>
-    internal static async Task ReadAsync(PayrollHttpClient httpClient,
+    private static async Task ReadAsync(PayrollHttpClient httpClient,
         ExchangeTenant tenant, IWorkbook workbook, string fileName)
     {
         var user = await GetUserAsync(httpClient, workbook, tenant.Id);
@@ -55,7 +115,7 @@ internal static class ExchangeExcelCaseReader
     private static void GetCaseData(IWorkbook workbook, Division division, User user,
         PayrollSet payroll, string reason, string @namespace)
     {
-        foreach (var sheet in workbook.GetSheetsOf(SpecificationCaseData.DataSheetPrefix))
+        foreach (var sheet in workbook.GetSheetsOf(CaseDataSheetSpecification.DataSheetPrefix))
         {
             AddCaseData(sheet, payroll, division, user, reason, @namespace);
         }
@@ -74,10 +134,10 @@ internal static class ExchangeExcelCaseReader
         // columns
         var titles = new[]
         {
-            SpecificationCaseData.Employee,
-            SpecificationCaseData.Created
+            CaseDataSheetSpecification.Employee,
+            CaseDataSheetSpecification.Created
         };
-        var columns = GetColumnIndexes(worksheet, titles);
+        var columns = worksheet.GetColumnIndexes(titles);
 
         var caseColumns = GetCaseColumns(worksheet, titles.Length);
         if (!caseColumns.Any())
@@ -90,7 +150,7 @@ internal static class ExchangeExcelCaseReader
             @namespace = @namespace.EnsureEnd(".");
         }
 
-        var caseName = @namespace + worksheet.SheetName.RemoveFromStart(SpecificationCaseData.DataSheetPrefix);
+        var caseName = @namespace + worksheet.SheetName.RemoveFromStart(CaseDataSheetSpecification.DataSheetPrefix);
 
         // collect case values from the rows (skip header row)
         for (var i = 1; i < worksheet.PhysicalNumberOfRows; i++)
@@ -101,8 +161,8 @@ internal static class ExchangeExcelCaseReader
                 continue;
             }
 
-            var employee = row.GetCell(columns[SpecificationCaseData.Employee]).GetCellValue<string>();
-            var created = row.GetCell(columns[SpecificationCaseData.Created]).GetCellValue<DateTime?>();
+            var employee = row.GetCell(columns[CaseDataSheetSpecification.Employee]).GetCellValue<string>();
+            var created = row.GetCell(columns[CaseDataSheetSpecification.Created]).GetCellValue<DateTime?>();
 
             // case values
             var caseValues = new List<CaseValueSetup>();
@@ -164,8 +224,13 @@ internal static class ExchangeExcelCaseReader
         var headerCells = worksheet.HeaderCells();
         for (var i = firstColumnIndex; i < headerCells.Count; i++)
         {
-            var columnName = headerCells[i].StringCellValue.Trim();
-            columns.Add(columnName.RemoveFromStart(SpecificationCaseData.DataSheetPrefix), i);
+            var cell = headerCells[i];
+            if (cell == null)
+            {
+                continue;
+            }
+            var columnName = cell.StringCellValue.Trim();
+            columns.Add(columnName.RemoveFromStart(CaseDataSheetSpecification.DataSheetPrefix), i);
 
         }
         return columns;
@@ -189,10 +254,21 @@ internal static class ExchangeExcelCaseReader
     private static async Task GetCaseChangesAsync(PayrollHttpClient httpClient, ExchangeTenant tenant,
         IWorkbook workbook, Division division, User user, string caseValueReason, PayrollSet payroll)
     {
-        // national case value changes
-        if (workbook.HasSheet(SpecificationSheet.NationalCaseValues))
+        // global case value changes
+        if (workbook.HasSheet(SheetSpecification.GlobalCaseValues))
         {
-            var sheet = workbook.GetSheet(SpecificationSheet.NationalCaseValues);
+            var sheet = workbook.GetSheet(SheetSpecification.GlobalCaseValues);
+            var globalCases = GetCaseChange(sheet, division, user, caseValueReason);
+            if (globalCases != null)
+            {
+                payroll.Cases.Add(globalCases);
+            }
+        }
+
+        // national case value changes
+        if (workbook.HasSheet(SheetSpecification.NationalCaseValues))
+        {
+            var sheet = workbook.GetSheet(SheetSpecification.NationalCaseValues);
             var nationalCases = GetCaseChange(sheet, division, user, caseValueReason);
             if (nationalCases != null)
             {
@@ -201,9 +277,9 @@ internal static class ExchangeExcelCaseReader
         }
 
         // company case value changes
-        if (workbook.HasSheet(SpecificationSheet.CompanyCaseValues))
+        if (workbook.HasSheet(SheetSpecification.CompanyCaseValues))
         {
-            var sheet = workbook.GetSheet(SpecificationSheet.CompanyCaseValues);
+            var sheet = workbook.GetSheet(SheetSpecification.CompanyCaseValues);
             var companyCases = GetCaseChange(sheet, division, user, caseValueReason);
             if (companyCases != null)
             {
@@ -212,9 +288,9 @@ internal static class ExchangeExcelCaseReader
         }
 
         // employee case value changes
-        if (workbook.HasSheet(SpecificationSheet.EmployeeCaseValues))
+        if (workbook.HasSheet(SheetSpecification.EmployeeCaseValues))
         {
-            var sheet = workbook.GetSheet(SpecificationSheet.EmployeeCaseValues);
+            var sheet = workbook.GetSheet(SheetSpecification.EmployeeCaseValues);
             var employeeCases = await GetEmployeeCaseChangesAsync(httpClient, tenant, sheet, division, user, caseValueReason);
             foreach (var employeeCase in employeeCases)
             {
@@ -234,17 +310,17 @@ internal static class ExchangeExcelCaseReader
         // columns
         var titles = new[]
         {
-            SpecificationCaseValue.CaseChange,
-            SpecificationCaseValue.CaseName,
-            SpecificationCaseValue.CaseFieldName,
-            SpecificationCaseValue.CaseSlot,
-            SpecificationCaseValue.Created,
-            SpecificationCaseValue.Value,
-            SpecificationCaseValue.Start,
-            SpecificationCaseValue.End,
-            SpecificationCaseValue.Cancellation
+            CaseValueSheetSpecification.CaseChange,
+            CaseValueSheetSpecification.CaseName,
+            CaseValueSheetSpecification.CaseFieldName,
+            CaseValueSheetSpecification.CaseSlot,
+            CaseValueSheetSpecification.Created,
+            CaseValueSheetSpecification.Value,
+            CaseValueSheetSpecification.Start,
+            CaseValueSheetSpecification.End,
+            CaseValueSheetSpecification.Cancellation
         };
-        var columns = GetColumnIndexes(worksheet, titles);
+        var columns = worksheet.GetColumnIndexes(titles);
 
         // collect case values from the rows (skip header row)
         var caseValues = new List<CaseValueSetup>();
@@ -257,13 +333,13 @@ internal static class ExchangeExcelCaseReader
             }
 
             var caseName = row.GetCell(columns[SpecificationEmployeeCaseValue.CaseName]).GetCellValue<string>();
-            var caseFieldName = row.GetCell(columns[SpecificationCaseValue.CaseFieldName]).GetCellValue<string>();
-            var caseSlot = row.GetCell(columns[SpecificationCaseValue.CaseSlot]).GetCellValue<string>();
-            var created = row.GetCell(columns[SpecificationCaseValue.Created]).GetCellValue<DateTime?>();
-            var value = row.GetCell(columns[SpecificationCaseValue.Value]).GetCellValue();
-            var start = row.GetCell(columns[SpecificationCaseValue.Start]).GetCellValue<DateTime>();
-            var end = row.GetCell(columns[SpecificationCaseValue.End]).GetCellValue<DateTime?>();
-            var cancellationDate = row.GetCell(columns[SpecificationCaseValue.Cancellation]).GetCellValue<DateTime?>();
+            var caseFieldName = row.GetCell(columns[CaseValueSheetSpecification.CaseFieldName]).GetCellValue<string>();
+            var caseSlot = row.GetCell(columns[CaseValueSheetSpecification.CaseSlot]).GetCellValue<string>();
+            var created = row.GetCell(columns[CaseValueSheetSpecification.Created]).GetCellValue<DateTime?>();
+            var value = row.GetCell(columns[CaseValueSheetSpecification.Value]).GetCellValue();
+            var start = row.GetCell(columns[CaseValueSheetSpecification.Start]).GetCellValue<DateTime>();
+            var end = row.GetCell(columns[CaseValueSheetSpecification.End]).GetCellValue<DateTime?>();
+            var cancellationDate = row.GetCell(columns[CaseValueSheetSpecification.Cancellation]).GetCellValue<DateTime?>();
 
             if (value == null)
             {
@@ -361,7 +437,7 @@ internal static class ExchangeExcelCaseReader
             SpecificationEmployeeCaseValue.End,
             SpecificationEmployeeCaseValue.Cancellation
         };
-        var columns = GetColumnIndexes(worksheet, titles);
+        var columns = worksheet.GetColumnIndexes(titles);
 
         // collect case values from the rows (skip header row), by employee identifier and case change
         var caseValuesByChanges = new Dictionary<Tuple<string, string>, List<CaseValueSetup>>();
@@ -483,49 +559,20 @@ internal static class ExchangeExcelCaseReader
 
     #endregion
 
-    /// <summary>
-    /// Gets sheet column indexed by column name
-    /// </summary>
-    /// <param name="worksheet">The worksheet</param>
-    /// <param name="titles">The column titles</param>
-    private static IDictionary<string, int> GetColumnIndexes(ISheet worksheet, ICollection<string> titles)
-    {
-        var columns = new Dictionary<string, int>();
-        foreach (var headerCell in worksheet.HeaderCells())
-        {
-            var columnName = headerCell.StringCellValue.Trim();
-            if (titles.Contains(columnName))
-            {
-                columns.Add(columnName, headerCell.ColumnIndex);
-            }
-        }
-
-        // verify that all columns are present
-        foreach (var title in titles)
-        {
-            if (!columns.ContainsKey(title))
-            {
-                throw new PayrollException($"Missing Excel column {title}.");
-            }
-        }
-
-        return columns;
-    }
-
     private static string GetCaseValueReason(IWorkbook workbook, string fileName)
     {
-        var caseValueReason = workbook.GetNamedValue<string>(Specification.CaseValueReasonRegionName);
+        var caseValueReason = workbook.GetNamedValue<string>(RegionNames.CaseValueReasonRegionName);
         return string.IsNullOrWhiteSpace(caseValueReason) ?
             $"Import case values from {fileName}" :
             caseValueReason;
     }
 
     private static string GetNamespace(IWorkbook workbook) =>
-        workbook.GetNamedValue<string>(Specification.NamespaceRegionName);
+        workbook.GetNamedValue<string>(RegionNames.NamespaceRegionName);
 
     private static async Task<User> GetUserAsync(PayrollHttpClient httpClient, IWorkbook workbook, int tenantId)
     {
-        var userIdentifier = workbook.GetNamedValue<string>(Specification.UserRegionName);
+        var userIdentifier = workbook.GetNamedValue<string>(RegionNames.UserRegionName);
         if (string.IsNullOrWhiteSpace(userIdentifier))
         {
             throw new PayrollException("Missing user identifier.");
@@ -542,7 +589,7 @@ internal static class ExchangeExcelCaseReader
 
     private static async Task<Division> GetDivisionAsync(PayrollHttpClient httpClient, IWorkbook workbook, int tenantId)
     {
-        var divisionName = workbook.GetNamedValue<string>(Specification.DivisionRegionName);
+        var divisionName = workbook.GetNamedValue<string>(RegionNames.DivisionRegionName);
         if (string.IsNullOrWhiteSpace(divisionName))
         {
             throw new PayrollException("Missing division identifier.");
@@ -559,7 +606,7 @@ internal static class ExchangeExcelCaseReader
 
     private static async Task<PayrollSet> GetPayrollAsync(PayrollHttpClient httpClient, IWorkbook workbook, int tenantId)
     {
-        var payrollName = workbook.GetNamedValue<string>(Specification.PayrollRegionName);
+        var payrollName = workbook.GetNamedValue<string>(RegionNames.PayrollRegionName);
         if (string.IsNullOrWhiteSpace(payrollName))
         {
             throw new PayrollException("Missing payroll name.");

@@ -71,6 +71,55 @@
             Json
             </summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportCommand">
+            <summary>
+            Case change import from excel command
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportParameters)">
+            <summary>Import a tenant from an Excel file</summary>
+            <param name="context">Command execution context</param>
+            <param name="parameters">Command parameters</param>
+            <returns>Program exit ok, 0 on success</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportParameters">
+            <summary>
+            Case change import excel command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportParameters.FileName">
+            <summary>
+            File name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportParameters.Tenant">
+            <summary>
+            Tenant
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportParameters.ImportMode">
+            <summary>
+            Import mode (default: single)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+            <param name="parser">Parameter parser</param>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestCommand">
             <summary>
             Case test command
@@ -358,7 +407,7 @@
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.ReadAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.IWorkbook,System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.ReadAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.IWorkbook,System.String)">
             <summary>
             Read case changes from excel file
             </summary>
@@ -367,7 +416,7 @@
             <param name="workbook">Excel workbook</param>
             <param name="fileName">Excel file name</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.GetCaseData(NPOI.SS.UserModel.IWorkbook,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,PayrollEngine.Client.Model.PayrollSet,System.String,System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetCaseData(NPOI.SS.UserModel.IWorkbook,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,PayrollEngine.Client.Model.PayrollSet,System.String,System.String)">
             <summary>
             Get case data
             </summary>
@@ -378,7 +427,7 @@
             <param name="reason">The reason</param>
             <param name="namespace">The case and case field namespace</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.AddCaseData(NPOI.SS.UserModel.ISheet,PayrollEngine.Client.Model.PayrollSet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String,System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.AddCaseData(NPOI.SS.UserModel.ISheet,PayrollEngine.Client.Model.PayrollSet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String,System.String)">
             <summary>Add case data</summary>
             <param name="worksheet">The worksheet</param>
             <param name="payroll">The payroll</param>
@@ -387,14 +436,14 @@
             <param name="reason">The reason</param>
             <param name="namespace">The case and case field namespace</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.GetCaseColumns(NPOI.SS.UserModel.ISheet,System.Int32)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetCaseColumns(NPOI.SS.UserModel.ISheet,System.Int32)">
             <summary>
             Gets sheet column indexed by column name
             </summary>
             <param name="worksheet">The worksheet</param>
             <param name="firstColumnIndex">The first column index</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.GetCaseChangesAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.IWorkbook,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String,PayrollEngine.Client.Model.PayrollSet)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetCaseChangesAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.IWorkbook,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String,PayrollEngine.Client.Model.PayrollSet)">
             <summary>
             Get case changes
             </summary>
@@ -407,7 +456,7 @@
             <param name="payroll"></param>
             <returns></returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.GetCaseChange(NPOI.SS.UserModel.ISheet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetCaseChange(NPOI.SS.UserModel.ISheet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String)">
             <summary>Gets the case change</summary>
             <param name="worksheet">The worksheet</param>
             <param name="division">The division</param>
@@ -415,7 +464,7 @@
             <param name="reason">The reason</param>
             <returns>Case change setup</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.GetEmployeeCaseChangesAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.ISheet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetEmployeeCaseChangesAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.ISheet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String)">
             <summary>Gets the employee case changes grouped by employee identifier</summary>
             <param name="httpClient">The http client</param>
             <param name="tenant">The tenant</param>
@@ -425,7 +474,7 @@
             <param name="reason">The reason</param>
             <returns>Case changes by employee</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeExcelCaseReader.GetColumnIndexes(NPOI.SS.UserModel.ISheet,System.Collections.Generic.ICollection{System.String})">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.GetColumnIndexes(NPOI.SS.UserModel.ISheet,System.Collections.Generic.ICollection{System.String})">
             <summary>
             Gets sheet column indexed by column name
             </summary>
@@ -667,6 +716,26 @@
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ImportMode">
+            <summary>
+            Import mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ImportMode.File">
+            <summary>
+            Import to file
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ImportMode.Backend">
+            <summary>
+            Import to backend
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ImportMode.All">
+            <summary>
+            Import to file and backend
+            </summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportCommand">
             <summary>
             Payroll export command
@@ -738,55 +807,6 @@
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelCommand">
-            <summary>
-            Payroll import excel command
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters)">
-            <summary>Import a tenant from an Excel file</summary>
-            <param name="context">Command execution context</param>
-            <param name="parameters">Command parameters</param>
-            <returns>Program exit ok, 0 on success</returns>
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
-            <inheritdoc />
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters">
-            <summary>
-            Payroll import excel command parameters
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters.FileName">
-            <summary>
-            File name
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters.Tenant">
-            <summary>
-            Tenant
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters.ImportMode">
-            <summary>
-            Import mode (default: single)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters.Toggles">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters.Test">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportExcelParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
-            <summary>
-            Parse command parameters
-            </summary>
-            <param name="parser">Parameter parser</param>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollImportParameters">
             <summary>
@@ -1243,6 +1263,59 @@
             Invalid options
             </summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportCommand">
+            <summary>
+            Regulation excel import command
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportParameters)">
+            <summary>Import a tenant from an Excel file</summary>
+            <param name="context">Command execution context</param>
+            <param name="parameters">Command parameters</param>
+            <returns>Program exit ok, 0 on success</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportParameters">
+            <summary>
+            Regulation excel import command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportParameters.SourceFileName">
+            <summary>
+            Source file name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportParameters.TargetFileName">
+            <summary>
+            Target file name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportParameters.ImportMode">
+            <summary>
+            Import mode
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportParameters.Toggles">
+            <inheritdoc />
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportParameters.ParseFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+            <param name="parser">Parameter parser</param>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildCommand">
             <summary>
             Regulation rebuild command
@@ -1282,7 +1355,7 @@
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildParameters.ObjectKey">
             <summary>
-            Objectkey
+            Object key
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildParameters.Toggles">

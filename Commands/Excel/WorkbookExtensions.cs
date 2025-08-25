@@ -7,6 +7,12 @@ namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
 internal static class WorkbookExtensions
 {
+    internal static string EnsureNamespace(this IWorkbook workbook, string name)
+    {
+        var @namespace = GetNamedValue<string>(workbook, RegionNames.NamespaceRegionName);
+        return string.IsNullOrWhiteSpace(@namespace) ? name : name.EnsureStart(@namespace.EnsureEnd("."));
+    }
+
     internal static T GetNamedValue<T>(this IWorkbook workbook, string nameName)
     {
         var names = workbook.GetAllNames();
