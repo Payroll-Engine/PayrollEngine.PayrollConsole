@@ -12,8 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
+		Dockerfile = Dockerfile
+		LICENSE = LICENSE
 		README.md = README.md
-		docs\README.pdf = docs\README.pdf
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayrollEngine.PayrollConsole.Commands", "Commands\PayrollEngine.PayrollConsole.Commands.csproj", "{D4F2F169-2A34-4AAD-B537-365C1FBEBD88}"

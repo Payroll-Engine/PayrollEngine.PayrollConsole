@@ -219,7 +219,7 @@ public class PayrollResultsReport(PayrollHttpClient httpClient, int topFilter, R
                                     FormatValue(customResult.Source, "name"),
                                     customResult.Start.ToPeriodStartString(),
                                     customResult.End.ToPeriodEndString(),
-                                    ValueType.Decimal.ToString(),
+                                    nameof(ValueType.Decimal),
                                     FormatValue(customResult.Attributes.ToText(), "attributes"),
                                     FormatValue(customResult.Value)
                                 };
@@ -262,7 +262,7 @@ public class PayrollResultsReport(PayrollHttpClient httpClient, int topFilter, R
                                     FormatValue(customResult.Source, "name"),
                                     customResult.Start.ToPeriodStartString(),
                                     customResult.End.ToPeriodEndString(),
-                                    ValueType.Decimal.ToString(),
+                                    nameof(ValueType.Decimal),
                                     FormatValue(customResult.Attributes.ToText(), "attributes"),
                                     FormatValue(customResult.Value)
                                 };

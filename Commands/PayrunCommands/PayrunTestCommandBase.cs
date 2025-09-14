@@ -86,8 +86,15 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
             var message = invalidAttribute == null ?
                 $"-> Collector {collectorResult.ExpectedResult.CollectorName}: expected={collectorResult.ExpectedResult.Value}, actual={collectorResult.ActualResult?.Value}" :
                 $"-> Collector {collectorResult.ExpectedResult.CollectorName} -> Attribute {invalidAttribute.Item1}: expected={invalidAttribute.Item2}, actual={invalidAttribute.Item3}";
-            if (collectorResult.IsInvalidResult())
+            if (!collectorResult.ValidValue())
             {
+                // failed collector result test
+                failedCollectorCount++;
+                logger.Error(message);
+            }
+            else if (!collectorResult.ValidCulture())
+            {
+                message = $"-> Collector {collectorResult.ExpectedResult.CollectorName}: expected={collectorResult.ExpectedResult.Culture}, actual={collectorResult.ActualResult?.Culture}";
                 // failed collector result test
                 failedCollectorCount++;
                 logger.Error(message);
@@ -107,9 +114,16 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
                     message = invalidAttribute == null ?
                         $"-> Collector custom result {collectorCustomResult.ExpectedResult.Source}: expected={collectorCustomResult.ExpectedResult.Value}, actual={collectorCustomResult.ActualResult?.Value}" :
                         $"-> Collector custom result {collectorCustomResult.ExpectedResult.Source} -> Attribute {invalidAttribute.Item1}: expected={invalidAttribute.Item2}, actual={invalidAttribute.Item3}";
-                    if (collectorCustomResult.IsInvalidResult())
+                    if (!collectorCustomResult.ValidValue())
                     {
                         // failed collector custom result test
+                        failedCollectorCount++;
+                        logger.Error(message);
+                    }
+                    else if (!collectorResult.ValidCulture())
+                    {
+                        message = $"-> Collector {collectorCustomResult.ExpectedResult.CollectorName}: expected={collectorCustomResult.ExpectedResult.Culture}, actual={collectorCustomResult.ActualResult?.Culture}";
+                        // failed collector result test
                         failedCollectorCount++;
                         logger.Error(message);
                     }
@@ -135,8 +149,15 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
             var message = invalidAttribute == null ?
                 $"-> Wage type {wageTypeResult.ExpectedResult.WageTypeNumber:0.####}: expected={wageTypeResult.ExpectedResult.Value}, actual={wageTypeResult.ActualResult?.Value}" :
                 $"-> Wage type {wageTypeResult.ExpectedResult.WageTypeNumber:0.####} -> Attribute {invalidAttribute.Item1}: expected={invalidAttribute.Item2}, actual={invalidAttribute.Item3}";
-            if (wageTypeResult.IsInvalidResult())
+            if (!wageTypeResult.ValidValue())
             {
+                // failed wage type result test
+                failedWageTypeCount++;
+                logger.Error(message);
+            }
+            else if (!wageTypeResult.ValidCulture())
+            {
+                message = $"-> Wage type {wageTypeResult.ExpectedResult.WageTypeNumber:0.####}: expected={wageTypeResult.ExpectedResult.Culture}, actual={wageTypeResult.ActualResult?.Culture}";
                 // failed wage type result test
                 failedWageTypeCount++;
                 logger.Error(message);
@@ -156,9 +177,16 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
                     message = invalidAttribute == null ?
                         $"-> Wage type custom result {wageTypeCustomResult.ExpectedResult.Source}: expected={wageTypeCustomResult.ExpectedResult.Value}, actual={wageTypeCustomResult.ActualResult?.Value}" :
                         $"-> Wage type custom result {wageTypeCustomResult.ExpectedResult.Source} -> Attribute {invalidAttribute.Item1}: expected={invalidAttribute.Item2}, actual={invalidAttribute.Item3}";
-                    if (wageTypeCustomResult.IsInvalidResult())
+                    if (!wageTypeCustomResult.ValidValue())
                     {
                         // failed wage type custom result test
+                        failedWageTypeCount++;
+                        logger.Error(message);
+                    }
+                    else if (!wageTypeCustomResult.ValidCulture())
+                    {
+                        message = $"-> Wage type custom result {wageTypeCustomResult.ExpectedResult.Source}: expected={wageTypeCustomResult.ExpectedResult.Culture}, actual={wageTypeCustomResult.ActualResult?.Culture}";
+                        // failed wage type result test
                         failedWageTypeCount++;
                         logger.Error(message);
                     }
@@ -183,8 +211,14 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
             var message = invalidAttribute == null ?
                 $"-> Payrun result {payrunTestResult.ExpectedResult.Name}: expected={payrunTestResult.ExpectedResult.Value}, actual={payrunTestResult.ActualResult?.Value}" :
                 $"-> Payrun result {payrunTestResult.ExpectedResult.Name} -> Attribute {invalidAttribute.Item1}: expected={invalidAttribute.Item2}, actual={invalidAttribute.Item3}";
-            if (!payrunTestResult.IsValidResult())
+            if (!payrunTestResult.ValidValue())
             {
+                failedPayrunResultCount++;
+                logger.Error(message);
+            }
+            else if (!payrunTestResult.ValidCulture())
+            {
+                message = $"-> Payrun result {payrunTestResult.ExpectedResult.Source}: expected={payrunTestResult.ExpectedResult.Culture}, actual={payrunTestResult.ActualResult?.Culture}";
                 failedPayrunResultCount++;
                 logger.Error(message);
             }

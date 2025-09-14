@@ -742,8 +742,8 @@
             </summary>
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportParameters)">
-            <summary>Export a tenant to a JSON file
-            By default the file name is the tenant identifier including a timestamp</summary>
+            <summary>Export a tenant to a JSON file.
+            Default the file name is the tenant identifier including a timestamp</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
@@ -989,6 +989,11 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.DisplayMode">
             <summary>
             Test display mode (default: show failed)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.ResultMode">
+            <summary>
+            Test result mode (default: clean test)
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.Precision">
@@ -1624,7 +1629,7 @@
         </member>
         <member name="F:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportPostAction.ShellOpen">
             <summary>
-            Report shell open
+            Report open in shell
             </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestCommand">

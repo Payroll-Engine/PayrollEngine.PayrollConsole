@@ -80,8 +80,14 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
                 }
 
                 // run test
-                var testRunner = new PayrunTestRunner(context.HttpClient, ScriptParser, parameters.Precision,
-                    parameters.Owner, parameters.ImportMode, parameters.ResultMode, parameters.RunMode);
+                var testRunner = new PayrunTestRunner(
+                    httpClient: context.HttpClient,
+                    scriptParser: ScriptParser, 
+                    testPrecision: parameters.Precision,
+                    owner: parameters.Owner,
+                    importMode: parameters.ImportMode,
+                    resultMode: parameters.ResultMode,
+                    runMode: parameters.RunMode);
                 var results = await testRunner.TestAllAsync(exchange);
 
                 // display test results
@@ -127,7 +133,7 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
         console.DisplayTextLine("          import mode: /single or /bulk (default: bulk)");
         console.DisplayTextLine("          running mode: /runtests or /skiptests (default: runtests)");
         console.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
-        console.DisplayTextLine("          test result mode: /cleantest or /keeptest (default: cleantest)");
+        console.DisplayTextLine("          test result mode: /cleantest, /keepfailedtest or /keeptest (default: cleantest)");
         console.DisplayTextLine("          test precision: /TestPrecisionOff or /TestPrecision1 to /TestPrecision6 (default: /TestPrecision2)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          PayrunTest Test.json");

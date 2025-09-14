@@ -11,7 +11,7 @@ public enum ReportPostAction
     NoAction,
 
     /// <summary>
-    /// Report shell open
+    /// Report open in shell
     /// </summary>
     ShellOpen
 }

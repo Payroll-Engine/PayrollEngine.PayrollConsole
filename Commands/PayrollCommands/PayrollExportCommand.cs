@@ -17,8 +17,8 @@ namespace PayrollEngine.PayrollConsole.Commands.PayrollCommands;
 // ReSharper disable once UnusedType.Global
 internal sealed class PayrollExportCommand : CommandBase<PayrollExportParameters>
 {
-    /// <summary>Export a tenant to a JSON file
-    /// By default the file name is the tenant identifier including a timestamp</summary>
+    /// <summary>Export a tenant to a JSON file.
+    /// Default the file name is the tenant identifier including a timestamp</summary>
     /// <param name="context">Command execution context</param>
     /// <param name="parameters">Command parameters</param>
     /// <returns>Program exit ok, 0 on success</returns>

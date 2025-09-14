@@ -201,6 +201,22 @@ If a key is required to access the backend API, it must be obtained from one of 
 ## Application Logs
 The payroll console stores its logs in the application folder `logs`.
 
+## Docker Support
+Build the Docker image:
+```bash
+docker build -t payroll-console .
+```
+
+Run the Docker Payroll Console:
+```bash
+docker run -it --rm payroll-console Setup.pecmd
+```
+
+Delete the Docker image:
+```bash
+docker stop payroll-console
+```
+
 ## Solution projects
 The.NET Core application consists of the following projects:
 
