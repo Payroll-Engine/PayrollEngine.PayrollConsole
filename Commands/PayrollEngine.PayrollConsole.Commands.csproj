@@ -4,7 +4,8 @@
 		<AssemblyName>PayrollEngine.PayrollConsole.Commands</AssemblyName>
 		<RootNamespace>PayrollEngine.PayrollConsole.Commands</RootNamespace>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<Description>Payroll Engine Console command libarary</Description>
+		<Description>Payroll Engine Console command library</Description>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 	</PropertyGroup>
 
 	<!-- help file generation -->
@@ -13,13 +14,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="C:\Users\micro\.nuget\packages\payrollengine.client.services\0.9.0-beta.10\contentFiles\any\net9.0\PayrollEngine.Client.Services.xml" />
-		<None Remove="C:\Users\micro\.nuget\packages\payrollengine.document\0.9.0-beta.10\contentFiles\any\net9.0\PayrollEngine.Document.xml" />
+		<None Remove="C:\Users\micro\.nuget\packages\payrollengine.client.services\0.9.0-beta.11\contentFiles\any\net9.0\PayrollEngine.Client.Services.xml" />
+		<None Remove="C:\Users\micro\.nuget\packages\payrollengine.document\0.9.0-beta.11\contentFiles\any\net9.0\PayrollEngine.Document.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PayrollEngine.Client.Services" Version="0.9.0-beta.10" />
-		<PackageReference Include="NPOI" Version="2.7.4" />
-		<PackageReference Include="PayrollEngine.Document" Version="0.9.0-beta.10" />
+		<PackageReference Include="PayrollEngine.Client.Services" Version="0.9.0-beta.11" />
+		<PackageReference Include="NPOI" Version="2.7.5" />
+		<PackageReference Include="PayrollEngine.Document" Version="0.9.0-beta.11" />
 	</ItemGroup>
 </Project>
