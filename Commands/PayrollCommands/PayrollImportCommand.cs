@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Script;
@@ -46,23 +47,27 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
 
         try
         {
-            // read source file
-            var exchange = await ExchangeReader.ReadAsync(parameters.SourceFileName, parameters.Namespace);
-
-            // options
-            var options = string.IsNullOrWhiteSpace(parameters.OptionsFileName)
-                ? new ExchangeImportOptions()
-                : GetImportOptions(context.Console, parameters.OptionsFileName);
-            if (options == null)
+            // single file
+            var fileName = parameters.SourceFileName;
+            if (File.Exists(fileName))
             {
-                return (int)ProgramExitCode.InvalidOptions;
+
+                return await ImportFile(context, parameters, new FileInfo(parameters.SourceFileName));
             }
 
-            // import tenant
-            var import = new ExchangeImport(context.HttpClient, exchange, ScriptParser, options, parameters.ImportMode);
-            await import.ImportAsync();
+            // file mask
+            var files = new DirectoryInfo(Directory.GetCurrentDirectory())
+                .GetFiles(parameters.SourceFileName)
+                .ToList();
+            foreach (var file in files)
+            {
+                var result = await ImportFile(context, parameters, file);
+                if (result != 0)
+                {
+                    return result;
+                }
+            }
 
-            context.Console.DisplaySuccessLine($"Payroll successfully imported from {new FileInfo(parameters.SourceFileName).FullName}");
             return (int)ProgramExitCode.Ok;
         }
         catch (Exception exception)
@@ -70,6 +75,28 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
             ProcessError(context.Console, exception);
             return (int)ProgramExitCode.GenericError;
         }
+    }
+
+    private async Task<int> ImportFile(CommandContext context, PayrollImportParameters parameters, FileInfo file)
+    {
+        // read source file
+        var exchange = await ExchangeReader.ReadAsync(file.FullName, parameters.Namespace);
+
+        // options
+        var options = string.IsNullOrWhiteSpace(parameters.OptionsFileName)
+            ? new ExchangeImportOptions()
+            : GetImportOptions(context.Console, parameters.OptionsFileName);
+        if (options == null)
+        {
+            return (int)ProgramExitCode.InvalidOptions;
+        }
+
+        // import tenant
+        var import = new ExchangeImport(context.HttpClient, exchange, ScriptParser, options, parameters.ImportMode);
+        await import.ImportAsync();
+
+        context.Console.DisplaySuccessLine($"Payroll successfully imported from {file.FullName}");
+        return (int)ProgramExitCode.Ok;
     }
 
     private ExchangeImportOptions GetImportOptions(ICommandConsole console, string optionsFileName)
@@ -101,7 +128,7 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
         console.DisplayTitleLine("- PayrollImport");
         console.DisplayTextLine("      Import payroll data from json/zip file");
         console.DisplayTextLine("      Arguments:");
-        console.DisplayTextLine("          1. source file name (json or zip) [SourceFileName]");
+        console.DisplayTextLine("          1. source file name with support for file masks (json or zip) [SourceFileName]");
         console.DisplayTextLine("          2. import options file name ExchangeImportOptions json (optional) [OptionsFileName]");
         console.DisplayTextLine("          3. namespace (optional) [Namespace]");
         console.DisplayTextLine("      Toggles:");
