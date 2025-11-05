@@ -1,23 +1,23 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# copy solution and project files
+# Copy solution and project files
 COPY ["PayrollEngine.PayrollConsole.sln", "./"]
 COPY ["PayrollConsole/PayrollEngine.PayrollConsole.csproj", "PayrollConsole/"]
 COPY ["Commands/PayrollEngine.PayrollConsole.Commands.csproj", "Commands/"]
-
-# copy Directory.Build.props
 COPY ["Directory.Build.props", "./"]
 
+# Restore dependencies (cached layer)
 RUN dotnet restore "PayrollEngine.PayrollConsole.sln"
 
-# copy everything else
+# Copy remaining source files and publish
 COPY . .
 WORKDIR "/src/PayrollConsole"
-RUN dotnet publish "PayrollEngine.PayrollConsole.csproj" -c Release -o /app/publish
+RUN dotnet publish "PayrollEngine.PayrollConsole.csproj" -c Release -o /app/publish --no-restore
 
-# final stage
-FROM mcr.microsoft.com/dotnet/runtime:9.0
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
-COPY --from=0 /app/publish .
-ENTRYPOINT ["dotnet", "PayrollEngine.PayrollConsole.dll"] 
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "PayrollEngine.PayrollConsole.dll"]

@@ -204,17 +204,15 @@ The payroll console stores its logs in the application folder `logs`.
 ## Docker Support
 Build the Docker image:
 ```bash
-docker build -t payroll-console .
+docker build --no-cache -t payroll-console .
 ```
 
-Run the Docker Payroll Console:
+Run the container to deploy the examples/local files  with the environment variable (if appsettings.json is not used):
 ```bash
-docker run -it --rm payroll-console Setup.pecmd
-```
-
-Delete the Docker image:
-```bash
-docker stop payroll-console
+docker run -it --rm \
+  -e PayrollApiConnection="baseUrl=http://<backend-url>;port=<backend-port>;..." \
+  -v "$(pwd)/PayrollEngine/examples":/examples \
+  payroll-console /examples/Setup.All.pecmd
 ```
 
 ## Solution projects
