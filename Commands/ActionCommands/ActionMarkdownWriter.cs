@@ -20,6 +20,8 @@ internal static class ActionMarkdownWriter
         buffer.AppendLine();
         buffer.AppendLine($"> Assembly `{assembly.FullName}`");
         buffer.AppendLine();
+        buffer.AppendLine($"> Date {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}");
+        buffer.AppendLine();
         buffer.AppendLine("<br />");
 
         foreach (var action in actions)
@@ -36,13 +38,12 @@ internal static class ActionMarkdownWriter
 
         // action
         buffer.AppendLine($"{Environment.NewLine}---");
-        buffer.AppendLine($"### {action.Namespace}.{action.Name}");
+        buffer.AppendLine($"### {action.Name}");
 
         buffer.AppendLine("| | |");
         buffer.AppendLine("|:-- |:-- |");
         buffer.AppendLine($"| Description      | {action.Description}      |");
         buffer.AppendLine($"| Function type    | `{action.FunctionType}`   |");
-        // buffer.AppendLine($"| Source           | {action.Source}           |");
 
         // categories
         if (action.Categories.Any())
@@ -72,21 +73,33 @@ internal static class ActionMarkdownWriter
     {
         var buffer = new StringBuilder();
 
-        buffer.Append("<ul>");
+        var multiParameter = actionParameters.Count > 1;
+
+        if (multiParameter)
+        {
+            buffer.Append("<ul>");
+        }
         foreach (var actionParameter in actionParameters)
         {
-            buffer.Append($"<li>`{actionParameter.Name}` <i>{actionParameter.Description}</i>");
-
             var hasTypes = actionParameter.ValueTypes.Any();
             var hasReferences = actionParameter.ValueReferences.Any();
             var hasSources = actionParameter.ValueSources.Any();
+
+            string types = null;
             if (hasTypes || hasReferences || hasSources)
             {
+                types = $" [{GetRefListMarkdown(actionParameter.ValueTypes)}]";
+            }
+
+            if (multiParameter)
+            {
+                buffer.Append("<li>");
+            }
+            buffer.Append($"`{actionParameter.Name}` <i>{actionParameter.Description}</i>{types}");
+
+            if (hasReferences || hasSources)
+            {
                 buffer.Append("<ul>");
-                if (hasTypes)
-                {
-                    buffer.Append($"<li>Types {GetRefListMarkdown(actionParameter.ValueTypes)}</li>");
-                }
                 if (hasReferences)
                 {
                     buffer.Append($"<li>References {GetRefListMarkdown(actionParameter.ValueReferences)}</li>");
@@ -97,7 +110,11 @@ internal static class ActionMarkdownWriter
                 }
                 buffer.Append("</ul>");
             }
-            buffer.Append("</li>");
+
+            if (multiParameter)
+            {
+                buffer.Append("</li>");
+            }
         }
         buffer.Append("</ul>");
 

@@ -146,7 +146,7 @@ internal sealed class DataReportCommand : CommandBase<DataReportParameters>
                          PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                          // ignore null
                          DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
-                         // unicode (see https://stackoverflow.com/a/58003397/15659039)
+                         // Unicode (see https://stackoverflow.com/a/58003397/15659039)
                          Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                          // formatted
                          WriteIndented = true

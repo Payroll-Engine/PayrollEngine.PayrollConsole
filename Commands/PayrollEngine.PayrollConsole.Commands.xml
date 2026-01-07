@@ -475,17 +475,27 @@
             <returns>Case changes by employee</returns>
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.GetColumnIndexes(NPOI.SS.UserModel.ISheet,System.Collections.Generic.ICollection{System.String})">
+            <inheritdoc cref="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$0C2B5C45F22AF69CA8772018E36FE485.GetColumnIndexes(System.Collections.Generic.ICollection{System.String})"/>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.GetCellValue``1(NPOI.SS.UserModel.ICell,System.IFormatProvider)">
+            <inheritdoc cref="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$AE3F3072D3678181A5C6906ED6CA76E8.GetCellValue``1(System.IFormatProvider)"/>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$0C2B5C45F22AF69CA8772018E36FE485.&lt;M&gt;$A0174C259574A4C42A0573669B7075C8">
+            <param name="worksheet">The worksheet</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$0C2B5C45F22AF69CA8772018E36FE485.GetColumnIndexes(System.Collections.Generic.ICollection{System.String})">
             <summary>
             Gets sheet column indexed by column name
             </summary>
-            <param name="worksheet">The worksheet</param>
             <param name="titles">The column titles</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.GetCellValue``1(NPOI.SS.UserModel.ICell,System.IFormatProvider)">
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$AE3F3072D3678181A5C6906ED6CA76E8.&lt;M&gt;$3A7C2AF6253F8714155160DEB6B11E6C">
+            <param name="cell">The source cell</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$AE3F3072D3678181A5C6906ED6CA76E8.GetCellValue``1(System.IFormatProvider)">
             <summary>
             Get the cell value
             </summary>
-            <param name="cell">The source cell</param>
             <param name="provider">The format provider</param>
             <returns>The cell value</returns>
         </member>
@@ -1266,6 +1276,201 @@
         <member name="F:PayrollEngine.PayrollConsole.Commands.ProgramExitCode.InvalidOptions">
             <summary>
             Invalid options
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImport">
+            <summary>
+            Import text file to lookup
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImport.#ctor(PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters)">
+            <summary>
+            Default constructor
+            </summary>
+            <param name="context">Import context</param>
+            <param name="parameters">Import parameters</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImport.ImportAsync">
+            <summary>
+            Import regulation lookups from text files
+            </summary>
+            <returns>Count of imported files</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImport.ImportFileAsync(System.IO.FileInfo)">
+            <summary>
+            Import regulation lookup from text file
+            </summary>
+            <param name="file">File to convert</param>
+            <returns>Count of imported files</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImport.ImportLookupFileAsync(PayrollEngine.Client.Model.LookupSet,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Import lookup file
+            </summary>
+            <param name="lookup">The lookup</param>
+            <param name="lookupFileName">The file name</param>
+            <param name="counter">The file counter</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportCommand">
+            <summary>
+            Import lookup from raw text file, converting a file lines into lookup values.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters">
+            <summary>
+            Lookup  text import parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters.Tenant">
+            <summary>
+            Tenant
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters.Regulation">
+            <summary>
+            Regulation
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters.SourceFileName">
+            <summary>
+            Source file name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters.MappingFileName">
+            <summary>
+            Mapping file name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters.TargetFolder">
+            <summary>
+            Target output folder
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters.SliceSize">
+            <summary>
+            Tax slice size
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters.ImportMode">
+            <summary>
+            Import mode (default: single)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters.ImportTarget">
+            <summary>
+            Import target (default: backend)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+            <param name="parser">Parameter parser</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextMap">
+            <summary>
+            Mapping from text line to lookup value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextMap.Key">
+            <summary>
+            Key mapping
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextMap.Keys">
+            <summary>
+            Keys mapping
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextMap.RangeValue">
+            <summary>
+            Range value mapping
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextMap.Value">
+            <summary>
+            Value mapping
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextMap.Values">
+            <summary>
+            Values mapping
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap">
+            <summary>
+            Mapping from text line part to lookup key/value part
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap.Name">
+            <summary>
+            Value name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap.ValueType">
+            <summary>
+            Value type (default: text)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap.Start">
+            <summary>
+            Value start index in text line (0..n)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap.Length">
+            <summary>
+            Value length (1..)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap.DecimalPlaces">
+            <summary>
+            Decimal places for decimal values (default: 0)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupValueType">
+            <summary>
+            Lookup value type
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupValueType.Text">
+            <summary>
+            Text value
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupValueType.Decimal">
+            <summary>
+            Decimal value
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupValueType.Integer">
+            <summary>
+            Integer value
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupValueType.Boolean">
+            <summary>
+            Boolean value
             </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportCommand">

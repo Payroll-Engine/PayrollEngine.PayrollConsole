@@ -33,8 +33,6 @@ internal sealed class CaseFieldSheetColumns
     internal int? TagsColumn { get; }
     internal int? LookupSettingsColumn { get; }
     internal int? ClustersColumn { get; }
-    internal int? BuildActionsColumn { get; }
-    internal int? ValidateActionsColumn { get; }
     internal int? AttributesColumn { get; }
     internal int? ValueAttributesColumn { get; }
 
@@ -70,8 +68,6 @@ internal sealed class CaseFieldSheetColumns
         TagsColumn = sheet.GetHeaderColumn(nameof(CaseField.Tags));
         LookupSettingsColumn = sheet.GetHeaderColumn(nameof(CaseField.LookupSettings));
         ClustersColumn = sheet.GetHeaderColumn(nameof(CaseField.Clusters));
-        BuildActionsColumn = sheet.GetHeaderColumn(nameof(CaseField.BuildActions));
-        ValidateActionsColumn = sheet.GetHeaderColumn(nameof(CaseField.ValidateActions));
         AttributesColumn = sheet.GetHeaderColumn(nameof(CaseField.Attributes));
         ValueAttributesColumn = sheet.GetHeaderColumn(nameof(CaseField.ValueAttributes));
     }

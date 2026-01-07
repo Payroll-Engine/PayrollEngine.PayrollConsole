@@ -95,8 +95,6 @@ internal static class CaseFieldConvert
                 DefaultStart = row.GetCellValue<string>(columns.DefaultStartColumn),
                 DefaultEnd = row.GetCellValue<string>(columns.DefaultEndColumn),
                 DefaultValue = row.GetCellValue<string>(columns.DefaultValueColumn),
-                BuildActions = row.GetCellStringValues(columns.BuildActionsColumn),
-                ValidateActions = row.GetCellStringValues(columns.ValidateActionsColumn),
                 Tags = row.GetCellStringValues(columns.TagsColumn),
                 LookupSettings = row.GetJsonObject<LookupSettings>(columns.LookupSettingsColumn),
                 Clusters = row.GetCellStringValues(columns.ClustersColumn),

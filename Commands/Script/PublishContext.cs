@@ -16,21 +16,20 @@ internal sealed class PublishContext
 
     internal int TenantId => TenantContext.TenantId;
 
-    private TenantServiceContext tenantContext;
     internal TenantServiceContext TenantContext
     {
         get
         {
-            if (tenantContext == null)
+            if (field == null)
             {
                 var tenant = GetTenantAsync(FunctionAttribute.TenantIdentifier).Result;
                 if (tenant == null)
                 {
                     throw new PayrollException($"Invalid tenant {FunctionAttribute.TenantIdentifier}.");
                 }
-                tenantContext = new(tenant.Id);
+                field = new(tenant.Id);
             }
-            return tenantContext;
+            return field;
         }
     }
 

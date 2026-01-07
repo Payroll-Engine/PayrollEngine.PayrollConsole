@@ -245,6 +245,7 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
         console.DisplayTextLine(title);
         console.DisplayTextLine($"File          {new FileInfo(fileName).Name}");
         console.DisplayTextLine($"Jobs          {results.Count}");
+        console.DisplayTextLine($"Results       {results.Sum(x => x.TotalResultCount)}");
         var duration = durations.Aggregate(TimeSpan.Zero, (subtotal, t) => subtotal.Add(t));
         console.DisplayTextLine($"Duration      {duration.TotalSeconds:0.#} sec");
 

@@ -35,7 +35,7 @@ internal sealed class CaseChangeImport
             throw new PayrollException($"Missing Payroll Excel file {fileName}.");
         }
 
-        // workbook (file share to load open/locked excel document)
+        // workbook (file share to load open/locked Excel document)
         await using var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         IWorkbook workbook = new XSSFWorkbook(stream);
 

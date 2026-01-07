@@ -52,13 +52,17 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
             if (File.Exists(fileName))
             {
 
-                return await ImportFile(context, parameters, new FileInfo(parameters.SourceFileName));
+                return await ImportFile(context, parameters, parameters.SourceFileName);
             }
 
             // file mask
-            var files = new DirectoryInfo(Directory.GetCurrentDirectory())
-                .GetFiles(parameters.SourceFileName)
-                .ToList();
+            var fileInfo = new FileInfo(parameters.SourceFileName);
+            var files = Directory.GetFiles(fileInfo.DirectoryName ?? Directory.GetCurrentDirectory(), fileInfo.Name);
+            if (!files.Any())
+            {
+                context.Console.DisplayErrorLine($"Invalid source file name {parameters.SourceFileName}.");
+                return -3;
+            }
             foreach (var file in files)
             {
                 var result = await ImportFile(context, parameters, file);
@@ -77,10 +81,10 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
         }
     }
 
-    private async Task<int> ImportFile(CommandContext context, PayrollImportParameters parameters, FileInfo file)
+    private async Task<int> ImportFile(CommandContext context, PayrollImportParameters parameters, string fileName)
     {
         // read source file
-        var exchange = await ExchangeReader.ReadAsync(file.FullName, parameters.Namespace);
+        var exchange = await ExchangeReader.ReadAsync(fileName, parameters.Namespace);
 
         // options
         var options = string.IsNullOrWhiteSpace(parameters.OptionsFileName)
@@ -95,7 +99,7 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
         var import = new ExchangeImport(context.HttpClient, exchange, ScriptParser, options, parameters.ImportMode);
         await import.ImportAsync();
 
-        context.Console.DisplaySuccessLine($"Payroll successfully imported from {file.FullName}");
+        context.Console.DisplaySuccessLine($"Payroll successfully imported from {fileName}");
         return (int)ProgramExitCode.Ok;
     }
 
