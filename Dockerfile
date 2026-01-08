@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0
+FROM mcr.microsoft.com/dotnet/sdk:10.0
 WORKDIR /src
 
 # copy solution and project files
@@ -17,7 +17,7 @@ WORKDIR "/src/PayrollConsole"
 RUN dotnet publish "PayrollEngine.PayrollConsole.csproj" -c Release -o /app/publish
 
 # final stage
-FROM mcr.microsoft.com/dotnet/runtime:9.0
+FROM mcr.microsoft.com/dotnet/runtime:10.0
 WORKDIR /app
 COPY --from=0 /app/publish .
 ENTRYPOINT ["dotnet", "PayrollEngine.PayrollConsole.dll"] 
