@@ -79,14 +79,20 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
                     throw new PayrollException($"Invalid case test file {testFileName}.");
                 }
 
+                // test settings
+                var settings = new PayrunTestSettings
+                {
+                    TestPrecision = parameters.Precision,
+                    ResultMode = parameters.ResultMode,
+                    Owner = parameters.Owner
+                };
+
                 // run test
                 var testRunner = new PayrunTestRunner(
                     httpClient: context.HttpClient,
-                    scriptParser: ScriptParser, 
-                    testPrecision: parameters.Precision,
-                    owner: parameters.Owner,
+                    scriptParser: ScriptParser,
+                    settings: settings,
                     importMode: parameters.ImportMode,
-                    resultMode: parameters.ResultMode,
                     runMode: parameters.RunMode);
                 var results = await testRunner.TestAllAsync(exchange);
 

@@ -78,14 +78,20 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
                     throw new PayrollException($"Invalid employee payrun test file {testFileName}.");
                 }
 
+                // test settings
+                var settings = new PayrunTestSettings
+                {
+                    TestPrecision = parameters.Precision,
+                    ResultMode = parameters.ResultMode,
+                    Owner = parameters.Owner
+                };
+
                 // run test
                 var testRunner = new PayrunEmployeeTestRunner(
                     httpClient: context.HttpClient,
                     scriptParser: ScriptParser,
-                    testPrecision: parameters.Precision,
-                    owner: parameters.Owner,
+                    settings: settings,
                     employeeMode: parameters.TestMode,
-                    resultMode: parameters.ResultMode,
                     runMode: parameters.RunMode);
                 var results = await testRunner.TestAllAsync(exchange);
 
