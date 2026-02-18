@@ -3,11 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
+using PayrollEngine.Client.Exchange;
+using PayrollEngine.Client.Model;
 using PayrollEngine.Client.Script;
 using PayrollEngine.Client.Scripting.Script;
 using PayrollEngine.Client.Test;
 using PayrollEngine.Client.Test.Payrun;
-using PayrollEngine.Serialization;
 
 namespace PayrollEngine.PayrollConsole.Commands.PayrunCommands;
 
@@ -73,7 +74,7 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
                 context.Console.DisplayTextLine("Running test...");
 
                 // load test data
-                var exchange = await JsonSerializer.DeserializeFromFileAsync<Client.Model.Exchange>(testFileName);
+                var exchange = await FileReader.Read<Exchange>(testFileName);
                 if (exchange == null)
                 {
                     throw new PayrollException($"Invalid case test file {testFileName}.");
@@ -133,7 +134,7 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
         console.DisplayTitleLine("- PayrunTest");
         console.DisplayTextLine("      Execute payrun and test the results, existing tenant will be deleted");
         console.DisplayTextLine("      Arguments:");
-        console.DisplayTextLine("          1. JSON/ZIP file name or file mask [FileMask]");
+        console.DisplayTextLine("          1. JSON/YAML/ZIP file name or file mask [FileMask]");
         console.DisplayTextLine("          2. owner name (optional) [Owner]");
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          import mode: /single or /bulk (default: bulk)");

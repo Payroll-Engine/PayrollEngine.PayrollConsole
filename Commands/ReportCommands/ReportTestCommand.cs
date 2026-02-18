@@ -2,8 +2,8 @@
 using System.IO;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Test;
-using PayrollEngine.Serialization;
 using PayrollEngine.Client.Command;
+using PayrollEngine.Client.Exchange;
 using PayrollEngine.Client.Test.Report;
 
 namespace PayrollEngine.PayrollConsole.Commands.ReportCommands;
@@ -52,7 +52,7 @@ internal sealed class ReportTestCommand : TestCommandBase<ReportTestParameters>
                 context.Console.DisplayTextLine("Running test...");
 
                 // load test data
-                var reportTest = await JsonSerializer.DeserializeFromFileAsync<ReportTest>(testFileName);
+                var reportTest = await FileReader.Read<ReportTest>(testFileName);
                 if (reportTest == null)
                 {
                     throw new PayrollException($"Invalid case test file {testFileName}.");
@@ -95,7 +95,7 @@ internal sealed class ReportTestCommand : TestCommandBase<ReportTestParameters>
         console.DisplayTitleLine("- ReportTest");
         console.DisplayTextLine("      Test report output data");
         console.DisplayTextLine("      Arguments:");
-        console.DisplayTextLine("          1. JSON file name or file mask [FileMask]");
+        console.DisplayTextLine("          1. JSON/YAML file name or file mask [FileMask]");
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
         console.DisplayTextLine("          test precision: /TestPrecisionOff or /TestPrecision1 to /TestPrecision6 (default: /TestPrecision2)");

@@ -407,6 +407,21 @@
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.DirectoryMode">
+            <summary>
+            Directory mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DirectoryMode.Top">
+            <summary>
+            Top directory
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.DirectoryMode.Recursive">
+            <summary>
+            All directories
+            </summary>
+        </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.ReadAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.IWorkbook,System.String)">
             <summary>
             Read case changes from excel file
@@ -745,6 +760,79 @@
             <summary>
             Import to file and backend
             </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertCommand">
+            <summary>
+            Convert payroll JSON from/to YAML command
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertParameters)">
+            <summary>Convert a JSON or YAML file</summary>
+            <param name="context">Command execution context</param>
+            <param name="parameters">Command parameters</param>
+            <returns>Program exit ok, 0 on success</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertCommand.ConvertFileAsync(PayrollEngine.Client.Command.CommandContext,System.String,PayrollEngine.PayrollConsole.Commands.SchemaType)">
+            <summary>
+            Convert a file between json and yaml
+            </summary>
+            <param name="context">Convert context</param>
+            <param name="fileName">File to convert</param>
+            <param name="schema">Schema type</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertCommand.JsonToYamlAsync(System.String,PayrollEngine.PayrollConsole.Commands.SchemaType)">
+            <summary>
+            Convert json to yaml
+            </summary>
+            <param name="fileName">File to convert</param>
+            <param name="schema">Schema type</param>
+            <returns>Converted output file name</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertCommand.YamlToJsonAsync(System.String,PayrollEngine.PayrollConsole.Commands.SchemaType)">
+            <summary>
+            Convert yaml to json
+            </summary>
+            <param name="fileName">File to convert</param>
+            <param name="schema">Schema type</param>
+            <returns>Converted output file name</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertParameters">
+            <summary>
+            Payroll convert command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertParameters.FileName">
+            <summary>
+            File name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertParameters.DirectoryMode">
+            <summary>
+            DirectoryMode mode (default: top)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertParameters.SchemaType">
+            <summary>
+            Schema type (default: Auto)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+            <param name="parser">Parameter parser</param>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollExportCommand">
             <summary>
@@ -1885,6 +1973,35 @@
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.SchemaType">
+            <summary>
+            Schema type
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.SchemaType.Auto">
+            <summary>
+            Automatic schema base on file extension
+            </summary>
+            <remarks>
+            case test: *.ct.json/yaml
+            report test: *.et.json/yaml
+            </remarks>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.SchemaType.Exchange">
+            <summary>
+            Exchange schema
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.SchemaType.CaseTest">
+            <summary>
+            Case test schema
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.SchemaType.ReportTest">
+            <summary>
+            Report test schema
+            </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportCommand">
             <summary>

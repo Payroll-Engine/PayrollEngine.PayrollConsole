@@ -213,7 +213,7 @@ internal sealed class LookupTextImport
             }
             fileName += ".json";
             var targetFile = Path.Combine(Context.TargetFolder, fileName);
-            await ExchangeWriter.WriteAsync(exchange, targetFile);
+            await FileWriter.Write(exchange, targetFile);
         }
 
         // write lookup to backend

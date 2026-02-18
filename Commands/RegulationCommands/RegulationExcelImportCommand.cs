@@ -65,7 +65,7 @@ internal sealed class RegulationExcelImportCommand : CommandBase<RegulationExcel
             var importFile = parameters.ImportMode is ImportMode.File or ImportMode.All;
             if (importFile)
             {
-                await ExchangeWriter.WriteAsync(exchange, targetFileName);
+                await FileWriter.Write(exchange, targetFileName);
             }
 
             // backend import
@@ -112,11 +112,12 @@ internal sealed class RegulationExcelImportCommand : CommandBase<RegulationExcel
         console.DisplayTextLine("      Import payroll data from Excel file");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. Excel file name [SourceFileName]");
-        console.DisplayTextLine("          2. Target JSON file name (optional) [TargetFileName]");
+        console.DisplayTextLine("          2. Target JSON/YAML file name (optional) [TargetFileName]");
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          import mode: /file, /backend or /all (default: file)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          RegulationExcelImport MyImportFile.xlsx");
         console.DisplayTextLine("          RegulationExcelImport MyImportFile.xlsx MyExportFile.json");
+        console.DisplayTextLine("          RegulationExcelImport MyImportFile.xlsx MyExportFile.yaml");
     }
 }

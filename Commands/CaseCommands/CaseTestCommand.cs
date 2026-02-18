@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Test;
-using PayrollEngine.Serialization;
+using PayrollEngine.Client.Command;
+using PayrollEngine.Client.Exchange;
 using PayrollEngine.Client.Test.Case;
 
 namespace PayrollEngine.PayrollConsole.Commands.CaseCommands;
@@ -51,7 +51,7 @@ internal sealed class CaseTestCommand : TestCommandBase<CaseTestParameters>
                 }
 
                 // load test data
-                var caseTest = await JsonSerializer.DeserializeFromFileAsync<CaseTest>(testFileName);
+                var caseTest = await FileReader.Read<CaseTest>(testFileName);
                 if (caseTest == null)
                 {
                     throw new PayrollException($"Invalid case test file {testFileName}.");

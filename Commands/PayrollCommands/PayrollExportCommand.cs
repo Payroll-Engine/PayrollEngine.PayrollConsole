@@ -77,7 +77,7 @@ internal sealed class PayrollExportCommand : CommandBase<PayrollExportParameters
             // tenant export
             var export = new ExchangeExport(context.HttpClient, options, parameters.Namespace);
             var exchange = await export.ExportAsync(tenant.Id);
-            await ExchangeWriter.WriteAsync(exchange, resolvedFileName);
+            await FileWriter.Write(exchange, resolvedFileName);
 
             // notification
             context.Console.DisplaySuccessLine($"Exported tenant {parameters.Tenant} into file {new FileInfo(resolvedFileName).FullName}");
@@ -117,13 +117,13 @@ internal sealed class PayrollExportCommand : CommandBase<PayrollExportParameters
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- PayrollExport");
-        console.DisplayTextLine("      Export payroll data to json/zip file");
+        console.DisplayTextLine("      Export payroll data to JSON/YAML/zip file");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. tenant file name [Tenant]");
-        console.DisplayTextLine("          2. target json file name (default: tenant name) [TargetFileName]");
-        console.DisplayTextLine("          3. export options file name ExchangeExportOptions json (optional) [OptionsFileName]");
+        console.DisplayTextLine("          2. target JSON/YAML file name (default: tenant name) [TargetFileName]");
+        console.DisplayTextLine("          3. export options file name ExchangeExportOptions (optional) [OptionsFileName]");
         console.DisplayTextLine("          4. namespace (optional) [Namespace]");
-        console.DisplayTextLine("      Options (json object):");
+        console.DisplayTextLine("      Options (JSON object):");
         console.DisplayTextLine("          type filter, list of identifiers or names:");
         console.DisplayTextLine("              Users, Divisions, Employees, Tasks, Webhooks, Regulations, Payrolls, Payruns, PayrunJobs");
         console.DisplayTextLine("          data filter true/false (default: false):");

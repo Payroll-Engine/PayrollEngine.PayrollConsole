@@ -2,12 +2,12 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using PayrollEngine.Client.Command;
-using PayrollEngine.Client.Script;
-using PayrollEngine.Client.Scripting.Script;
 using PayrollEngine.Client.Test;
+using PayrollEngine.Client.Script;
+using PayrollEngine.Client.Command;
+using PayrollEngine.Client.Exchange;
 using PayrollEngine.Client.Test.Payrun;
-using PayrollEngine.Serialization;
+using PayrollEngine.Client.Scripting.Script;
 
 namespace PayrollEngine.PayrollConsole.Commands.PayrunCommands;
 
@@ -63,6 +63,7 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
                     context.Console.DisplayTextLine($"Test mode          {parameters.TestMode}");
                     context.Console.DisplayTextLine($"Running mode       {parameters.RunMode}");
                     context.Console.DisplayTextLine($"Display mode       {parameters.DisplayMode}");
+                    context.Console.DisplayTextLine($"Result mode        {parameters.ResultMode}");
                     context.Console.DisplayTextLine($"Url                {context.HttpClient}");
                     context.Console.DisplayTextLine($"Test precision     {parameters.Precision.GetDecimals()}");
                 }
@@ -72,7 +73,7 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
                 context.Console.DisplayTextLine("Running test...");
 
                 // load test data
-                var exchange = await JsonSerializer.DeserializeFromFileAsync<Client.Model.Exchange>(testFileName);
+                var exchange = await FileReader.Read<Client.Model.Exchange>(testFileName);
                 if (exchange == null)
                 {
                     throw new PayrollException($"Invalid employee payrun test file {testFileName}.");
@@ -127,7 +128,7 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
         console.DisplayTitleLine("- PayrunEmployeeTest");
         console.DisplayTextLine("      Execute employee payrun and test the results");
         console.DisplayTextLine("      Arguments:");
-        console.DisplayTextLine("          1. JSON/ZIP file name or file mask [FileMask]");
+        console.DisplayTextLine("          1. JSON/YAML/ZIP file name or file mask [FileMask]");
         console.DisplayTextLine("          2. owner name (optional) [Owner]");
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          test mode: /insertemployee or /updateemployee (default: insertemployee)");

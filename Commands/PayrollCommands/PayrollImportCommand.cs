@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using PayrollEngine.Client.Script;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Exchange;
+using PayrollEngine.Client.Model;
 using PayrollEngine.Client.Scripting.Script;
 
 namespace PayrollEngine.PayrollConsole.Commands.PayrollCommands;
@@ -52,20 +53,22 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
             if (File.Exists(fileName))
             {
 
-                return await ImportFile(context, parameters, parameters.SourceFileName);
+                return await ImportFileAsync(context, parameters, parameters.SourceFileName);
             }
 
             // file mask
             var fileInfo = new FileInfo(parameters.SourceFileName);
-            var files = Directory.GetFiles(fileInfo.DirectoryName ?? Directory.GetCurrentDirectory(), fileInfo.Name);
+            var files = Directory.GetFiles(
+                path: fileInfo.DirectoryName ?? Directory.GetCurrentDirectory(),
+                searchPattern: fileInfo.Name);
             if (!files.Any())
             {
-                context.Console.DisplayErrorLine($"Invalid source file name {parameters.SourceFileName}.");
+                context.Console.DisplayErrorLine($"Invalid source files {parameters.SourceFileName}.");
                 return -3;
             }
             foreach (var file in files)
             {
-                var result = await ImportFile(context, parameters, file);
+                var result = await ImportFileAsync(context, parameters, file);
                 if (result != 0)
                 {
                     return result;
@@ -81,10 +84,16 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
         }
     }
 
-    private async Task<int> ImportFile(CommandContext context, PayrollImportParameters parameters, string fileName)
+    private async Task<int> ImportFileAsync(CommandContext context, PayrollImportParameters parameters, string fileName)
     {
         // read source file
-        var exchange = await ExchangeReader.ReadAsync(fileName, parameters.Namespace);
+        var exchange = await FileReader.Read<Exchange>(fileName);
+
+        // apply namespace
+        if (!string.IsNullOrWhiteSpace(parameters.Namespace))
+        {
+            exchange.ChangeNamespace(parameters.Namespace);
+        }
 
         // options
         var options = string.IsNullOrWhiteSpace(parameters.OptionsFileName)
@@ -130,10 +139,10 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- PayrollImport");
-        console.DisplayTextLine("      Import payroll data from json/zip file");
+        console.DisplayTextLine("      Import payroll data from JSON/AML/zip file");
         console.DisplayTextLine("      Arguments:");
-        console.DisplayTextLine("          1. source file name with support for file masks (json or zip) [SourceFileName]");
-        console.DisplayTextLine("          2. import options file name ExchangeImportOptions json (optional) [OptionsFileName]");
+        console.DisplayTextLine("          1. source file name with support for file masks (JSON/YAML or zip) [SourceFileName]");
+        console.DisplayTextLine("          2. import options file name ExchangeImportOptions (optional) [OptionsFileName]");
         console.DisplayTextLine("          3. namespace (optional) [Namespace]");
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          import mode: /single or /bulk (default: single)");
