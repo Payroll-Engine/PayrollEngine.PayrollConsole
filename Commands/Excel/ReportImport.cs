@@ -6,8 +6,13 @@ using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Imports <see cref="ReportSet"/> objects from the report Excel worksheet.</summary>
 internal static class ReportImport
 {
+    /// <summary>Imports reports from the <see cref="SheetSpecification.Report"/> sheet.</summary>
+    /// <param name="workbook">The source workbook.</param>
+    /// <returns>The imported reports, or <c>null</c> if the sheet is missing or empty.</returns>
+    /// <exception cref="PayrollException">Thrown when required columns are missing, names are empty, or duplicates are found.</exception>
     internal static List<ReportSet> Import(IWorkbook workbook)
     {
         // worksheet

@@ -151,7 +151,7 @@ internal sealed class RegulationShareCommand : CommandBase<RegulationShareParame
                     context.Console.DisplayNewLine();
                     foreach (var share in shares)
                     {
-                        ReportShare(share, share == shares.First(), share == shares.Last());
+                        ReportShare(context.Console, share, share == shares.First(), share == shares.Last());
                     }
                 }
             }
@@ -175,7 +175,7 @@ internal sealed class RegulationShareCommand : CommandBase<RegulationShareParame
                     foreach (var regulationShare in shares)
                     {
                         await sharesService.DeleteAsync(new(), regulationShare.Id);
-                        ReportShare(regulationShare, regulationShare == shares.First(), regulationShare == shares.Last());
+                        ReportShare(context.Console, regulationShare, regulationShare == shares.First(), regulationShare == shares.Last());
                     }
                     await CreateShareAsync(context.Console, sharesService, share);
                 }
@@ -208,7 +208,7 @@ internal sealed class RegulationShareCommand : CommandBase<RegulationShareParame
             foreach (var regulationShare in shares)
             {
                 await sharesService.DeleteAsync(new(), regulationShare.Id);
-                ReportShare(regulationShare, regulationShare == shares.First(),
+                ReportShare(console, regulationShare, regulationShare == shares.First(),
                     regulationShare == shares.Last());
             }
 
@@ -225,7 +225,7 @@ internal sealed class RegulationShareCommand : CommandBase<RegulationShareParame
         console.DisplayNewLine();
         console.DisplaySuccessLine("Share successfully set");
         console.DisplayNewLine();
-        ReportShare(share, true, true);
+        ReportShare(console, share, true, true);
     }
 
     private static Query GetRegulationShareQuery(Tenant providerTenant, Regulation providerRegulation,
@@ -258,7 +258,7 @@ internal sealed class RegulationShareCommand : CommandBase<RegulationShareParame
         return query;
     }
 
-    private static void ReportShare(RegulationShare share, bool start, bool end)
+    private static void ReportShare(ICommandConsole console, RegulationShare share, bool start, bool end)
     {
         const int columnWidth = 30;
         var line = new string('-', 4 * columnWidth);
@@ -266,29 +266,29 @@ internal sealed class RegulationShareCommand : CommandBase<RegulationShareParame
         // start
         if (start)
         {
-            Console.WriteLine(line);
-            Console.Write("Tenant".PadRight(columnWidth));
-            Console.Write("Regulation".PadRight(columnWidth));
-            Console.Write("Share tenant".PadRight(columnWidth));
-            Console.Write("Share division".PadRight(columnWidth));
-            Console.WriteLine();
-            Console.WriteLine(line);
+            console.DisplayTextLine(line);
+            console.DisplayText("Tenant".PadRight(columnWidth));
+            console.DisplayText("Regulation".PadRight(columnWidth));
+            console.DisplayText("Share tenant".PadRight(columnWidth));
+            console.DisplayText("Share division".PadRight(columnWidth));
+            console.DisplayNewLine();
+            console.DisplayTextLine(line);
         }
 
         // share
-        Console.Write(share.ProviderTenantIdentifier.PadRight(columnWidth));
-        Console.Write(share.ProviderRegulationName.PadRight(columnWidth));
-        Console.Write(share.ConsumerTenantIdentifier.PadRight(columnWidth));
+        console.DisplayText(share.ProviderTenantIdentifier.PadRight(columnWidth));
+        console.DisplayText(share.ProviderRegulationName.PadRight(columnWidth));
+        console.DisplayText(share.ConsumerTenantIdentifier.PadRight(columnWidth));
         if (!string.IsNullOrWhiteSpace(share.ConsumerDivisionName))
         {
-            Console.Write(share.ConsumerDivisionName.PadRight(columnWidth));
+            console.DisplayText(share.ConsumerDivisionName.PadRight(columnWidth));
         }
-        Console.WriteLine();
+        console.DisplayNewLine();
 
         // end
         if (end)
         {
-            Console.WriteLine(line);
+            console.DisplayTextLine(line);
         }
     }
 

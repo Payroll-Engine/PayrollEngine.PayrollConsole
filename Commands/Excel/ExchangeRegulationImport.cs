@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using NPOI.SS.UserModel;
@@ -9,14 +9,17 @@ using PayrollEngine.Client.Scripting;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Imports a complete regulation from an Excel workbook into an <see cref="Exchange"/> model.</summary>
 internal static class ExchangeRegulationImport
 {
+    /// <summary>Reads a regulation including cases, collectors, wage types, reports, lookups, and scripts
+    /// from an Excel file.</summary>
+    /// <param name="fileName">The path to the Excel file.</param>
+    /// <returns>The exchange model containing the imported regulation.</returns>
+    /// <exception cref="PayrollException">Thrown when the file is missing, tenant is undefined, or regulation data is invalid.</exception>
     internal static async Task<Exchange> ReadAsync(string fileName)
     {
-        if (string.IsNullOrWhiteSpace(fileName))
-        {
-            throw new ArgumentException(nameof(fileName));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
 
         // import file
         if (!File.Exists(fileName))

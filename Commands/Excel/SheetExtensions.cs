@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Collections.Generic;
 using NPOI.SS.Util;
@@ -113,19 +113,13 @@ internal static class SheetExtensions
 
         internal T GetCellValue<T>(string address)
         {
-            if (string.IsNullOrWhiteSpace(address))
-            {
-                throw new ArgumentException(nameof(address));
-            }
+            ArgumentException.ThrowIfNullOrWhiteSpace(address);
             return worksheet.GetCellValue<T>(CellRangeAddress.ValueOf(address));
         }
 
         private T GetCellValue<T>(CellRangeAddress address)
         {
-            if (address == null)
-            {
-                throw new ArgumentNullException(nameof(address));
-            }
+            ArgumentNullException.ThrowIfNull(address);
             if (address.NumberOfCells != 1)
             {
                 throw new PayrollException($"Excel region {address} must be a single cell.");

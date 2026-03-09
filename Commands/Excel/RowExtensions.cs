@@ -19,7 +19,7 @@ internal static class RowExtensions
 
             foreach (var cell in row.Cells)
             {
-                if (cell.CellType is CellType.Blank or CellType.Unknown)
+                if (cell.CellType is CellType.Blank or CellType._None)
                 {
                     continue;
                 }

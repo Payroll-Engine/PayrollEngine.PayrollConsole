@@ -65,7 +65,7 @@ internal sealed class RegulationExcelImportCommand : CommandBase<RegulationExcel
             var importFile = parameters.ImportMode is ImportMode.File or ImportMode.All;
             if (importFile)
             {
-                await FileWriter.Write(exchange, targetFileName);
+                await FileWriter.WriteAsync(exchange, targetFileName);
             }
 
             // backend import

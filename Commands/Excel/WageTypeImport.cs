@@ -6,8 +6,13 @@ using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Imports <see cref="WageType"/> objects from the wage type Excel worksheet.</summary>
 internal static class WageTypeImport
 {
+    /// <summary>Imports wage types from the <see cref="SheetSpecification.WageType"/> sheet.</summary>
+    /// <param name="workbook">The source workbook.</param>
+    /// <returns>The imported wage types, or <c>null</c> if the sheet is missing or empty.</returns>
+    /// <exception cref="PayrollException">Thrown when required columns are missing, numbers or names are empty, or duplicates are found.</exception>
     internal static List<WageType> Import(IWorkbook workbook)
     {
         // worksheet

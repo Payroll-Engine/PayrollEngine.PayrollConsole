@@ -20,7 +20,7 @@ public class ReportParameters : ICommandParameters
     public string Tenant { get; init; }
 
     /// <summary>
-    /// USer
+    /// User
     /// </summary>
     public string User { get; init; }
 

@@ -1,7 +1,7 @@
 ﻿namespace PayrollEngine.PayrollConsole.Commands.UserCommands;
 
 /// <summary>
-/// USer variable mode
+/// User variable mode
 /// </summary>
 public enum UserVariableMode
 {

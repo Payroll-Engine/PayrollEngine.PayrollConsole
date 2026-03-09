@@ -1,5 +1,6 @@
 ﻿namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Defines the column names for the case value Excel worksheets.</summary>
 internal static class CaseValueSheetSpecification
 {
     internal static readonly string CaseChange = "CaseChange";

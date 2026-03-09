@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Maps the <see cref="SheetSpecification.CaseField"/> Excel sheet columns to their indexes.</summary>
 internal sealed class CaseFieldSheetColumns
 {
     internal int? CreatedColumn { get; }
@@ -38,10 +39,7 @@ internal sealed class CaseFieldSheetColumns
 
     internal CaseFieldSheetColumns(ISheet sheet)
     {
-        if (sheet == null)
-        {
-            throw new ArgumentNullException(nameof(sheet));
-        }
+        ArgumentNullException.ThrowIfNull(sheet);
         CreatedColumn = sheet.GetHeaderColumn(nameof(CaseField.Created));
         CaseColumn = sheet.GetHeaderColumn(SheetSpecification.CaseFieldCaseRefName);
         NameColumn = sheet.GetHeaderColumn(nameof(CaseField.Name));

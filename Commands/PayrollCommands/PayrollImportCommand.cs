@@ -64,7 +64,7 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
             if (!files.Any())
             {
                 context.Console.DisplayErrorLine($"Invalid source files {parameters.SourceFileName}.");
-                return -3;
+                return (int)ProgramExitCode.InvalidInput;
             }
             foreach (var file in files)
             {
@@ -87,7 +87,7 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
     private async Task<int> ImportFileAsync(CommandContext context, PayrollImportParameters parameters, string fileName)
     {
         // read source file
-        var exchange = await FileReader.Read<Exchange>(fileName);
+        var exchange = await FileReader.ReadAsync<Exchange>(fileName);
 
         // apply namespace
         if (!string.IsNullOrWhiteSpace(parameters.Namespace))

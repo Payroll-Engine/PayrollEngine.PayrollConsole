@@ -6,8 +6,14 @@ using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Imports <see cref="CaseFieldSet"/> objects from the case field Excel worksheet.</summary>
 internal static class CaseFieldConvert
 {
+    /// <summary>Reads case fields from the <see cref="SheetSpecification.CaseField"/> sheet
+    /// and assigns them to the corresponding cases.</summary>
+    /// <param name="workbook">The source workbook.</param>
+    /// <param name="cases">The previously imported cases to populate with fields.</param>
+    /// <exception cref="PayrollException">Thrown when required columns are missing, referenced cases are unknown, names are empty, or duplicates are found.</exception>
     internal static void ReadCaseFields(IWorkbook workbook, IList<CaseSet> cases)
     {
         // worksheet

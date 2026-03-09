@@ -104,7 +104,7 @@ internal sealed class ChangePasswordCommand : CommandBase<ChangePasswordParamete
         {
             if (context.Console.DisplayLevel == DisplayLevel.Silent)
             {
-                context.Console.WriteErrorLine($"Payrun script build error: {exception.GetBaseMessage()}");
+                context.Console.WriteErrorLine($"Password change error: {exception.GetBaseMessage()}");
             }
             return (int)ProgramExitCode.GenericError;
         }

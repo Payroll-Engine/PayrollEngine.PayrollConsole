@@ -4,8 +4,13 @@ using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Imports a <see cref="RegulationSet"/> from the regulation Excel worksheet.</summary>
 internal static class RegulationImport
 {
+    /// <summary>Imports the regulation from the <see cref="SheetSpecification.Regulation"/> sheet.</summary>
+    /// <param name="workbook">The source workbook.</param>
+    /// <returns>The imported regulation set.</returns>
+    /// <exception cref="PayrollException">Thrown when the sheet is missing, contains invalid data, or the regulation name is empty.</exception>
     internal static RegulationSet Import(IWorkbook workbook)
     {
         // regulation worksheet

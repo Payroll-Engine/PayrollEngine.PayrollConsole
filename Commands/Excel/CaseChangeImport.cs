@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -13,21 +13,27 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Imports case change data from an Excel workbook into an <see cref="Exchange"/> model.</summary>
 internal sealed class CaseChangeImport
 {
     private PayrollHttpClient HttpClient { get; }
 
+    /// <summary>Initializes a new instance of the <see cref="CaseChangeImport"/> class.</summary>
+    /// <param name="httpClient">The HTTP client for backend API access.</param>
     internal CaseChangeImport(PayrollHttpClient httpClient)
     {
-        HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        ArgumentNullException.ThrowIfNull(httpClient);
+        HttpClient = httpClient;
     }
 
+    /// <summary>Reads case changes from an Excel file and returns them as an exchange model.</summary>
+    /// <param name="fileName">The path to the Excel file.</param>
+    /// <param name="overrideTenant">Optional tenant identifier override.</param>
+    /// <returns>The exchange model containing the imported case changes.</returns>
+    /// <exception cref="PayrollException">Thrown when the file is missing, tenant or user is unknown, or data is invalid.</exception>
     internal async Task<Exchange> ReadCaseChangesAsync(string fileName, string overrideTenant = null)
     {
-        if (string.IsNullOrWhiteSpace(fileName))
-        {
-            throw new ArgumentException(nameof(fileName));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
 
         // import file
         if (!File.Exists(fileName))

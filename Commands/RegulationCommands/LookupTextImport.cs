@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Globalization;
@@ -213,7 +213,7 @@ internal sealed class LookupTextImport
             }
             fileName += ".json";
             var targetFile = Path.Combine(Context.TargetFolder, fileName);
-            await FileWriter.Write(exchange, targetFile);
+            await FileWriter.WriteAsync(exchange, targetFile);
         }
 
         // write lookup to backend
@@ -233,14 +233,8 @@ internal sealed class LookupTextImport
 
     private static Exchange CreateRegulation(string tenantIdentifier, string regulationName)
     {
-        if (string.IsNullOrWhiteSpace(tenantIdentifier))
-        {
-            throw new ArgumentException(nameof(tenantIdentifier));
-        }
-        if (string.IsNullOrWhiteSpace(regulationName))
-        {
-            throw new ArgumentException(nameof(regulationName));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(tenantIdentifier);
+        ArgumentException.ThrowIfNullOrWhiteSpace(regulationName);
 
         // exchange
         var exchange = new Exchange

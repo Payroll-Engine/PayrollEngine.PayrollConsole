@@ -5,7 +5,7 @@ using PayrollEngine.Client.Exchange;
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 
 /// <summary>
-/// Lookup  text import parameters
+/// Lookup text import parameters
 /// </summary>
 public class LookupTextImportParameters : ICommandParameters
 {

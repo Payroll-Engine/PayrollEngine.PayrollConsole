@@ -38,5 +38,10 @@ public enum ProgramExitCode
     /// <summary>
     /// Invalid options
     /// </summary>
-    InvalidOptions = 5
+    InvalidOptions = 5,
+
+    /// <summary>
+    /// Invalid input (e.g. missing or invalid source files)
+    /// </summary>
+    InvalidInput = 6
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using PayrollEngine.Client.Command;
@@ -10,10 +10,7 @@ internal static class CommandProvider
 {
     internal static void RegisterCommands(CommandManager commandManager, ILogger logger = null)
     {
-        if (commandManager == null)
-        {
-            throw new ArgumentNullException(nameof(commandManager));
-        }
+        ArgumentNullException.ThrowIfNull(commandManager);
 
         // internal commands
         commandManager.RegisterAssembly(typeof(HelpCommand).Assembly);
@@ -43,12 +40,14 @@ internal static class CommandProvider
         {
             try
             {
+                logger?.Debug($"Loading extension {assembly}");
                 var extensionAssembly = Assembly.LoadFrom(assembly);
                 commandManager.RegisterAssembly(extensionAssembly);
+                logger?.Debug($"Extension loaded: {extensionAssembly.GetName().Name} v{extensionAssembly.GetName().Version}");
             }
             catch (Exception exception)
             {
-                logger?.Error(exception.GetBaseException().Message);
+                logger?.Error($"Failed to load extension {assembly}: {exception.GetBaseException().Message}");
             }
         }
     }

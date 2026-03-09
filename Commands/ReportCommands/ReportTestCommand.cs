@@ -52,7 +52,7 @@ internal sealed class ReportTestCommand : TestCommandBase<ReportTestParameters>
                 context.Console.DisplayTextLine("Running test...");
 
                 // load test data
-                var reportTest = await FileReader.Read<ReportTest>(testFileName);
+                var reportTest = await FileReader.ReadAsync<ReportTest>(testFileName);
                 if (reportTest == null)
                 {
                     throw new PayrollException($"Invalid case test file {testFileName}.");

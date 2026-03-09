@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Test;
 using PayrollEngine.Client.Script;
@@ -60,6 +61,7 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
 
                     context.Console.DisplayTextLine($"Path               {new FileInfo(testFileName).Directory?.FullName}");
                     context.Console.DisplayTextLine($"File               {testFileName}");
+                    context.Console.DisplayTextLine($"Import mode        {parameters.ImportMode}");
                     context.Console.DisplayTextLine($"Test mode          {parameters.TestMode}");
                     context.Console.DisplayTextLine($"Running mode       {parameters.RunMode}");
                     context.Console.DisplayTextLine($"Display mode       {parameters.DisplayMode}");
@@ -73,7 +75,7 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
                 context.Console.DisplayTextLine("Running test...");
 
                 // load test data
-                var exchange = await FileReader.Read<Client.Model.Exchange>(testFileName);
+                var exchange = await FileReader.ReadAsync<Client.Model.Exchange>(testFileName);
                 if (exchange == null)
                 {
                     throw new PayrollException($"Invalid employee payrun test file {testFileName}.");
@@ -92,9 +94,15 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
                     httpClient: context.HttpClient,
                     scriptParser: ScriptParser,
                     settings: settings,
+                    importMode: parameters.ImportMode,
                     employeeMode: parameters.TestMode,
                     runMode: parameters.RunMode);
+
+                using var cts = new CancellationTokenSource();
+                var progressTask = RunProgressAsync(context.Console, cts.Token);
                 var results = await testRunner.TestAllAsync(exchange);
+                await cts.CancelAsync();
+                await progressTask;
 
                 // display test results
                 context.Console.DisplayNewLine();
@@ -131,6 +139,7 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
         console.DisplayTextLine("          1. JSON/YAML/ZIP file name or file mask [FileMask]");
         console.DisplayTextLine("          2. owner name (optional) [Owner]");
         console.DisplayTextLine("      Toggles:");
+        console.DisplayTextLine("          import mode: /single or /bulk (default: bulk)");
         console.DisplayTextLine("          test mode: /insertemployee or /updateemployee (default: insertemployee)");
         console.DisplayTextLine("          running mode: /runtests or /skiptests (default: runtests)");
         console.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
@@ -140,5 +149,6 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
         console.DisplayTextLine("          PayrunEmployeeTest Test.json");
         console.DisplayTextLine("          PayrunEmployeeTest *.et.json");
         console.DisplayTextLine("          PayrunEmployeeTest Test.json /showall /TestPrecision3");
+        console.DisplayTextLine("          PayrunEmployeeTest Test.json /bulk /showall");
     }
 }

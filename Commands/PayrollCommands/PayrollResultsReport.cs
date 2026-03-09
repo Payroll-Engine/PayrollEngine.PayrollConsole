@@ -176,7 +176,7 @@ public class PayrollResultsReport(PayrollHttpClient httpClient, int topFilter, R
                 // stats
                 Console.WriteLine();
                 var jobPeriod = new DatePeriod(payrunJob.JobStart, payrunJob.JobEnd);
-                Console.WriteLine($"Duration         {jobPeriod.Duration.TotalMilliseconds:#0} ms");
+                Console.WriteLine($"Duration         {jobPeriod.Duration.ToReadableString()}");
                 Console.WriteLine($"# Wage Types     {resultSet.WageTypeResults?.Count ?? 0}");
                 Console.WriteLine($"# Collectors     {resultSet.CollectorResults?.Count ?? 0}");
                 Console.WriteLine();

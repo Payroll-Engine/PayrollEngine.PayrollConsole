@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -11,6 +11,9 @@ using PayrollEngine.Client.Scripting;
 
 namespace PayrollEngine.PayrollConsole.Commands.ActionCommands;
 
+/// <summary>
+/// Action report command
+/// </summary>
 [Command("ActionReport")]
 // ReSharper disable once UnusedType.Global
 internal sealed class ActionReportCommand : CommandBase<ActionReportParameters>
@@ -86,10 +89,7 @@ internal sealed class ActionReportCommand : CommandBase<ActionReportParameters>
     /// <exception cref="ArgumentException"></exception>
     private static void WriteJsonFile(string fileName, List<ActionInfo> actions)
     {
-        if (string.IsNullOrWhiteSpace(fileName))
-        {
-            throw new ArgumentException(nameof(fileName));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
 
         if (File.Exists(fileName))
         {

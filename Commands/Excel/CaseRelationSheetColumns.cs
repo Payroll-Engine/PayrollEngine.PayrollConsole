@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Maps the <see cref="SheetSpecification.CaseRelation"/> Excel sheet columns to their indexes.</summary>
 internal sealed class CaseRelationSheetColumns
 {
     internal int? CreatedColumn { get; }
@@ -27,10 +28,7 @@ internal sealed class CaseRelationSheetColumns
 
     internal CaseRelationSheetColumns(ISheet sheet)
     {
-        if (sheet == null)
-        {
-            throw new ArgumentNullException(nameof(sheet));
-        }
+        ArgumentNullException.ThrowIfNull(sheet);
         CreatedColumn = sheet.GetHeaderColumn(nameof(CaseRelation.Created));
         SourceCaseNameColumn = sheet.GetHeaderColumn(nameof(CaseRelation.SourceCaseName));
         SourceCaseNameLocalizationsColumns = sheet.GetHeaderMultiColumns(nameof(CaseRelation.SourceCaseName));

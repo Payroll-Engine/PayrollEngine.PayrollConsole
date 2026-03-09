@@ -14,7 +14,7 @@ using PayrollEngine.Client.Service.Api;
 namespace PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands;
 
 /// <summary>
-/// LOg tail command
+/// Log trail command
 /// </summary>
 [Command("LogTrail")]
 // ReSharper disable once UnusedType.Global

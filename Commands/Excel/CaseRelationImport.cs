@@ -5,8 +5,13 @@ using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Imports <see cref="CaseRelation"/> objects from the case relation Excel worksheet.</summary>
 internal static class CaseRelationImport
 {
+    /// <summary>Imports case relations from the <see cref="SheetSpecification.CaseRelation"/> sheet.</summary>
+    /// <param name="workbook">The source workbook.</param>
+    /// <returns>The imported case relations, or <c>null</c> if the sheet is missing or empty.</returns>
+    /// <exception cref="PayrollException">Thrown when required columns are missing or case names are empty.</exception>
     internal static List<CaseRelation> Import(IWorkbook workbook)
     {
         // worksheet

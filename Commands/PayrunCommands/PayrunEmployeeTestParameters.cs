@@ -1,5 +1,6 @@
 ﻿using System;
 using PayrollEngine.Client.Command;
+using PayrollEngine.Client.Exchange;
 using PayrollEngine.Client.Test;
 using PayrollEngine.Client.Test.Payrun;
 
@@ -19,6 +20,11 @@ public class PayrunEmployeeTestParameters : ICommandParameters
     /// Test owner
     /// </summary>
     public string Owner { get; init; }
+
+    /// <summary>
+    /// Import mode (default: bulk)
+    /// </summary>
+    public DataImportMode ImportMode { get; private init; } = DataImportMode.Bulk;
 
     /// <summary>
     /// Test mode (default: insert employee)
@@ -48,6 +54,7 @@ public class PayrunEmployeeTestParameters : ICommandParameters
     /// <inheritdoc />
     public Type[] Toggles =>
     [
+        typeof(DataImportMode),
         typeof(EmployeeTestMode),
         typeof(TestRunMode),
         typeof(TestDisplayMode),
@@ -68,6 +75,7 @@ public class PayrunEmployeeTestParameters : ICommandParameters
         {
             FileMask = parser.Get(2, nameof(FileMask)),
             Owner = parser.Get(3, nameof(Owner)),
+            ImportMode = parser.GetEnumToggle(DataImportMode.Bulk),
             TestMode = parser.GetEnumToggle(EmployeeTestMode.InsertEmployee),
             RunMode = parser.GetEnumToggle(TestRunMode.RunTests),
             DisplayMode = parser.GetEnumToggle(TestDisplayMode.ShowFailed),

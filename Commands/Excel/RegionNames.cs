@@ -1,5 +1,6 @@
 ﻿namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Defines the Excel named region identifiers used for regulation Excel import.</summary>
 internal static class RegionNames
 {
     // regions

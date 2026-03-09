@@ -4,6 +4,11 @@
         <name>PayrollEngine.PayrollConsole.Commands</name>
     </assembly>
     <members>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportCommand">
+            <summary>
+            Action report command
+            </summary>
+        </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ActionCommands.ActionReportParameters)">
             <summary>
             Execute action report
@@ -201,7 +206,7 @@
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailCommand">
             <summary>
-            LOg tail command
+            Log trail command
             </summary>
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands.LogTrailParameters)">
@@ -422,6 +427,20 @@
             All directories
             </summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport">
+            <summary>Imports case change data from an Excel workbook into an <see cref="T:PayrollEngine.Client.Model.Exchange"/> model.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.#ctor(PayrollEngine.Client.PayrollHttpClient)">
+            <summary>Initializes a new instance of the <see cref="T:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport"/> class.</summary>
+            <param name="httpClient">The HTTP client for backend API access.</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.ReadCaseChangesAsync(System.String,System.String)">
+            <summary>Reads case changes from an Excel file and returns them as an exchange model.</summary>
+            <param name="fileName">The path to the Excel file.</param>
+            <param name="overrideTenant">Optional tenant identifier override.</param>
+            <returns>The exchange model containing the imported case changes.</returns>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when the file is missing, tenant or user is unknown, or data is invalid.</exception>
+        </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.ReadAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.IWorkbook,System.String)">
             <summary>
             Read case changes from excel file
@@ -489,6 +508,152 @@
             <param name="reason">The reason</param>
             <returns>Case changes by employee</returns>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CaseDataSheetSpecification">
+            <summary>Defines the column names for <c>CaseData.*</c> Excel worksheets.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CaseFieldConvert">
+            <summary>Imports <see cref="T:PayrollEngine.Client.Model.CaseFieldSet"/> objects from the case field Excel worksheet.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseFieldConvert.ReadCaseFields(NPOI.SS.UserModel.IWorkbook,System.Collections.Generic.IList{PayrollEngine.Client.Model.CaseSet})">
+            <summary>Reads case fields from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.CaseField"/> sheet
+            and assigns them to the corresponding cases.</summary>
+            <param name="workbook">The source workbook.</param>
+            <param name="cases">The previously imported cases to populate with fields.</param>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when required columns are missing, referenced cases are unknown, names are empty, or duplicates are found.</exception>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CaseFieldSheetColumns">
+            <summary>Maps the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.CaseField"/> Excel sheet columns to their indexes.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CaseImport">
+            <summary>Imports <see cref="T:PayrollEngine.Client.Model.CaseSet"/> objects from the case Excel worksheet.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseImport.Import(NPOI.SS.UserModel.IWorkbook)">
+            <summary>Imports cases from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Case"/> sheet.</summary>
+            <param name="workbook">The source workbook.</param>
+            <returns>The imported cases, or <c>null</c> if the sheet is missing or empty.</returns>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when required columns are missing, names are empty, or duplicates are found.</exception>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CaseRelationImport">
+            <summary>Imports <see cref="T:PayrollEngine.Client.Model.CaseRelation"/> objects from the case relation Excel worksheet.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseRelationImport.Import(NPOI.SS.UserModel.IWorkbook)">
+            <summary>Imports case relations from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.CaseRelation"/> sheet.</summary>
+            <param name="workbook">The source workbook.</param>
+            <returns>The imported case relations, or <c>null</c> if the sheet is missing or empty.</returns>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when required columns are missing or case names are empty.</exception>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CaseRelationSheetColumns">
+            <summary>Maps the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.CaseRelation"/> Excel sheet columns to their indexes.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CaseSheetColumns">
+            <summary>Maps the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Case"/> Excel sheet columns to their indexes.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CaseValueSheetSpecification">
+            <summary>Defines the column names for the case value Excel worksheets.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CollectorImport">
+            <summary>Imports <see cref="T:PayrollEngine.Client.Model.Collector"/> objects from the collector Excel worksheet.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CollectorImport.Import(NPOI.SS.UserModel.IWorkbook)">
+            <summary>Imports collectors from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Collector"/> sheet.</summary>
+            <param name="workbook">The source workbook.</param>
+            <returns>The imported collectors, or <c>null</c> if the sheet is missing or empty.</returns>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when required columns are missing, names are empty, or duplicates are found.</exception>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CollectorSheetColumns">
+            <summary>Maps the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Collector"/> Excel sheet columns to their indexes.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeRegulationImport">
+            <summary>Imports a complete regulation from an Excel workbook into an <see cref="T:PayrollEngine.Client.Model.Exchange"/> model.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeRegulationImport.ReadAsync(System.String)">
+            <summary>Reads a regulation including cases, collectors, wage types, reports, lookups, and scripts
+            from an Excel file.</summary>
+            <param name="fileName">The path to the Excel file.</param>
+            <returns>The exchange model containing the imported regulation.</returns>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when the file is missing, tenant is undefined, or regulation data is invalid.</exception>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.LookupImport">
+            <summary>Imports <see cref="T:PayrollEngine.Client.Model.LookupSet"/> objects from the lookup Excel worksheet.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.LookupImport.Import(NPOI.SS.UserModel.IWorkbook)">
+            <summary>Imports lookups from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Lookup"/> sheet.</summary>
+            <param name="workbook">The source workbook.</param>
+            <returns>The imported lookups, or <c>null</c> if the sheet is missing or empty.</returns>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when required columns are missing, names are empty, or duplicates are found.</exception>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.LookupSheetColumns">
+            <summary>Maps the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Lookup"/> Excel sheet columns to their indexes.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.LookupSheetSpecification">
+            <summary>Defines the column name prefixes for lookup value Excel worksheets.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.LookupValueImport">
+            <summary>Imports <see cref="T:PayrollEngine.Client.Model.LookupValue"/> objects from lookup value Excel worksheets.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.LookupValueImport.Import(NPOI.SS.UserModel.IWorkbook,System.Collections.Generic.List{PayrollEngine.Client.Model.LookupSet})">
+            <summary>Imports lookup values from the default <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.LookupValue"/> sheet
+            and from individual <c>Lookup.*</c> sheets into the corresponding lookups.</summary>
+            <param name="workbook">The source workbook.</param>
+            <param name="lookups">The previously imported lookups to populate with values.</param>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when referenced lookups are unknown, keys are missing, or duplicates are found.</exception>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.LookupValueImport.ImportLookupSheets(NPOI.SS.UserModel.IWorkbook,System.Collections.Generic.List{PayrollEngine.Client.Model.LookupSet})">
+            <summary>Imports lookup values from individual <c>Lookup.*</c> named sheets.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.RegionNames">
+            <summary>Defines the Excel named region identifiers used for regulation Excel import.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.RegulationImport">
+            <summary>Imports a <see cref="T:PayrollEngine.Client.Model.RegulationSet"/> from the regulation Excel worksheet.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.RegulationImport.Import(NPOI.SS.UserModel.IWorkbook)">
+            <summary>Imports the regulation from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Regulation"/> sheet.</summary>
+            <param name="workbook">The source workbook.</param>
+            <returns>The imported regulation set.</returns>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when the sheet is missing, contains invalid data, or the regulation name is empty.</exception>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.RegulationSheetColumns">
+            <summary>Maps the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Regulation"/> Excel sheet columns to their indexes.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ReportImport">
+            <summary>Imports <see cref="T:PayrollEngine.Client.Model.ReportSet"/> objects from the report Excel worksheet.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ReportImport.Import(NPOI.SS.UserModel.IWorkbook)">
+            <summary>Imports reports from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Report"/> sheet.</summary>
+            <param name="workbook">The source workbook.</param>
+            <returns>The imported reports, or <c>null</c> if the sheet is missing or empty.</returns>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when required columns are missing, names are empty, or duplicates are found.</exception>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ReportParameterImport">
+            <summary>Imports <see cref="T:PayrollEngine.Client.Model.ReportParameter"/> objects from the report parameter Excel worksheet.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ReportParameterImport.Import(NPOI.SS.UserModel.IWorkbook,System.Collections.Generic.List{PayrollEngine.Client.Model.ReportSet})">
+            <summary>Imports report parameters from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.ReportParameter"/> sheet
+            into the corresponding reports.</summary>
+            <param name="workbook">The source workbook.</param>
+            <param name="reports">The previously imported reports to populate with parameters.</param>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when referenced reports are unknown, names are empty, or duplicates are found.</exception>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ReportTemplateImport">
+            <summary>Imports <see cref="T:PayrollEngine.Client.Model.ReportTemplate"/> objects from the report template Excel worksheet.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ReportTemplateImport.Import(NPOI.SS.UserModel.IWorkbook,System.Collections.Generic.List{PayrollEngine.Client.Model.ReportSet})">
+            <summary>Imports report templates from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.ReportTemplate"/> sheet
+            into the corresponding reports.</summary>
+            <param name="workbook">The source workbook.</param>
+            <param name="reports">The previously imported reports to populate with templates.</param>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when referenced reports are unknown, names are empty, or duplicates are found.</exception>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ScriptImport">
+            <summary>Imports <see cref="T:PayrollEngine.Client.Model.Script"/> objects from the script Excel worksheet.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ScriptImport.Import(NPOI.SS.UserModel.IWorkbook)">
+            <summary>Imports scripts from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Script"/> sheet.</summary>
+            <param name="workbook">The source workbook.</param>
+            <returns>The imported scripts, or <c>null</c> if the sheet is missing or empty.</returns>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when required columns are missing, names are empty, or duplicates are found.</exception>
+        </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.GetColumnIndexes(NPOI.SS.UserModel.ISheet,System.Collections.Generic.ICollection{System.String})">
             <inheritdoc cref="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$0C2B5C45F22AF69CA8772018E36FE485.GetColumnIndexes(System.Collections.Generic.ICollection{System.String})"/>
         </member>
@@ -514,13 +679,31 @@
             <param name="provider">The format provider</param>
             <returns>The cell value</returns>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification">
+            <summary>Defines the Excel worksheet and column names used for regulation import and export.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.SpecificationEmployeeCaseValue">
+            <summary>Defines the column names for the employee case value Excel worksheet.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.WageTypeImport">
+            <summary>Imports <see cref="T:PayrollEngine.Client.Model.WageType"/> objects from the wage type Excel worksheet.</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.WageTypeImport.Import(NPOI.SS.UserModel.IWorkbook)">
+            <summary>Imports wage types from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.WageType"/> sheet.</summary>
+            <param name="workbook">The source workbook.</param>
+            <returns>The imported wage types, or <c>null</c> if the sheet is missing or empty.</returns>
+            <exception cref="T:PayrollEngine.PayrollException">Thrown when required columns are missing, numbers or names are empty, or duplicates are found.</exception>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.WageTypeSheetColumns">
+            <summary>Maps the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.WageType"/> Excel sheet columns to their indexes.</summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.HelpCommand">
             <summary>
             Help command
             </summary>
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.HelpCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.HelpParameters)">
-            <summary>Sho help</summary>
+            <summary>Show help</summary>
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
@@ -618,6 +801,11 @@
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetCommand">
+            <summary>
+            Http GET command
+            </summary>
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetParameters)">
             <summary>Http GET request</summary>
@@ -760,6 +948,239 @@
             <summary>
             Import to file and backend
             </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestCleanupCommand">
+            <summary>Delete load test employees (identified by filter pattern in identifier)</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestCleanupCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestCleanupParameters)">
+            <summary>Delete load test employees</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestCleanupCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestCleanupCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestCleanupParameters">
+            <summary>Load test cleanup parameters</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestCleanupParameters.TenantIdentifier">
+            <summary>Tenant identifier</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestCleanupParameters.FilterPattern">
+            <summary>Employee identifier filter pattern (substring match, e.g. "-C" for load test copies)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestCleanupParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestCleanupParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestCleanupParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>Parse command parameters</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateCommand">
+            <summary>Generate scaled exchange files for payrun load testing</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateParameters)">
+            <summary>Generate load test exchange files</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateCommand.ExtractEmployeeTemplates(PayrollEngine.Client.Model.ExchangeTenant,System.Collections.Generic.List{PayrollEngine.Client.Model.CaseChangeSetup})">
+            <summary>
+            Extract employee templates from exchange data.
+            Handles two cases:
+            - Template has Employees section → use EmployeeSet objects
+            - Template has NO Employees section → extract identifiers from case changes
+            Division is resolved from existing employee or from case change DivisionName.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateCommand.CreateEmployeeFromIdentifier(System.String)">
+            <summary>
+            Create an EmployeeSet from an identifier.
+            Parses LastName and FirstName from the identifier parts.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateCommand.GenerateScaledEmployees(System.Collections.Generic.List{PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateCommand.EmployeeTemplate},System.Int32)">
+            <summary>Generate N employees by multiplying templates</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateCommand.Clone``1(``0)">
+            <summary>Deep clone via JSON serialization</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateCommand.ExtractInvocations(PayrollEngine.Client.Model.ExchangeTenant,System.Int32)">
+            <summary>
+            Extract unique invocations from template, deduplicated by PeriodStart.
+            Removes EmployeeIdentifiers so all employees are included.
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateCommand.EmployeeTemplate">
+            <summary>Employee template with associated cases</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateCommand.ScaledEmployee">
+            <summary>Scaled employee with reference to original template</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateParameters">
+            <summary>Load test exchange file generator parameters</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateParameters.TemplatePath">
+            <summary>Path to exchange template file</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateParameters.EmployeeCount">
+            <summary>Target employee count (100, 1000, 10000)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateParameters.OutputDir">
+            <summary>Output directory for generated files</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestGenerateParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parser from command line arguments
+            </summary>
+            <param name="parser">Command line parser</param>
+            <returns>Command parameters</returns>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupCasesCommand">
+            <summary>Bulk-import case changes for load testing via AddCasesBulkAsync</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupCasesCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupCasesParameters)">
+            <summary>Bulk-import case changes for load testing</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupCasesCommand.ResolveCaseFiles(System.String)">
+            <summary>Resolve case files from a path (directory or single file)</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupCasesCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupCasesCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupCasesParameters">
+            <summary>Load test case bulk setup parameters</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupCasesParameters.CasesPath">
+            <summary>Directory containing Setup-Cases-*.json files, or a single file path</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupCasesParameters.BatchSize">
+            <summary>HTTP batch size for bulk API calls (default: 500)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupCasesParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupCasesParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupCasesParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>Parse command parameters</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupEmployeesCommand">
+            <summary>Setup employees for load testing via bulk API</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupEmployeesCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupEmployeesParameters)">
+            <summary>Bulk-import employees for load testing</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupEmployeesCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupEmployeesCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupEmployeesParameters">
+            <summary>Load test employee setup parameters</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupEmployeesParameters.EmployeesFile">
+            <summary>Path to Setup-Employees.json exchange file</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupEmployeesParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupEmployeesParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.LoadTestSetupEmployeesParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>Parse command parameters</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestCommand">
+            <summary>Execute payrun load test with timing metrics</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters)">
+            <summary>Execute payrun load test</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestCommand.WaitForJobCompletion(PayrollEngine.Client.Service.Api.PayrunJobService,PayrollEngine.Client.Service.TenantServiceContext,System.Int32,PayrollEngine.Client.Command.ICommandConsole)">
+            <summary>
+            Poll job until processing is complete (JobEnd is set).
+            Uses adaptive polling: starts fast (100ms) for small jobs,
+            then backs off to 1s for long-running jobs.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestCommand.CreateInvocation(PayrollEngine.Client.Model.PayrunJobInvocation,System.String)">
+            <summary>Create a fresh invocation with unique name for each run</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestCommand.WriteResults(System.String,System.Collections.Generic.List{PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestResult})">
+            <summary>Write results as CSV (semicolon-separated)</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters">
+            <summary>Payrun load test parameters</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.InvocationFile">
+            <summary>Path to Payrun-Invocation exchange file</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.EmployeeCount">
+            <summary>Expected employee count (for report)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.Repetitions">
+            <summary>Number of repetitions (default: 3, median used)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ResultFile">
+            <summary>Output CSV path for results</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>Parse command parameters</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestResult">
+            <summary>Single load test run result</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestResult.Timestamp">
+            <summary>Timestamp of the measurement</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestResult.RunNumber">
+            <summary>Run number within repetitions</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestResult.Period">
+            <summary>Payrun period start</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestResult.EmployeeCount">
+            <summary>Number of employees in this run</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestResult.ClientDurationMs">
+            <summary>Client-side duration including HTTP overhead (ms)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestResult.ServerJobDurationMs">
+            <summary>Server-side job duration from PayrunJob (ms)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestResult.ServerAvgMsPerEmployee">
+            <summary>Server-side average per employee (ms)</summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertCommand">
             <summary>
@@ -943,6 +1364,55 @@
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollMergeCommand">
+            <summary>
+            Merge multiple payroll files into one file
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollMergeCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollMergeParameters)">
+            <summary>Convert a JSON or YAML file</summary>
+            <param name="context">Command execution context</param>
+            <param name="parameters">Command parameters</param>
+            <returns>Program exit ok, 0 on success</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollMergeCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollMergeCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollMergeParameters">
+            <summary>
+            Payroll merge command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollMergeParameters.SourceFilesMask">
+            <summary>
+            Source file mask
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollMergeParameters.TargetFileName">
+            <summary>
+            Target file name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollMergeParameters.DirectoryMode">
+            <summary>
+            DirectoryMode mode (default: top)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollMergeParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollMergeParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollMergeParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+            <param name="parser">Parameter parser</param>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollResultsCommand">
             <summary>
             Payroll results command
@@ -1034,6 +1504,66 @@
             Export
             </summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestCommand">
+            <summary>
+            Payrun employee preview test command
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestParameters)">
+            <summary>
+            Test employee payrun via preview specified in a payroll exchange JSON file
+            The test sequence is:
+              1. Load test data from exchange file (payrun job invocations and expected results)
+              2. Execute payrun job preview for each invocation
+              3. Compare the preview results with the expected results
+            </summary>
+            <param name="context">Command execution context</param>
+            <param name="parameters">Command parameters</param>
+            <returns>Program exit ok, 0 on success</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestParameters">
+            <summary>
+            Payrun employee preview test command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestParameters.FileMask">
+            <summary>
+            File mask
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestParameters.Owner">
+            <summary>
+            Test owner
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestParameters.DisplayMode">
+            <summary>
+            Test display mode (default: show failed)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestParameters.Precision">
+            <summary>
+            Test precision (default: 2)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+            <param name="parser">Parameter parser</param>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestCommand">
             <summary>
             Payrun employee test command
@@ -1072,6 +1602,11 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.Owner">
             <summary>
             Test owner
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.ImportMode">
+            <summary>
+            Import mode (default: bulk)
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.TestMode">
@@ -1268,6 +1803,9 @@
             Payrun test command base
             </summary>
         </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommandBase.RunProgressAsync(PayrollEngine.Client.Command.ICommandConsole,System.Threading.CancellationToken)">
+            <summary>Show a waiting indicator every 10 seconds until cancelled</summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommandBase`1">
             <summary>
             Payrun test command base
@@ -1366,6 +1904,11 @@
             Invalid options
             </summary>
         </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ProgramExitCode.InvalidInput">
+            <summary>
+            Invalid input (e.g. missing or invalid source files)
+            </summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImport">
             <summary>
             Import text file to lookup
@@ -1418,7 +1961,7 @@
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters">
             <summary>
-            Lookup  text import parameters
+            Lookup text import parameters
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImportParameters.Tenant">
@@ -1860,7 +2403,7 @@
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.User">
             <summary>
-            USer
+            User
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportParameters.Regulation">
@@ -2062,7 +2605,7 @@
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.ExportMode">
             <summary>
-            EExport mode (default: existing)
+            Export mode (default: existing)
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.ScriptCommands.ScriptExportParameters.ScriptObject">
@@ -2320,7 +2863,7 @@
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableMode">
             <summary>
-            USer variable mode
+            User variable mode
             </summary>
         </member>
         <member name="F:PayrollEngine.PayrollConsole.Commands.UserCommands.UserVariableMode.View">

@@ -4,6 +4,9 @@ using PayrollEngine.Client.Command;
 
 namespace PayrollEngine.PayrollConsole.Commands.HttpCommands;
 
+/// <summary>
+/// Http GET command
+/// </summary>
 [Command("HttpGet")]
 // ReSharper disable once UnusedType.Global
 internal sealed class HttpGetCommand : HttpCommandBase<HttpGetParameters>

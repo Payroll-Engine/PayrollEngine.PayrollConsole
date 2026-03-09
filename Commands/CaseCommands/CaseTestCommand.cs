@@ -51,7 +51,7 @@ internal sealed class CaseTestCommand : TestCommandBase<CaseTestParameters>
                 }
 
                 // load test data
-                var caseTest = await FileReader.Read<CaseTest>(testFileName);
+                var caseTest = await FileReader.ReadAsync<CaseTest>(testFileName);
                 if (caseTest == null)
                 {
                     throw new PayrollException($"Invalid case test file {testFileName}.");

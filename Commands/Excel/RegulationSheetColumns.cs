@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Maps the <see cref="SheetSpecification.Regulation"/> Excel sheet columns to their indexes.</summary>
 internal sealed class RegulationSheetColumns
 {
     internal int? CreatedColumn { get; }
@@ -21,10 +22,7 @@ internal sealed class RegulationSheetColumns
 
     internal RegulationSheetColumns(ISheet sheet)
     {
-        if (sheet == null)
-        {
-            throw new ArgumentNullException(nameof(sheet));
-        }
+        ArgumentNullException.ThrowIfNull(sheet);
         CreatedColumn = sheet.GetHeaderColumn(nameof(Regulation.Created));
         NameColumn = sheet.GetHeaderColumn(nameof(Regulation.Name));
         NameLocalizationsColumns = sheet.GetHeaderMultiColumns(nameof(Regulation.Name));

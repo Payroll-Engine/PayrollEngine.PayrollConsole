@@ -77,7 +77,7 @@ internal sealed class PayrollExportCommand : CommandBase<PayrollExportParameters
             // tenant export
             var export = new ExchangeExport(context.HttpClient, options, parameters.Namespace);
             var exchange = await export.ExportAsync(tenant.Id);
-            await FileWriter.Write(exchange, resolvedFileName);
+            await FileWriter.WriteAsync(exchange, resolvedFileName);
 
             // notification
             context.Console.DisplaySuccessLine($"Exported tenant {parameters.Tenant} into file {new FileInfo(resolvedFileName).FullName}");

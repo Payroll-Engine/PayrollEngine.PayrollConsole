@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,7 +18,8 @@ internal sealed class Publisher
 {
     internal Publisher(PayrollHttpClient httpClient)
     {
-        HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        ArgumentNullException.ThrowIfNull(httpClient);
+        HttpClient = httpClient;
     }
 
     private PayrollHttpClient HttpClient { get; }
@@ -27,10 +28,7 @@ internal sealed class Publisher
 
     internal async Task<int> Publish(string sourceFile, string sourceScript = null)
     {
-        if (string.IsNullOrWhiteSpace(sourceFile))
-        {
-            throw new ArgumentException(nameof(sourceFile));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(sourceFile);
 
         // parse source file
         var sourceCode = await File.ReadAllTextAsync(sourceFile);
@@ -285,7 +283,7 @@ internal sealed class Publisher
                 caseRelationScriptAttribute.TargetCaseSlot);
 
             // update case relation
-            if (caseRelation != null && !string.Equals(caseRelation.BuildExpression, context.MethodBody))
+            if (caseRelation != null && !string.Equals(caseRelation.ValidateExpression, context.MethodBody))
             {
                 caseRelation.ValidateExpression = context.MethodBody;
                 await UpdateScriptObjectAsync(service, serviceContext, caseRelation);

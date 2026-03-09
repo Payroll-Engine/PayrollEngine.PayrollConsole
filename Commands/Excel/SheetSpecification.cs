@@ -2,6 +2,7 @@
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Defines the Excel worksheet and column names used for regulation import and export.</summary>
 internal static class SheetSpecification
 {
     internal static readonly string Regulation = nameof(Regulation);

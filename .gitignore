@@ -336,6 +336,11 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
+logs/
 /NDependOut*
+NDependOut/
+
+# API configuration with potential secrets
+apisettings.json
 
 /PayrollConsole/Properties/launchSettings.json

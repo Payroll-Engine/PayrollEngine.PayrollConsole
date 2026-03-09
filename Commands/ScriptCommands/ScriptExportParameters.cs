@@ -45,7 +45,7 @@ public class ScriptExportParameters : ICommandParameters
     public string Namespace { get; init; }
 
     /// <summary>
-    /// EExport mode (default: existing)
+    /// Export mode (default: existing)
     /// </summary>
     public ScriptExportMode ExportMode { get; private init; } = ScriptExportMode.Existing;
 

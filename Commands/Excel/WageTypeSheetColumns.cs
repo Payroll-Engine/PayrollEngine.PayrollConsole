@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Maps the <see cref="SheetSpecification.WageType"/> Excel sheet columns to their indexes.</summary>
 internal sealed class WageTypeSheetColumns
 {
     internal int? CreatedColumn { get; }
@@ -25,10 +26,7 @@ internal sealed class WageTypeSheetColumns
 
     internal WageTypeSheetColumns(ISheet sheet)
     {
-        if (sheet == null)
-        {
-            throw new ArgumentNullException(nameof(sheet));
-        }
+        ArgumentNullException.ThrowIfNull(sheet);
         CreatedColumn = sheet.GetHeaderColumn(nameof(WageType.Created));
         WageTypeNumberColumn = sheet.GetHeaderColumn(nameof(WageType.WageTypeNumber));
         NameColumn = sheet.GetHeaderColumn(nameof(WageType.Name));

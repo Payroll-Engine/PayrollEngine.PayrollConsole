@@ -59,13 +59,23 @@ sealed class Program : ConsoleProgram<Program>
 
     /// <summary>Override the default implementation, allowing access to https</summary>
     /// <returns>The http client handler</returns>
-    protected override async Task<HttpClientHandler> GetHttpClientHandlerAsync() =>
-        // TODO http client handler by configuration
-        await Task.FromResult(new HttpClientHandler
+    protected override async Task<HttpClientHandler> GetHttpClientHandlerAsync()
+    {
+        var handler = new HttpClientHandler
         {
-            SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13,
-            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
-        });
+            SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13
+        };
+
+        // insecure ssl: skip certificate validation (dev only)
+        var setting = Configuration.Get("AllowInsecureSsl");
+        if (bool.TryParse(setting, out var allowInsecureSsl) && allowInsecureSsl)
+        {
+            Logger.Warning("SSL certificate validation is disabled (AllowInsecureSsl=true)");
+            handler.ServerCertificateCustomValidationCallback = (_, _, _, _) => true;
+        }
+
+        return await Task.FromResult(handler);
+    }
 
     /// <inheritdoc />
     protected override async Task RunAsync()

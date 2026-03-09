@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -18,10 +18,7 @@ internal abstract class TestCommandBase : CommandBase
     /// <param name="fileMask">File mask</param>
     protected static List<string> GetTestFileNames(string fileMask)
     {
-        if (string.IsNullOrWhiteSpace(fileMask))
-        {
-            throw new ArgumentException(nameof(fileMask));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileMask);
 
         var files = new List<string>();
         // single file
@@ -69,7 +66,6 @@ internal abstract class TestCommandBase : CommandBase
                 {
                     message += $" [{testResult.ErrorCode}]";
                 }
-                message += ")";
                 logger.Error(message);
             }
             else

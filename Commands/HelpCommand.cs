@@ -11,7 +11,7 @@ namespace PayrollEngine.PayrollConsole.Commands;
 // ReSharper disable once UnusedType.Global
 public sealed class HelpCommand : CommandBase<HelpParameters>
 {
-    /// <summary>Sho help</summary>
+    /// <summary>Show help</summary>
     /// <param name="context">Command execution context</param>
     /// <param name="parameters">Command parameters</param>
     /// <returns>Program exit ok, 0 on success</returns>

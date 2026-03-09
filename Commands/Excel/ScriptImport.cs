@@ -6,8 +6,13 @@ using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Imports <see cref="Client.Model.Script"/> objects from the script Excel worksheet.</summary>
 internal static class ScriptImport
 {
+    /// <summary>Imports scripts from the <see cref="SheetSpecification.Script"/> sheet.</summary>
+    /// <param name="workbook">The source workbook.</param>
+    /// <returns>The imported scripts, or <c>null</c> if the sheet is missing or empty.</returns>
+    /// <exception cref="PayrollException">Thrown when required columns are missing, names are empty, or duplicates are found.</exception>
     internal static List<Client.Model.Script> Import(IWorkbook workbook)
     {
         // worksheet

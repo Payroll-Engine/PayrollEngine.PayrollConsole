@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
@@ -19,10 +19,7 @@ internal sealed class ReportTemplateSheetColumns
 
     internal ReportTemplateSheetColumns(ISheet sheet)
     {
-        if (sheet == null)
-        {
-            throw new ArgumentNullException(nameof(sheet));
-        }
+        ArgumentNullException.ThrowIfNull(sheet);
         CreatedColumn = sheet.GetHeaderColumn(nameof(ReportTemplate.Created));
         ReportColumn = sheet.GetHeaderColumn(SheetSpecification.ReportRefName);
         NameColumn = sheet.GetHeaderColumn(nameof(ReportTemplate.Name));

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NPOI.SS.UserModel;
@@ -23,10 +23,7 @@ internal sealed class LookupValueSheetColumns
 
     internal LookupValueSheetColumns(ISheet sheet)
     {
-        if (sheet == null)
-        {
-            throw new ArgumentNullException(nameof(sheet));
-        }
+        ArgumentNullException.ThrowIfNull(sheet);
 
         CreatedColumn = sheet.GetHeaderColumn(nameof(LookupValue.Created));
         LookupColumn = sheet.GetHeaderColumn(SheetSpecification.LookupRefName);

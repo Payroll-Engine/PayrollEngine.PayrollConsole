@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Maps the <see cref="SheetSpecification.Lookup"/> Excel sheet columns to their indexes.</summary>
 internal sealed class LookupSheetColumns
 {
     internal int? CreatedColumn { get; }
@@ -18,10 +19,7 @@ internal sealed class LookupSheetColumns
 
     internal LookupSheetColumns(ISheet sheet)
     {
-        if (sheet == null)
-        {
-            throw new ArgumentNullException(nameof(sheet));
-        }
+        ArgumentNullException.ThrowIfNull(sheet);
         CreatedColumn = sheet.GetHeaderColumn(nameof(Lookup.Created));
         NameColumn = sheet.GetHeaderColumn(nameof(Lookup.Name));
         NameLocalizationsColumns = sheet.GetHeaderMultiColumns(nameof(Lookup.Name));

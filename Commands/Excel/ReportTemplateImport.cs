@@ -6,8 +6,14 @@ using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Imports <see cref="ReportTemplate"/> objects from the report template Excel worksheet.</summary>
 internal static class ReportTemplateImport
 {
+    /// <summary>Imports report templates from the <see cref="SheetSpecification.ReportTemplate"/> sheet
+    /// into the corresponding reports.</summary>
+    /// <param name="workbook">The source workbook.</param>
+    /// <param name="reports">The previously imported reports to populate with templates.</param>
+    /// <exception cref="PayrollException">Thrown when referenced reports are unknown, names are empty, or duplicates are found.</exception>
     internal static void Import(IWorkbook workbook, List<ReportSet> reports)
     {
         //  worksheet

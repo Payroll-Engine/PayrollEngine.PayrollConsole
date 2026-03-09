@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using NPOI.SS.UserModel;
@@ -44,10 +44,7 @@ internal static class WorkbookExtensions
 
         private T GetCellValue<T>(string address)
         {
-            if (string.IsNullOrWhiteSpace(address))
-            {
-                throw new ArgumentException("Invalid cell address.", nameof(address));
-            }
+            ArgumentException.ThrowIfNullOrWhiteSpace(address);
 
             var sheetIndex = address.IndexOf("!", StringComparison.Ordinal);
             if (sheetIndex < 0)

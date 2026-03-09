@@ -6,14 +6,21 @@ using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Imports <see cref="LookupValue"/> objects from lookup value Excel worksheets.</summary>
 internal static class LookupValueImport
 {
+    /// <summary>Imports lookup values from the default <see cref="SheetSpecification.LookupValue"/> sheet
+    /// and from individual <c>Lookup.*</c> sheets into the corresponding lookups.</summary>
+    /// <param name="workbook">The source workbook.</param>
+    /// <param name="lookups">The previously imported lookups to populate with values.</param>
+    /// <exception cref="PayrollException">Thrown when referenced lookups are unknown, keys are missing, or duplicates are found.</exception>
     internal static void Import(IWorkbook workbook, List<LookupSet> lookups)
     {
         ImportDefaultSheet(workbook, lookups);
         ImportLookupSheets(workbook, lookups);
     }
 
+    /// <summary>Imports lookup values from individual <c>Lookup.*</c> named sheets.</summary>
     private static void ImportLookupSheets(IWorkbook workbook, List<LookupSet> lookups)
     {
         // process all Lookup.* sheets

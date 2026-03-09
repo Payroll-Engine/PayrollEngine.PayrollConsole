@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
@@ -26,10 +26,7 @@ internal sealed class ReportSheetColumns
 
     internal ReportSheetColumns(ISheet sheet)
     {
-        if (sheet == null)
-        {
-            throw new ArgumentNullException(nameof(sheet));
-        }
+        ArgumentNullException.ThrowIfNull(sheet);
         CreatedColumn = sheet.GetHeaderColumn(nameof(Report.Created));
         NameColumn = sheet.GetHeaderColumn(nameof(Report.Name));
         NameLocalizationsColumns = sheet.GetHeaderMultiColumns(nameof(Report.Name));

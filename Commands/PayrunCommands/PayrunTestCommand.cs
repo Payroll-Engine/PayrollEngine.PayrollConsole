@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Exchange;
@@ -74,7 +75,7 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
                 context.Console.DisplayTextLine("Running test...");
 
                 // load test data
-                var exchange = await FileReader.Read<Exchange>(testFileName);
+                var exchange = await FileReader.ReadAsync<Exchange>(testFileName);
                 if (exchange == null)
                 {
                     throw new PayrollException($"Invalid case test file {testFileName}.");
@@ -95,7 +96,12 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
                     settings: settings,
                     importMode: parameters.ImportMode,
                     runMode: parameters.RunMode);
+
+                using var cts = new CancellationTokenSource();
+                var progressTask = RunProgressAsync(context.Console, cts.Token);
                 var results = await testRunner.TestAllAsync(exchange);
+                await cts.CancelAsync();
+                await progressTask;
 
                 // display test results
                 context.Console.DisplayNewLine();

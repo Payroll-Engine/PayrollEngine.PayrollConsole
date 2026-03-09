@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
@@ -14,10 +14,7 @@ internal sealed class ScriptSheetColumns
 
     internal ScriptSheetColumns(ISheet sheet)
     {
-        if (sheet == null)
-        {
-            throw new ArgumentNullException(nameof(sheet));
-        }
+        ArgumentNullException.ThrowIfNull(sheet);
         CreatedColumn = sheet.GetHeaderColumn(nameof(Client.Model.Script.Created));
         NameColumn = sheet.GetHeaderColumn(nameof(Client.Model.Script.Name));
         FunctionTypesColumn = sheet.GetHeaderColumn(nameof(Client.Model.Script.FunctionTypes));

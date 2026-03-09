@@ -1,5 +1,6 @@
 ﻿namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Defines the column names for the employee case value Excel worksheet.</summary>
 internal static class SpecificationEmployeeCaseValue
 {
     internal static readonly string Identifier = "Identifier";

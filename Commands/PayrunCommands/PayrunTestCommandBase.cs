@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Model;
 using PayrollEngine.Client.Test.Payrun;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.PayrollConsole.Commands.PayrunCommands;
 
@@ -14,10 +16,35 @@ namespace PayrollEngine.PayrollConsole.Commands.PayrunCommands;
 /// </summary>
 internal abstract class PayrunTestCommandBase : TestCommandBase
 {
+    /// <summary>Show a waiting indicator every 10 seconds until cancelled</summary>
+    protected static async Task RunProgressAsync(ICommandConsole console, CancellationToken cancellationToken)
+    {
+        const int intervalMs = 10000;
+        const int tickMs = 500;
+        var elapsed = 0;
+        try
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(tickMs, cancellationToken);
+                elapsed += tickMs;
+                if (elapsed % intervalMs == 0)
+                {
+                    console.DisplayTextLine($"  ... waiting ({elapsed / 1000}s)");
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // expected on cancellation
+        }
+    }
+
     protected void DisplayTestResults(ILogger logger, ICommandConsole console, string fileName,
         TestDisplayMode displayMode, Dictionary<Tenant, List<PayrollTestResult>> tenantResults)
     {
         var culture = CultureInfo.GetCultureInfo("en-US");
+        var duration = TimeSpan.Zero;
         foreach (var tenantResult in tenantResults)
         {
             var tenant = tenantResult.Key;
@@ -39,7 +66,7 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
                     $"{result.PayrunJob.Name} -> Retro {result.PayrunJob.PeriodStart.ToString("MMM yyyy", culture)}" :
                     result.PayrunJob.Name;
                 logger.Information($"{separator} {result.Tenant.Identifier} - {result.Employee.Identifier}: " +
-                                $"{jobName} [{result.TotalResultCount} results in {jobPeriod.Duration.TotalMilliseconds:#0} ms] {separator}");
+                                $"{jobName} [{result.TotalResultCount} result{(results.Count == 1 ? "" : "s")} in {jobPeriod.Duration.TotalMilliseconds:#0} ms] {separator}");
 
                 // wage type result
                 var failedWageTypeCount = DisplayWageTypeResults(logger, console, result, displayMode);
@@ -73,7 +100,12 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
             }
 
             // statistics
-            DisplayStatistics(console, fileName, results, durations, errorCount);
+            duration += DisplayStatistics(console, fileName, results, durations, errorCount);
+        }
+
+        if (tenantResults.Count > 1)
+        {
+            console.DisplayTextLine($"Overall duration: {duration.ToReadableString()}");
         }
     }
 
@@ -120,10 +152,10 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
                         failedCollectorCount++;
                         logger.Error(message);
                     }
-                    else if (!collectorResult.ValidCulture())
+                    else if (!collectorCustomResult.ValidCulture())
                     {
-                        message = $"-> Collector {collectorCustomResult.ExpectedResult.CollectorName}: expected={collectorCustomResult.ExpectedResult.Culture}, actual={collectorCustomResult.ActualResult?.Culture}";
-                        // failed collector result test
+                        message = $"-> Collector custom result {collectorCustomResult.ExpectedResult.CollectorName}: expected={collectorCustomResult.ExpectedResult.Culture}, actual={collectorCustomResult.ActualResult?.Culture}";
+                        // failed collector custom result test
                         failedCollectorCount++;
                         logger.Error(message);
                     }
@@ -231,12 +263,12 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
         return failedPayrunResultCount;
     }
 
-    private static void DisplayStatistics(ICommandConsole console, string fileName,
+    private static TimeSpan DisplayStatistics(ICommandConsole console, string fileName,
         List<PayrollTestResult> results, List<TimeSpan> durations, int errorCount)
     {
         if (results.Count <= 1)
         {
-            return;
+            return TimeSpan.Zero;
         }
 
         // info
@@ -289,5 +321,7 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
             console.DisplayErrorLine($"Errors        {errorCount}");
         }
         console.DisplayTextLine(new string('-', title.Length));
+
+        return duration;
     }
 }

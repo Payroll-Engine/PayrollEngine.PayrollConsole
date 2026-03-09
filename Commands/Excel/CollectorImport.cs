@@ -6,8 +6,13 @@ using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
+/// <summary>Imports <see cref="Collector"/> objects from the collector Excel worksheet.</summary>
 internal static class CollectorImport
 {
+    /// <summary>Imports collectors from the <see cref="SheetSpecification.Collector"/> sheet.</summary>
+    /// <param name="workbook">The source workbook.</param>
+    /// <returns>The imported collectors, or <c>null</c> if the sheet is missing or empty.</returns>
+    /// <exception cref="PayrollException">Thrown when required columns are missing, names are empty, or duplicates are found.</exception>
     internal static List<Collector> Import(IWorkbook workbook)
     {
         // worksheet
