@@ -151,6 +151,14 @@ Executes the payrun via `PayrunJobService.StartJobAsync<PayrunJob>()` and measur
 | 3 | Repetitions | No | 3 | Number of measured runs |
 | 4 | ResultFile | No | LoadTestResults.csv | Output CSV path |
 
+**Toggles/Options:**
+
+| Name | Description |
+|------|-------------|
+| `/ExcelReport` | Also write an Excel report (.xlsx) alongside the CSV (derived filename) |
+| `/ExcelFile=<path>` | Explicit Excel output path (also enables Excel report) |
+| `/ParallelSetting=<v>` | Backend `MaxParallelEmployees` value — documented in the Excel setup sheet |
+
 **Timing metrics:**
 
 | Metric | Source | Description |
@@ -164,6 +172,8 @@ Executes the payrun via `PayrunJobService.StartJobAsync<PayrunJob>()` and measur
 ```shell
 PayrunLoadTest LoadTest100\Payrun-Invocation.json 100
 PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv
+PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv /ExcelReport
+PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv /ExcelFile=Reports\LT1000.xlsx /ParallelSetting=half
 ```
 
 ### LoadTestCleanup
@@ -255,10 +265,12 @@ LoadTestSetupCases LoadTest100
 ### Run100.pecmd (measured)
 
 ```
-PayrunLoadTest LoadTest100\Payrun-Invocation.json 100 3 Results\LoadTest100.csv
+PayrunLoadTest LoadTest100\Payrun-Invocation.json 100 3 Results\LoadTest100.csv /ExcelReport
 ```
 
-## CSV Report Format
+## Report Formats
+
+### CSV Report
 
 ```csv
 Timestamp;Run;Period;EmployeeCount;ClientDuration_ms;ServerJobDuration_ms;ServerAvgMs_PerEmployee
@@ -267,6 +279,16 @@ Timestamp;Run;Period;EmployeeCount;ClientDuration_ms;ServerJobDuration_ms;Server
 ...
 2026-03-01 10:15:30;1;2023-02;100;1100;950;9.5
 ```
+
+### Excel Report
+
+Enabled via `/ExcelReport` (derived filename) or `/ExcelFile=<path>`. Contains three sheets:
+
+| Sheet | Content |
+|:--|:--|
+| **Setup** | Machine name, OS, `ProcessorCount`, `MaxParallelEmployees`, test parameters, median summary |
+| **Results** | All rows identical to CSV — formatted, with AutoFilter and freeze pane |
+| **Avg ms/Employee** | Pivot: Period × Run; outliers (>2× median) highlighted in yellow/red |
 
 ## Expected Scaling (Estimate)
 
@@ -342,5 +364,6 @@ Commands/
     PayrunLoadTestCommand.cs          # PayrunLoadTest
     PayrunLoadTestParameters.cs
     PayrunLoadTestResult.cs
+    PayrunLoadTestExcelWriter.cs      # Excel report writer
     README.md
 ```

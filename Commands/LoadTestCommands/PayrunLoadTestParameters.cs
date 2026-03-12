@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using PayrollEngine.Client.Command;
 
 namespace PayrollEngine.PayrollConsole.Commands.LoadTestCommands;
@@ -18,8 +19,35 @@ public class PayrunLoadTestParameters : ICommandParameters
     /// <summary>Output CSV path for results</summary>
     public string ResultFile { get; init; }
 
+    /// <summary>Output Excel path for results (optional, enables Excel report)</summary>
+    public string ExcelFile { get; init; }
+
+    /// <summary>Backend MaxParallelEmployees value for documentation in the Excel report</summary>
+    public string ParallelSetting { get; init; }
+
+    /// <summary>True if an Excel report should be written</summary>
+    public bool ExcelReport => !string.IsNullOrWhiteSpace(ExcelFile);
+
     /// <inheritdoc />
     public Type[] Toggles => null;
+
+    private static string ResolveExcelFile(CommandLineParser parser)
+    {
+        // explicit path: excelFile:path/to/report.xlsx
+        var explicit_ = parser.GetByName(nameof(ExcelFile));
+        if (!string.IsNullOrWhiteSpace(explicit_))
+        {
+            return explicit_;
+        }
+
+        // toggle only: /ExcelReport → derive from CSV path
+        if (parser.GetToggles().Any(t => string.Equals(t.TrimStart('/', '-'), "ExcelReport", StringComparison.OrdinalIgnoreCase)))
+        {
+            var csv = parser.Get(5, nameof(ResultFile)) ?? "LoadTestResults.csv";
+            return System.IO.Path.ChangeExtension(csv, ".xlsx");
+        }
+        return null;
+    }
 
     /// <inheritdoc />
     public string Test()
@@ -42,6 +70,8 @@ public class PayrunLoadTestParameters : ICommandParameters
             InvocationFile = parser.Get(2, nameof(InvocationFile)),
             EmployeeCount = int.TryParse(parser.Get(3, nameof(EmployeeCount)), out var c) ? c : 0,
             Repetitions = int.TryParse(parser.Get(4, nameof(Repetitions)), out var r) && r > 0 ? r : 3,
-            ResultFile = parser.Get(5, nameof(ResultFile)) ?? "LoadTestResults.csv"
+            ResultFile = parser.Get(5, nameof(ResultFile)) ?? "LoadTestResults.csv",
+            ExcelFile = ResolveExcelFile(parser),
+            ParallelSetting = parser.GetByName(nameof(ParallelSetting))
         };
 }

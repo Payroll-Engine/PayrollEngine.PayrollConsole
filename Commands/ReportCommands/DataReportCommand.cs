@@ -200,7 +200,6 @@ internal sealed class DataReportCommand : CommandBase<DataReportParameters>
         console.DisplayTextLine("          6. report parameter file with a json string/string dictionary (optional) [ParametersFile]");
         console.DisplayTextLine("          7. report culture [Culture]");
         console.DisplayTextLine("      Toggles:");
-        console.DisplayTextLine("          language (default: english");
         console.DisplayTextLine("          post action: /noaction or /shellopen (default: noaction)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          DataReport MyReport.data.json MyTenant MyUser MyRegulation MyReport /german");

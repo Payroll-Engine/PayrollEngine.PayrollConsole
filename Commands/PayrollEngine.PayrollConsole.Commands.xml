@@ -1134,6 +1134,12 @@
         <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
             <inheritdoc />
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestExcelWriter">
+            <summary>Writes payrun load test results to an Excel workbook</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestExcelWriter.Write">
+            <summary>Write the Excel report</summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters">
             <summary>Payrun load test parameters</summary>
         </member>
@@ -1148,6 +1154,15 @@
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ResultFile">
             <summary>Output CSV path for results</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ExcelFile">
+            <summary>Output Excel path for results (optional, enables Excel report)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ParallelSetting">
+            <summary>Backend MaxParallelEmployees value for documentation in the Excel report</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ExcelReport">
+            <summary>True if an Excel report should be written</summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.Toggles">
             <inheritdoc />
@@ -2367,6 +2382,76 @@
             <summary>
             Parse command parameters
             </summary>
+            <param name="parser">Parameter parser</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildCommand">
+             <summary>
+             Report build command — executes a report and exports the resulting DataSet as a
+             schema document for use during report template design.
+            
+             Without TemplateFile: generates a new schema document from the DataSet.
+             With TemplateFile (CI mode): updates the schema section of the existing template,
+             preserving all design elements. Useful when regulation changes add or remove tables.
+             </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters)">
+            <summary>Build report schema document</summary>
+            <param name="context">Command execution context</param>
+            <param name="parameters">Command parameters</param>
+            <returns>Program exit code, 0 on success</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters">
+            <summary>Report build command parameters</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters.DefaultParameterFileName">
+            <summary>Default parameter file name</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters.Tenant">
+            <summary>Tenant</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters.User">
+            <summary>User</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters.Regulation">
+            <summary>Regulation</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters.Report">
+            <summary>Report</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters.TemplateFile">
+            <summary>
+            Existing FastReport template file (.frx).
+            When provided, the command updates the Dictionary section of this template
+            and writes the result to the target file (CI mode).
+            When omitted, a new skeleton .frx is generated.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters.ParameterFile">
+            <summary>Parameter file</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters.Culture">
+            <summary>Culture</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters.TargetFile">
+            <summary>Target file</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters.PostAction">
+            <summary>Report post action (default: none)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportBuildParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>Parse command parameters</summary>
             <param name="parser">Parameter parser</param>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportCommand">

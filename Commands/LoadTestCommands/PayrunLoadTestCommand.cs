@@ -135,6 +135,14 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
             // write CSV report
             WriteResults(parameters.ResultFile, allResults);
 
+            // write Excel report (optional)
+            if (parameters.ExcelReport)
+            {
+                var excelPath = Path.ChangeExtension(parameters.ResultFile, ".xlsx");
+                new PayrunLoadTestExcelWriter(excelPath, parameters, allResults).Write();
+                console.DisplayTextLine($"Excel written to   {Path.GetFullPath(excelPath!)}");
+            }
+
             // display summary (median of total server duration per run)
             var runTotals = allResults
                 .GroupBy(r => r.RunNumber)
@@ -151,7 +159,7 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
                 $"Median: {median.ServerTotal}ms total | " +
                 $"{median.EmployeeTotal} employees | " +
                 $"{(median.EmployeeTotal > 0 ? median.ServerTotal / (double)median.EmployeeTotal : 0):F1}ms/employee");
-            console.DisplayTextLine($"Results written to {Path.GetFullPath(parameters.ResultFile)}");
+            console.DisplayTextLine($"Results written to {Path.GetFullPath(parameters.ResultFile!)}");
 
             return (int)ProgramExitCode.Ok;
         }
@@ -266,8 +274,15 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
         console.DisplayTextLine("          2. Expected employee count [EmployeeCount]");
         console.DisplayTextLine("          3. Number of repetitions (optional, default: 3) [Repetitions]");
         console.DisplayTextLine("          4. Output CSV path (optional, default: LoadTestResults.csv) [ResultFile]");
+        console.DisplayTextLine("      Toggles:");
+        console.DisplayTextLine("          /ExcelReport             Also write Excel alongside CSV (derived filename)");
+        console.DisplayTextLine("      Options:");
+        console.DisplayTextLine("          /ExcelFile=<path>        Explicit Excel output path (also enables Excel report)");
+        console.DisplayTextLine("          /ParallelSetting=<v>     Backend MaxParallelEmployees value (for Excel setup sheet)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          PayrunLoadTest LoadTest100\\Payrun-Invocation.json 100");
         console.DisplayTextLine("          PayrunLoadTest LoadTest1000\\Payrun-Invocation.json 1000 5 Results\\LT1000.csv");
+        console.DisplayTextLine("          PayrunLoadTest LoadTest1000\\Payrun-Invocation.json 1000 5 Results\\LT1000.csv /ExcelReport");
+        console.DisplayTextLine("          PayrunLoadTest LoadTest1000\\Payrun-Invocation.json 1000 5 Results\\LT1000.csv /ExcelFile=Reports\\LT1000.xlsx /ParallelSetting=half");
     }
 }

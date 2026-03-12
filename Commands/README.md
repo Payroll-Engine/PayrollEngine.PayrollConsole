@@ -515,6 +515,40 @@ Report MyTenant MyUser MyRegulation MyReport MyParameters.json /french /xml
 Report MyTenant MyUser MyRegulation MyReport /pdf targetFile:MyReport.pdf
 ```
 
+### ReportBuild
+Execute a report and generate a schema document for report template design.
+
+Without `TemplateFile`, generates a new schema document from the DataSet. With `TemplateFile` (CI mode), updates the schema section of the existing template, preserving all design elements. The output format is determined by the document service — the command is format-agnostic.
+
+| # | Argument     | Description                                              |
+|---|:-------------|:---------------------------------------------------------|
+| 1 | `Tenant`     | Tenant identifier                                        |
+| 2 | `User`       | User identifier                                          |
+| 3 | `Regulation` | Regulation name                                          |
+| 4 | `Report`     | Report name                                              |
+
+**Named:**
+
+| Name            | Description                                                                              |
+|:----------------|:-----------------------------------------------------------------------------------------|
+| `TemplateFile`  | Existing template file for CI schema update (optional); output inherits its extension    |
+| `ParameterFile` | Report parameter file (JSON string/string dictionary, optional)                          |
+| `Culture`       | Report culture                                                                            |
+| `TargetFile`    | Target file name (default: `{ReportName}_{Timestamp}[{TemplateExtension}]`)              |
+
+**Toggles:** post action: `/noaction` or `/shellopen` (default: `noaction`)
+
+**Examples:**
+```cmd
+ReportBuild MyTenant MyUser MyRegulation MyReport
+ReportBuild MyTenant MyUser MyRegulation MyReport /shellopen
+ReportBuild MyTenant MyUser MyRegulation MyReport templateFile:Report.frx
+ReportBuild MyTenant MyUser MyRegulation MyReport parameterFile:parameters.json
+ReportBuild MyTenant MyUser MyRegulation MyReport targetFile:MyReport.frx
+```
+
+---
+
 ### ReportTest
 Test report output data.
 
@@ -693,10 +727,20 @@ Execute payrun and measure performance. Supports multiple invocations (periods) 
 | 3 | `Repetitions`    | Number of measured runs (optional, default: 3)       |
 | 4 | `ResultFile`     | Output CSV path (optional, default: LoadTestResults.csv) |
 
+**Toggles/Named:**
+
+| Name | Description |
+|:-----|:------------|
+| `/ExcelReport` | Also write an Excel report (.xlsx) alongside the CSV (derived filename) |
+| `excelFile:<path>` | Explicit Excel output path (also enables Excel report) |
+| `parallelSetting:<v>` | Backend `MaxParallelEmployees` value — documented in the Excel setup sheet |
+
 **Examples:**
 ```cmd
 PayrunLoadTest LoadTest100\Payrun-Invocation.json 100
 PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv
+PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv /ExcelReport
+PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv excelFile:Reports\LT1000.xlsx parallelSetting:half
 ```
 
 ### LoadTestCleanup

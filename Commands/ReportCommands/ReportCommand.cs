@@ -333,8 +333,8 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
         ReportParameters parameters, Dictionary<string, object> mergeParameters)
     {
 
-        var merge = new DataMerge();
-        if (!merge.IsMergeable(parameters.DocumentType))
+        var documentService = new DocumentService();
+        if (!documentService.IsMergeable(parameters.DocumentType))
         {
             console.WriteErrorLine($" report {report.Name}: merge of {parameters.DocumentType} is not supported");
             return null;
@@ -343,17 +343,12 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
         // target file
         var targetFileName = parameters.TargetFile ??
                              $"{report.Name}_{FileTool.CurrentTimeStamp()}{parameters.DocumentType.GetFileExtension()}";
-        // cleanup
-        if (File.Exists(targetFileName))
-        {
-            File.Delete(targetFileName);
-        }
 
-        MemoryStream resultStream;
+        Stream resultStream;
         if (parameters.DocumentType == DocumentType.Excel)
         {
             // excel report
-            resultStream = merge.ExcelMerge(dataSet, documentMetadata, mergeParameters);
+            resultStream = await documentService.ExcelMergeAsync(dataSet, documentMetadata, mergeParameters);
         }
         else
         {
@@ -367,7 +362,7 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
 
             // report merge into stream
             var contentStream = new MemoryStream(Encoding.ASCII.GetBytes(template.Content));
-            resultStream = merge.Merge(contentStream, dataSet, parameters.DocumentType, documentMetadata, mergeParameters);
+            resultStream = await documentService.MergeAsync(contentStream, dataSet, parameters.DocumentType, documentMetadata, mergeParameters);
         }
 
         // file save
@@ -544,7 +539,6 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
         console.DisplayTextLine("          6. report culture [Culture]");
         console.DisplayTextLine("          7. target file name [TargetFile]");
         console.DisplayTextLine("      Toggles:");
-        console.DisplayTextLine("          language (default: english");
         console.DisplayTextLine("          document type: /word, /excel, /pdf, /xml, /xmlraw (default: pdf)");
         console.DisplayTextLine("          post action: /noaction or /shellopen (default: noaction)");
         console.DisplayTextLine("      Examples:");
