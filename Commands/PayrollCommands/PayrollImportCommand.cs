@@ -86,30 +86,42 @@ internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters
 
     private async Task<int> ImportFileAsync(CommandContext context, PayrollImportParameters parameters, string fileName)
     {
-        // read source file
-        var exchange = await FileReader.ReadAsync<Exchange>(fileName);
-
-        // apply namespace
-        if (!string.IsNullOrWhiteSpace(parameters.Namespace))
+        // resolve full path and set CWD to the file's directory so that relative
+        // attachment paths (e.g. Report.frx) are resolved correctly by AttachmentsLoader
+        fileName = Path.GetFullPath(fileName);
+        var previousDirectory = Directory.GetCurrentDirectory();
+        Directory.SetCurrentDirectory(Path.GetDirectoryName(fileName)!);
+        try
         {
-            exchange.ChangeNamespace(parameters.Namespace);
-        }
+            // read source file
+            var exchange = await FileReader.ReadAsync<Exchange>(fileName);
 
-        // options
-        var options = string.IsNullOrWhiteSpace(parameters.OptionsFileName)
-            ? new ExchangeImportOptions()
-            : GetImportOptions(context.Console, parameters.OptionsFileName);
-        if (options == null)
+            // apply namespace
+            if (!string.IsNullOrWhiteSpace(parameters.Namespace))
+            {
+                exchange.ChangeNamespace(parameters.Namespace);
+            }
+
+            // options
+            var options = string.IsNullOrWhiteSpace(parameters.OptionsFileName)
+                ? new ExchangeImportOptions()
+                : GetImportOptions(context.Console, parameters.OptionsFileName);
+            if (options == null)
+            {
+                return (int)ProgramExitCode.InvalidOptions;
+            }
+
+            // import tenant
+            var import = new ExchangeImport(context.HttpClient, exchange, ScriptParser, options, parameters.ImportMode);
+            await import.ImportAsync();
+
+            context.Console.DisplaySuccessLine($"Payroll successfully imported from {fileName}");
+            return (int)ProgramExitCode.Ok;
+        }
+        finally
         {
-            return (int)ProgramExitCode.InvalidOptions;
+            Directory.SetCurrentDirectory(previousDirectory);
         }
-
-        // import tenant
-        var import = new ExchangeImport(context.HttpClient, exchange, ScriptParser, options, parameters.ImportMode);
-        await import.ImportAsync();
-
-        context.Console.DisplaySuccessLine($"Payroll successfully imported from {fileName}");
-        return (int)ProgramExitCode.Ok;
     }
 
     private ExchangeImportOptions GetImportOptions(ICommandConsole console, string optionsFileName)

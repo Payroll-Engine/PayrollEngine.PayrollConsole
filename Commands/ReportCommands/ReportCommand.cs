@@ -361,7 +361,7 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
             }
 
             // report merge into stream
-            var contentStream = new MemoryStream(Encoding.ASCII.GetBytes(template.Content));
+            var contentStream = new MemoryStream(Encoding.UTF8.GetBytes(template.Content));
             resultStream = await documentService.MergeAsync(contentStream, dataSet, parameters.DocumentType, documentMetadata, mergeParameters);
         }
 
@@ -421,7 +421,7 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
                 console.DisplayText("Transforming raw XML...");
 
                 // style sheet
-                await using var xslStream = new MemoryStream(Encoding.ASCII.GetBytes(template.Content));
+                await using var xslStream = new MemoryStream(Encoding.UTF8.GetBytes(template.Content));
                 using var xslReader = XmlReader.Create(xslStream);
                 XslCompiledTransform xslt = new();
                 xslt.Load(xslReader);
@@ -447,7 +447,7 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
                     console.DisplayNewLine();
                     console.DisplayText("Validating XML...");
 
-                    var xsdStream = new MemoryStream(Encoding.ASCII.GetBytes(template.Schema));
+                    var xsdStream = new MemoryStream(Encoding.UTF8.GetBytes(template.Schema));
                     using var xmlReader = XmlReader.Create(xsdStream);
 
                     var document = new XmlDocument();

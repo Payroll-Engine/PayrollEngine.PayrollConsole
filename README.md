@@ -11,6 +11,28 @@ The application is controlled by two types of command line arguments:
 
 ---
 
+## Contents
+
+- [Prerequisites](#prerequisites)
+- [Commands](#commands)
+- [Command Files](#command-files)
+  - [Command files access path](#command-files-access-path)
+  - [Command file parameters](#command-file-parameters)
+  - [File Type Registration](#file-type-registration)
+  - [Global Toggles](#global-toggles)
+- [Application Extensions](#application-extensions)
+- [Application Configuration](#application-configuration)
+  - [Backend API Configuration](#backend-api-configuration)
+- [API Key](#api-key)
+- [Application Logs](#application-logs)
+- [Docker Support](#docker-support)
+- [Build](#build)
+- [Solution Projects](#solution-projects)
+- [Third Party Components](#third-party-components)
+- [See Also](#see-also)
+
+---
+
 ## Prerequisites
 
 | Requirement | Minimum |

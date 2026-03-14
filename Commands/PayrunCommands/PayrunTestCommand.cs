@@ -97,9 +97,13 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
                     importMode: parameters.ImportMode,
                     runMode: parameters.RunMode);
 
+                // import test data (no progress indicator during import)
+                await testRunner.ImportAsync(exchange);
+
+                // run payrun test with progress indicator
                 using var cts = new CancellationTokenSource();
                 var progressTask = RunProgressAsync(context.Console, cts.Token);
-                var results = await testRunner.TestAllAsync(exchange);
+                var results = await testRunner.TestAsync(exchange);
                 await cts.CancelAsync();
                 await progressTask;
 
