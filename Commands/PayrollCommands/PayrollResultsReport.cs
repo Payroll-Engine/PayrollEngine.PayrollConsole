@@ -160,7 +160,6 @@ public class PayrollResultsReport(PayrollHttpClient httpClient, int topFilter, R
                 {
                     Console.WriteLine($"Forecast         {payrunJob.Forecast}");
                 }
-                Console.WriteLine($"Culture          {payrunJob.Culture}");
                 Console.WriteLine($"Period           {payrunJob.PeriodName} ({payrunJob.CycleName})");
                 Console.WriteLine($"Job status       {payrunJob.JobStatus}");
                 Console.WriteLine($"Job start        {payrunJob.JobStart.ToUtc()}");
