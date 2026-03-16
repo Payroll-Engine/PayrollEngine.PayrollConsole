@@ -15,6 +15,7 @@ The application is controlled by two types of command line arguments:
 
 - [Prerequisites](#prerequisites)
 - [Commands](#commands)
+- [Payrun Test Statistics](#payrun-test-statistics)
 - [Command Files](#command-files)
   - [Command files access path](#command-files-access-path)
   - [Command file parameters](#command-file-parameters)
@@ -143,6 +144,40 @@ The `Help` command describes the commands and their parameters:
 ```cmd
 PayrollConsole Help PayrollImport
 ```
+
+---
+
+## Payrun Test Statistics
+
+When a `PayrunTest`, `PayrunEmployeeTest`, or `PayrunEmployeePreviewTest` run covers more than one payrun job, the console prints a statistics block after the individual job results. The block contains the key metrics used in the payroll industry to assess engine performance.
+
+```
+---------- Test statistics ----------
+File          Test.pt.json
+Jobs          12
+Results       240
+Duration      4.2 sec
+Fastest       83 ms - MyPayrun.Jan24
+Slowest       1204 ms - MyPayrun.Mar24
+ms/Employee   350 ms
+Employees/h   10,285
+Errors        2
+-------------------------------------
+```
+
+| Field | Description |
+|:--|:--|
+| `File` | Test file name |
+| `Jobs` | Number of payrun jobs executed |
+| `Results` | Total number of wage type and collector assertions |
+| `Duration` | Total wall-clock time of all jobs |
+| `Fastest` | Shortest job duration with job name |
+| `Slowest` | Longest job duration with job name (only shown when more than 2 jobs) |
+| `ms/Employee` | Average calculation time per employee-period — the primary payroll benchmark. Each `PayrollTestResult` represents one employee × one payroll period, so this is `total duration / result count`. |
+| `Employees/h` | System throughput derived as `3 600 000 / ms/Employee` — the standard capacity metric in payroll operations, indicating how many employees can be processed per hour at the measured speed. |
+| `Errors` | Number of failed assertions (only shown when > 0) |
+
+> `ms/Employee` and `Employees/h` are the two standard payroll-industry benchmarks: one measures latency per employee, the other measures system capacity.
 
 ---
 

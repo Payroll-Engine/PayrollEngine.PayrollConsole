@@ -296,25 +296,18 @@ internal abstract class PayrunTestCommandBase : TestCommandBase
             }
         }
 
-        var average = duration.TotalMilliseconds / results.Count;
-        console.DisplayTextLine($"Average       {average:#0} ms");
-        if (results.Count > 2 && slowestIndex >= 0)
-        {
-            var slowestResult = results[slowestIndex];
-            var slowestDuration = durations[slowestIndex];
-            // remove the slowest job
-            results.Remove(slowestResult);
-            durations.Remove(slowestDuration);
-            duration = durations.Aggregate(TimeSpan.Zero, (subtotal, t) => subtotal.Add(t));
-            var average2nd = duration.TotalMilliseconds / results.Count;
-
-            // show 2+ average on a difference of 20 percent
-            var range = average / 5;
-            if (Math.Abs(average - average2nd) > range)
-            {
-                console.DisplayTextLine($"Average 2+    {duration.TotalMilliseconds / results.Count:#0} ms");
-            }
-        }
+        // ms/Employee: avg payroll calculation time per employee across all periods.
+        // A payrun job processes N employees concurrently — its JobStart/JobEnd duration
+        // is shared by all N PayrollTestResults of that job. Summing durations naively
+        // counts the same job duration N times. Correct denominator:
+        //   unique job wall-clock time / total employee-period results.
+        var uniqueJobMs = results
+            .GroupBy(r => r.PayrunJob.Id)
+            .Sum(g => new DatePeriod(g.First().PayrunJob.JobStart, g.First().PayrunJob.JobEnd).Duration.TotalMilliseconds);
+        var msPerEmployee = uniqueJobMs / results.Count;
+        console.DisplayTextLine($"ms/Employee   {msPerEmployee:#0} ms");
+        var employeesPerHour = (int)Math.Round(3_600_000.0 / msPerEmployee);
+        console.DisplayTextLine($"Employees/h   {employeesPerHour:#,0}");
 
         if (errorCount > 0)
         {
