@@ -20,19 +20,19 @@ public class PayrunLoadTestParameters : ICommandParameters
     public string ResultFile { get; init; }
 
     /// <summary>Output Excel path for results (optional, enables Excel report)</summary>
-    public string ExcelFile { get; init; }
+    public string ExcelReport { get; init; }
 
     /// <summary>Output Markdown path for results (optional, enables Markdown report)</summary>
-    public string MarkdownFile { get; init; }
+    public string MarkdownReport { get; init; }
 
     /// <summary>Backend MaxParallelEmployees value for documentation in the Excel report</summary>
     public string ParallelSetting { get; init; }
 
     /// <summary>True if an Excel report should be written</summary>
-    public bool ExcelReport => !string.IsNullOrWhiteSpace(ExcelFile);
+    public bool HasExcelReport => !string.IsNullOrWhiteSpace(ExcelReport);
 
     /// <summary>True if a Markdown report should be written</summary>
-    public bool MarkdownReport => !string.IsNullOrWhiteSpace(MarkdownFile);
+    public bool HasMarkdownReport => !string.IsNullOrWhiteSpace(MarkdownReport);
 
     /// <inheritdoc />
     public Type[] Toggles => null;
@@ -40,14 +40,14 @@ public class PayrunLoadTestParameters : ICommandParameters
     private static string ResolveExcelFile(CommandLineParser parser)
     {
         // explicit path: /ExcelFile=path/to/report.xlsx
-        var explicit_ = parser.GetByName(nameof(ExcelFile));
+        var explicit_ = parser.GetByName(nameof(ExcelReport));
         if (!string.IsNullOrWhiteSpace(explicit_))
         {
             return explicit_;
         }
 
         // toggle only: /ExcelReport → derive from CSV path
-        if (parser.GetToggles().Any(t => string.Equals(t.TrimStart('/', '-'), "ExcelReport", StringComparison.OrdinalIgnoreCase)))
+        if (parser.GetToggles().Any(t => t.TrimStart('/', '-').StartsWith("ExcelReport=", StringComparison.OrdinalIgnoreCase)))
         {
             var csv = parser.Get(5, nameof(ResultFile)) ?? "LoadTestResults.csv";
             return System.IO.Path.ChangeExtension(csv, ".xlsx");
@@ -58,14 +58,14 @@ public class PayrunLoadTestParameters : ICommandParameters
     private static string ResolveMarkdownFile(CommandLineParser parser)
     {
         // explicit path: /MarkdownFile=path/to/report.md
-        var explicit_ = parser.GetByName(nameof(MarkdownFile));
+        var explicit_ = parser.GetByName(nameof(MarkdownReport));
         if (!string.IsNullOrWhiteSpace(explicit_))
         {
             return explicit_;
         }
 
         // toggle only: /MarkdownReport → derive from CSV path
-        if (parser.GetToggles().Any(t => string.Equals(t.TrimStart('/', '-'), "MarkdownReport", StringComparison.OrdinalIgnoreCase)))
+        if (parser.GetToggles().Any(t => t.TrimStart('/', '-').StartsWith("MarkdownReport=", StringComparison.OrdinalIgnoreCase)))
         {
             var csv = parser.Get(5, nameof(ResultFile)) ?? "LoadTestResults.csv";
             return System.IO.Path.ChangeExtension(csv, ".md");
@@ -95,8 +95,8 @@ public class PayrunLoadTestParameters : ICommandParameters
             EmployeeCount = int.TryParse(parser.Get(3, nameof(EmployeeCount)), out var c) ? c : 0,
             Repetitions = int.TryParse(parser.Get(4, nameof(Repetitions)), out var r) && r > 0 ? r : 3,
             ResultFile = parser.Get(5, nameof(ResultFile)) ?? "LoadTestResults.csv",
-            ExcelFile = ResolveExcelFile(parser),
-            MarkdownFile = ResolveMarkdownFile(parser),
+            ExcelReport = ResolveExcelFile(parser),
+            MarkdownReport = ResolveMarkdownFile(parser),
             ParallelSetting = parser.GetByName(nameof(ParallelSetting))
         };
 }

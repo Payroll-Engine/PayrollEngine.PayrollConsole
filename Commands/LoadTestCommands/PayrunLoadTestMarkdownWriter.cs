@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using PayrollEngine.Client.Model;
 
+// ReSharper disable InconsistentNaming
+
 namespace PayrollEngine.PayrollConsole.Commands.LoadTestCommands;
 
 /// <summary>Writes payrun load test results to a Markdown report</summary>
@@ -119,16 +121,27 @@ internal sealed class PayrunLoadTestMarkdownWriter
         sb.AppendLine($"| Framework | {RuntimeInformation.FrameworkDescription} |");
         sb.AppendLine($"| CPU Cores | {Environment.ProcessorCount} |");
 
-        // RAM
+        // RAM — P/Invoke on Windows, GC fallback on other platforms
         try
         {
-            var memInfo = GC.GetGCMemoryInfo();
-            var totalGb = memInfo.TotalAvailableMemoryBytes / (1024.0 * 1024 * 1024);
-            sb.AppendLine($"| RAM Total | {totalGb:F1} GB |");
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                var (totalGb, availGb) = GetWindowsRamInfo();
+                sb.AppendLine($"| RAM Total | {totalGb:F1} GB |");
+                sb.AppendLine($"| RAM Available | {availGb:F1} GB |");
+            }
+            else
+            {
+                var memInfo = GC.GetGCMemoryInfo();
+                var totalGb = memInfo.TotalAvailableMemoryBytes / (1024.0 * 1024 * 1024);
+                sb.AppendLine($"| RAM Total | {totalGb:F1} GB |");
+                sb.AppendLine("| RAM Available | — |");
+            }
         }
         catch
         {
             sb.AppendLine("| RAM Total | — |");
+            sb.AppendLine("| RAM Available | — |");
         }
 
         // Disk (drive of current working directory)
@@ -262,4 +275,35 @@ internal sealed class PayrunLoadTestMarkdownWriter
 
         sb.AppendLine();
     }
+
+    #region Windows Memory P/Invoke
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct MEMORYSTATUSEX
+    {
+        internal uint dwLength;
+        internal uint dwMemoryLoad;
+        internal ulong ullTotalPhys;
+        internal ulong ullAvailPhys;
+        internal ulong ullTotalPageFile;
+        internal ulong ullAvailPageFile;
+        internal ulong ullTotalVirtual;
+        internal ulong ullAvailVirtual;
+        internal ulong ullAvailExtendedVirtual;
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
+
+    /// <summary>Returns (totalGb, availableGb) via GlobalMemoryStatusEx</summary>
+    private static (double totalGb, double availGb) GetWindowsRamInfo()
+    {
+        var ms = new MEMORYSTATUSEX { dwLength = (uint)Marshal.SizeOf<MEMORYSTATUSEX>() };
+        if (!GlobalMemoryStatusEx(ref ms))
+            return (0, 0);
+        const double gb = 1024.0 * 1024 * 1024;
+        return (ms.ullTotalPhys / gb, ms.ullAvailPhys / gb);
+    }
+
+    #endregion
 }

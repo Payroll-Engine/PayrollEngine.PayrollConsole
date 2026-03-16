@@ -1146,6 +1146,9 @@
         <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestMarkdownWriter.Write">
             <summary>Write the Markdown report</summary>
         </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestMarkdownWriter.GetWindowsRamInfo">
+            <summary>Returns (totalGb, availableGb) via GlobalMemoryStatusEx</summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters">
             <summary>Payrun load test parameters</summary>
         </member>
@@ -1161,19 +1164,19 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ResultFile">
             <summary>Output CSV path for results</summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ExcelFile">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ExcelReport">
             <summary>Output Excel path for results (optional, enables Excel report)</summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.MarkdownFile">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.MarkdownReport">
             <summary>Output Markdown path for results (optional, enables Markdown report)</summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ParallelSetting">
             <summary>Backend MaxParallelEmployees value for documentation in the Excel report</summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ExcelReport">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.HasExcelReport">
             <summary>True if an Excel report should be written</summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.MarkdownReport">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.HasMarkdownReport">
             <summary>True if a Markdown report should be written</summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.Toggles">

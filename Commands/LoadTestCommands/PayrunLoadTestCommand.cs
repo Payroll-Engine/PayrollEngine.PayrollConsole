@@ -136,7 +136,7 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
             WriteResults(parameters.ResultFile, allResults);
 
             // write Excel report (optional)
-            if (parameters.ExcelReport)
+            if (parameters.HasExcelReport)
             {
                 var excelPath = Path.ChangeExtension(parameters.ResultFile, ".xlsx");
                 new PayrunLoadTestExcelWriter(excelPath, parameters, allResults).Write();
@@ -144,7 +144,7 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
             }
 
             // write Markdown report (optional)
-            if (parameters.MarkdownReport)
+            if (parameters.HasMarkdownReport)
             {
                 BackendInformation backendInfo = null;
                 try
@@ -155,8 +155,8 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
                 {
                     console.DisplayTextLine($"Warning: backend information unavailable ({ex.Message})");
                 }
-                new PayrunLoadTestMarkdownWriter(parameters.MarkdownFile, parameters, allResults, backendInfo).Write();
-                console.DisplayTextLine($"Markdown written to {Path.GetFullPath(parameters.MarkdownFile!)}");
+                new PayrunLoadTestMarkdownWriter(parameters.MarkdownReport, parameters, allResults, backendInfo).Write();
+                console.DisplayTextLine($"Markdown written to {Path.GetFullPath(parameters.MarkdownReport!)}");
             }
 
             // display summary (median of total server duration per run)

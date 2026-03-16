@@ -157,6 +157,8 @@ Executes the payrun via `PayrunJobService.StartJobAsync<PayrunJob>()` and measur
 |------|-------------|
 | `/ExcelReport` | Also write an Excel report (.xlsx) alongside the CSV (derived filename) |
 | `/ExcelFile=<path>` | Explicit Excel output path (also enables Excel report) |
+| `/MarkdownReport` | Also write a Markdown report (.md) alongside the CSV (derived filename) |
+| `/MarkdownFile=<path>` | Explicit Markdown output path (also enables Markdown report) |
 | `/ParallelSetting=<v>` | Backend `MaxParallelEmployees` value — documented in the Excel setup sheet |
 
 **Timing metrics:**
@@ -173,7 +175,8 @@ Executes the payrun via `PayrunJobService.StartJobAsync<PayrunJob>()` and measur
 PayrunLoadTest LoadTest100\Payrun-Invocation.json 100
 PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv
 PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv /ExcelReport
-PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv /ExcelFile=Reports\LT1000.xlsx /ParallelSetting=half
+PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv /MarkdownReport
+PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv /ExcelFile=Reports\LT1000.xlsx /MarkdownFile=Reports\LT1000.md
 ```
 
 ### LoadTestCleanup
@@ -265,7 +268,7 @@ LoadTestSetupCases LoadTest100
 ### Run100.pecmd (measured)
 
 ```
-PayrunLoadTest LoadTest100\Payrun-Invocation.json 100 3 Results\LoadTest100.csv /ExcelReport
+PayrunLoadTest LoadTest100\Payrun-Invocation.json 100 3 Results\LoadTest100.csv /ExcelReport /MarkdownReport
 ```
 
 ## Report Formats
@@ -289,6 +292,29 @@ Enabled via `/ExcelReport` (derived filename) or `/ExcelFile=<path>`. Contains t
 | **Setup** | Machine name, OS, `ProcessorCount`, `MaxParallelEmployees`, test parameters, median summary |
 | **Results** | All rows identical to CSV — formatted, with AutoFilter and freeze pane |
 | **Avg ms/Employee** | Pivot: Period × Run; outliers (>2× median) highlighted in yellow/red |
+
+### Markdown Report
+
+Enabled via `/MarkdownReport` (derived filename) or `/MarkdownFile=<path>`. Backend information is retrieved from `GET /api/admin/information` at the end of the test run. Contains two sections:
+
+**Test Summary**
+
+| Element | Content |
+|:--|:--|
+| Summary table | Test date, invocation file, periods, employee count, repetitions, median server total, median avg ms/employee |
+| Run Results table | Per-run breakdown: server total (ms), employees, avg ms/employee |
+
+**Test Infrastructure**
+
+| Subsection | Content |
+|:--|:--|
+| Computer | Machine name, OS, framework, CPU cores, RAM total + available (Windows: `GlobalMemoryStatusEx`), disk total + free |
+| Console | Version, build date |
+| Backend | Version, build date, API version, auth mode, max parallel employees, timeouts, script safety analysis |
+| Backend — Database | Type, catalog name, server version |
+| Backend — Audit Trail | Per-area flags (Script, Lookup, Input, Payrun, Report) |
+| Backend — CORS | Allowed origins (only when active) |
+| Backend — Rate Limiting | Per-policy permit limit and window (only when active) |
 
 ## Expected Scaling (Estimate)
 
@@ -365,5 +391,6 @@ Commands/
     PayrunLoadTestParameters.cs
     PayrunLoadTestResult.cs
     PayrunLoadTestExcelWriter.cs      # Excel report writer
+    PayrunLoadTestMarkdownWriter.cs   # Markdown report writer
     README.md
 ```
