@@ -143,6 +143,22 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
                 console.DisplayTextLine($"Excel written to   {Path.GetFullPath(excelPath!)}");
             }
 
+            // write Markdown report (optional)
+            if (parameters.MarkdownReport)
+            {
+                BackendInformation backendInfo = null;
+                try
+                {
+                    backendInfo = await new AdminService(context.HttpClient).GetBackendInformationAsync();
+                }
+                catch (Exception ex)
+                {
+                    console.DisplayTextLine($"Warning: backend information unavailable ({ex.Message})");
+                }
+                new PayrunLoadTestMarkdownWriter(parameters.MarkdownFile, parameters, allResults, backendInfo).Write();
+                console.DisplayTextLine($"Markdown written to {Path.GetFullPath(parameters.MarkdownFile!)}");
+            }
+
             // display summary (median of total server duration per run)
             var runTotals = allResults
                 .GroupBy(r => r.RunNumber)
@@ -276,13 +292,16 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
         console.DisplayTextLine("          4. Output CSV path (optional, default: LoadTestResults.csv) [ResultFile]");
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          /ExcelReport             Also write Excel alongside CSV (derived filename)");
+        console.DisplayTextLine("          /MarkdownReport          Also write Markdown report alongside CSV (derived filename)");
         console.DisplayTextLine("      Options:");
         console.DisplayTextLine("          /ExcelFile=<path>        Explicit Excel output path (also enables Excel report)");
+        console.DisplayTextLine("          /MarkdownFile=<path>     Explicit Markdown output path (also enables Markdown report)");
         console.DisplayTextLine("          /ParallelSetting=<v>     Backend MaxParallelEmployees value (for Excel setup sheet)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          PayrunLoadTest LoadTest100\\Payrun-Invocation.json 100");
         console.DisplayTextLine("          PayrunLoadTest LoadTest1000\\Payrun-Invocation.json 1000 5 Results\\LT1000.csv");
         console.DisplayTextLine("          PayrunLoadTest LoadTest1000\\Payrun-Invocation.json 1000 5 Results\\LT1000.csv /ExcelReport");
-        console.DisplayTextLine("          PayrunLoadTest LoadTest1000\\Payrun-Invocation.json 1000 5 Results\\LT1000.csv /ExcelFile=Reports\\LT1000.xlsx /ParallelSetting=half");
+        console.DisplayTextLine("          PayrunLoadTest LoadTest1000\\Payrun-Invocation.json 1000 5 Results\\LT1000.csv /MarkdownReport");
+        console.DisplayTextLine("          PayrunLoadTest LoadTest1000\\Payrun-Invocation.json 1000 5 Results\\LT1000.csv /ExcelFile=Reports\\LT1000.xlsx /MarkdownFile=Reports\\LT1000.md");
     }
 }

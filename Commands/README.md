@@ -732,15 +732,20 @@ Execute payrun and measure performance. Supports multiple invocations (periods) 
 | Name | Description |
 |:-----|:------------|
 | `/ExcelReport` | Also write an Excel report (.xlsx) alongside the CSV (derived filename) |
-| `excelFile:<path>` | Explicit Excel output path (also enables Excel report) |
-| `parallelSetting:<v>` | Backend `MaxParallelEmployees` value — documented in the Excel setup sheet |
+| `/MarkdownReport` | Also write a Markdown report (.md) alongside the CSV (derived filename) |
+| `/ExcelFile=<path>` | Explicit Excel output path (also enables Excel report) |
+| `/MarkdownFile=<path>` | Explicit Markdown output path (also enables Markdown report) |
+| `/ParallelSetting=<v>` | Backend `MaxParallelEmployees` value — documented in the Excel setup sheet |
+
+The Markdown report includes a **Test Summary** (median timing, per-run breakdown) and a **Test Infrastructure** section with computer specs (OS, CPU, RAM, disk), Console version/build date, and full Backend information (version, database, authentication mode, runtime configuration, audit trail, CORS, rate limiting) retrieved from `GET /api/admin/information`.
 
 **Examples:**
 ```cmd
 PayrunLoadTest LoadTest100\Payrun-Invocation.json 100
 PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv
 PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv /ExcelReport
-PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv excelFile:Reports\LT1000.xlsx parallelSetting:half
+PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv /MarkdownReport
+PayrunLoadTest LoadTest1000\Payrun-Invocation.json 1000 5 Results\LT1000.csv /ExcelFile=Reports\LT1000.xlsx /MarkdownFile=Reports\LT1000.md
 ```
 
 ### LoadTestCleanup

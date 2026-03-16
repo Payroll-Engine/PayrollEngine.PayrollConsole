@@ -22,18 +22,24 @@ public class PayrunLoadTestParameters : ICommandParameters
     /// <summary>Output Excel path for results (optional, enables Excel report)</summary>
     public string ExcelFile { get; init; }
 
+    /// <summary>Output Markdown path for results (optional, enables Markdown report)</summary>
+    public string MarkdownFile { get; init; }
+
     /// <summary>Backend MaxParallelEmployees value for documentation in the Excel report</summary>
     public string ParallelSetting { get; init; }
 
     /// <summary>True if an Excel report should be written</summary>
     public bool ExcelReport => !string.IsNullOrWhiteSpace(ExcelFile);
 
+    /// <summary>True if a Markdown report should be written</summary>
+    public bool MarkdownReport => !string.IsNullOrWhiteSpace(MarkdownFile);
+
     /// <inheritdoc />
     public Type[] Toggles => null;
 
     private static string ResolveExcelFile(CommandLineParser parser)
     {
-        // explicit path: excelFile:path/to/report.xlsx
+        // explicit path: /ExcelFile=path/to/report.xlsx
         var explicit_ = parser.GetByName(nameof(ExcelFile));
         if (!string.IsNullOrWhiteSpace(explicit_))
         {
@@ -45,6 +51,24 @@ public class PayrunLoadTestParameters : ICommandParameters
         {
             var csv = parser.Get(5, nameof(ResultFile)) ?? "LoadTestResults.csv";
             return System.IO.Path.ChangeExtension(csv, ".xlsx");
+        }
+        return null;
+    }
+
+    private static string ResolveMarkdownFile(CommandLineParser parser)
+    {
+        // explicit path: /MarkdownFile=path/to/report.md
+        var explicit_ = parser.GetByName(nameof(MarkdownFile));
+        if (!string.IsNullOrWhiteSpace(explicit_))
+        {
+            return explicit_;
+        }
+
+        // toggle only: /MarkdownReport → derive from CSV path
+        if (parser.GetToggles().Any(t => string.Equals(t.TrimStart('/', '-'), "MarkdownReport", StringComparison.OrdinalIgnoreCase)))
+        {
+            var csv = parser.Get(5, nameof(ResultFile)) ?? "LoadTestResults.csv";
+            return System.IO.Path.ChangeExtension(csv, ".md");
         }
         return null;
     }
@@ -72,6 +96,7 @@ public class PayrunLoadTestParameters : ICommandParameters
             Repetitions = int.TryParse(parser.Get(4, nameof(Repetitions)), out var r) && r > 0 ? r : 3,
             ResultFile = parser.Get(5, nameof(ResultFile)) ?? "LoadTestResults.csv",
             ExcelFile = ResolveExcelFile(parser),
+            MarkdownFile = ResolveMarkdownFile(parser),
             ParallelSetting = parser.GetByName(nameof(ParallelSetting))
         };
 }

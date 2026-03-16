@@ -1140,6 +1140,12 @@
         <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestExcelWriter.Write">
             <summary>Write the Excel report</summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestMarkdownWriter">
+            <summary>Writes payrun load test results to a Markdown report</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestMarkdownWriter.Write">
+            <summary>Write the Markdown report</summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters">
             <summary>Payrun load test parameters</summary>
         </member>
@@ -1158,11 +1164,17 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ExcelFile">
             <summary>Output Excel path for results (optional, enables Excel report)</summary>
         </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.MarkdownFile">
+            <summary>Output Markdown path for results (optional, enables Markdown report)</summary>
+        </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ParallelSetting">
             <summary>Backend MaxParallelEmployees value for documentation in the Excel report</summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.ExcelReport">
             <summary>True if an Excel report should be written</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.MarkdownReport">
+            <summary>True if a Markdown report should be written</summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestParameters.Toggles">
             <inheritdoc />
