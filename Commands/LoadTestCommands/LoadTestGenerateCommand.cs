@@ -357,6 +357,7 @@ internal sealed class LoadTestGenerateCommand : CommandBase<LoadTestGeneratePara
                 PayrunName = invocation.PayrunName,
                 UserIdentifier = invocation.UserIdentifier,
                 JobStatus = invocation.JobStatus,
+                RetroPayMode = RetroPayMode.None,
                 PeriodStart = invocation.PeriodStart,
                 EvaluationDate = invocation.EvaluationDate,
                 Reason = $"Load test {employeeCount} employees",

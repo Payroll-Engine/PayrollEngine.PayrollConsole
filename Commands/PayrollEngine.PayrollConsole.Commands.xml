@@ -1122,6 +1122,12 @@
             then backs off to 1s for long-running jobs.
             </summary>
         </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestCommand.TakeSystemSnapshot">
+            <summary>Take a point-in-time system resource snapshot</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestCommand.GetWindowsAvailRamGb">
+            <summary>P/Invoke: available physical RAM in GB via GlobalMemoryStatusEx</summary>
+        </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestCommand.CreateInvocation(PayrollEngine.Client.Model.PayrunJobInvocation,System.String)">
             <summary>Create a fresh invocation with unique name for each run</summary>
         </member>
@@ -1145,6 +1151,9 @@
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestMarkdownWriter.Write">
             <summary>Write the Markdown report</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestMarkdownWriter.GetProcessorName">
+            <summary>Returns the CPU model name from the Windows Registry, or architecture on other platforms</summary>
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestMarkdownWriter.GetWindowsRamInfo">
             <summary>Returns (totalGb, availableGb) via GlobalMemoryStatusEx</summary>
@@ -1211,6 +1220,18 @@
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.PayrunLoadTestResult.ServerAvgMsPerEmployee">
             <summary>Server-side average per employee (ms)</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.SystemSnapshot">
+            <summary>Point-in-time system resource snapshot</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.SystemSnapshot.Timestamp">
+            <summary>Snapshot timestamp</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.SystemSnapshot.DiskFreeGb">
+            <summary>Disk free space in GB (drive of working directory)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.LoadTestCommands.SystemSnapshot.RamAvailableGb">
+            <summary>Available physical RAM in GB (Windows only, 0 on other platforms)</summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.PayrollCommands.PayrollConvertCommand">
             <summary>

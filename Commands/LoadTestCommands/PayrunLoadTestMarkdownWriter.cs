@@ -18,17 +18,23 @@ internal sealed class PayrunLoadTestMarkdownWriter
     private readonly PayrunLoadTestParameters parameters;
     private readonly List<PayrunLoadTestResult> results;
     private readonly BackendInformation backendInfo;
+    private readonly SystemSnapshot snapshotBefore;
+    private readonly SystemSnapshot snapshotAfter;
 
     internal PayrunLoadTestMarkdownWriter(
         string path,
         PayrunLoadTestParameters parameters,
         List<PayrunLoadTestResult> results,
-        BackendInformation backendInfo)
+        BackendInformation backendInfo,
+        SystemSnapshot snapshotBefore = null,
+        SystemSnapshot snapshotAfter = null)
     {
         this.path = path;
         this.parameters = parameters;
         this.results = results;
         this.backendInfo = backendInfo;
+        this.snapshotBefore = snapshotBefore;
+        this.snapshotAfter = snapshotAfter;
     }
 
     /// <summary>Write the Markdown report</summary>
@@ -110,7 +116,7 @@ internal sealed class PayrunLoadTestMarkdownWriter
         WriteBackendSection(sb);
     }
 
-    private static void WriteComputerSection(StringBuilder sb)
+    private void WriteComputerSection(StringBuilder sb)
     {
         sb.AppendLine("### Computer");
         sb.AppendLine();
@@ -120,42 +126,69 @@ internal sealed class PayrunLoadTestMarkdownWriter
         sb.AppendLine($"| OS | {RuntimeInformation.OSDescription} |");
         sb.AppendLine($"| Framework | {RuntimeInformation.FrameworkDescription} |");
         sb.AppendLine($"| CPU Cores | {Environment.ProcessorCount} |");
+        sb.AppendLine($"| CPU Model | {GetProcessorName()} |");
 
-        // RAM — P/Invoke on Windows, GC fallback on other platforms
+        // RAM — total (static) + available before/after
         try
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                var (totalGb, availGb) = GetWindowsRamInfo();
+                var (totalGb, _) = GetWindowsRamInfo();
                 sb.AppendLine($"| RAM Total | {totalGb:F1} GB |");
-                sb.AppendLine($"| RAM Available | {availGb:F1} GB |");
             }
             else
             {
                 var memInfo = GC.GetGCMemoryInfo();
                 var totalGb = memInfo.TotalAvailableMemoryBytes / (1024.0 * 1024 * 1024);
                 sb.AppendLine($"| RAM Total | {totalGb:F1} GB |");
-                sb.AppendLine("| RAM Available | — |");
             }
         }
-        catch
+        catch { sb.AppendLine("| RAM Total | — |"); }
+
+        if (snapshotBefore != null && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            sb.AppendLine("| RAM Total | — |");
+            sb.AppendLine($"| RAM Available (before) | {snapshotBefore.RamAvailableGb:F1} GB |");
+            if (snapshotAfter != null)
+            {
+                var ramDelta = snapshotAfter.RamAvailableGb - snapshotBefore.RamAvailableGb;
+                var ramSign = ramDelta >= 0 ? "+" : "";
+                sb.AppendLine($"| RAM Available (after) | {snapshotAfter.RamAvailableGb:F1} GB |");
+                sb.AppendLine($"| RAM Delta | {ramSign}{ramDelta:F1} GB |");
+            }
+        }
+        else
+        {
             sb.AppendLine("| RAM Available | — |");
         }
 
-        // Disk (drive of current working directory)
+        // Disk — total (static) + free before/after
         try
         {
             var drive = new DriveInfo(Path.GetPathRoot(Directory.GetCurrentDirectory()) ?? "C:\\");
             var totalGb = drive.TotalSize / (1024.0 * 1024 * 1024);
-            var freeGb = drive.AvailableFreeSpace / (1024.0 * 1024 * 1024);
             sb.AppendLine($"| Disk ({drive.Name}) Total | {totalGb:F0} GB |");
-            sb.AppendLine($"| Disk ({drive.Name}) Free | {freeGb:F1} GB |");
         }
-        catch
+        catch { sb.AppendLine("| Disk Total | — |"); }
+
+        if (snapshotBefore != null)
         {
-            sb.AppendLine("| Disk | — |");
+            sb.AppendLine($"| Disk Free (before) | {snapshotBefore.DiskFreeGb:F1} GB |");
+            if (snapshotAfter != null)
+            {
+                var diskDelta = snapshotAfter.DiskFreeGb - snapshotBefore.DiskFreeGb;
+                var diskSign = diskDelta >= 0 ? "+" : "";
+                sb.AppendLine($"| Disk Free (after) | {snapshotAfter.DiskFreeGb:F1} GB |");
+                sb.AppendLine($"| Disk Delta | {diskSign}{diskDelta:F1} GB |");
+            }
+        }
+        else
+        {
+            try
+            {
+                var drive = new DriveInfo(Path.GetPathRoot(Directory.GetCurrentDirectory()) ?? "C:\\");
+                sb.AppendLine($"| Disk ({drive.Name}) Free | {drive.AvailableFreeSpace / (1024.0 * 1024 * 1024):F1} GB |");
+            }
+            catch { sb.AppendLine("| Disk Free | — |"); }
         }
 
         sb.AppendLine();
@@ -225,6 +258,10 @@ internal sealed class PayrunLoadTestMarkdownWriter
             sb.AppendLine($"| Type | {backendInfo.Database.Type} |");
             sb.AppendLine($"| Name | {backendInfo.Database.Name} |");
             sb.AppendLine($"| Version | {backendInfo.Database.Version} |");
+            if (!string.IsNullOrWhiteSpace(backendInfo.Database.Edition))
+            {
+                sb.AppendLine($"| Edition | {backendInfo.Database.Edition} |");
+            }
         }
 
         if (backendInfo.Runtime?.AuditTrail != null)
@@ -275,6 +312,29 @@ internal sealed class PayrunLoadTestMarkdownWriter
 
         sb.AppendLine();
     }
+
+    #region Windows Registry / P/Invoke
+
+    /// <summary>Returns the CPU model name from the Windows Registry, or architecture on other platforms</summary>
+    private static string GetProcessorName()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            try
+            {
+                using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(
+                    @"HARDWARE\DESCRIPTION\System\CentralProcessor\0");
+                return key?.GetValue("ProcessorNameString") as string ?? RuntimeInformation.ProcessArchitecture.ToString();
+            }
+            catch
+            {
+                return RuntimeInformation.ProcessArchitecture.ToString();
+            }
+        }
+        return RuntimeInformation.ProcessArchitecture.ToString();
+    }
+
+    #endregion
 
     #region Windows Memory P/Invoke
 

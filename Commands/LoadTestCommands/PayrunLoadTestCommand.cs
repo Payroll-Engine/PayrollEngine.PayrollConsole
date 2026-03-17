@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
@@ -71,6 +72,11 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
             var payrunJobService = new PayrunJobService(context.HttpClient);
             var allResults = new List<PayrunLoadTestResult>();
 
+            // snapshot before test (after setup, before warmup)
+            var snapshotBefore = parameters.HasMarkdownReport
+                ? TakeSystemSnapshot()
+                : null;
+
             // warmup run (first invocation only, not measured)
             console.DisplayTextLine("Warmup run...");
             var warmupInvocation = CreateInvocation(invocations[0], "Warmup");
@@ -132,6 +138,11 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
                     $"Avg {(runEmployeeTotal > 0 ? runServerTotal / (double)runEmployeeTotal : 0):F1}ms/employee");
             }
 
+            // snapshot after last run
+            var snapshotAfter = parameters.HasMarkdownReport
+                ? TakeSystemSnapshot()
+                : null;
+
             // write CSV report
             WriteResults(parameters.ResultFile, allResults);
 
@@ -155,7 +166,7 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
                 {
                     console.DisplayTextLine($"Warning: backend information unavailable ({ex.Message})");
                 }
-                new PayrunLoadTestMarkdownWriter(parameters.MarkdownReport, parameters, allResults, backendInfo).Write();
+                new PayrunLoadTestMarkdownWriter(parameters.MarkdownReport, parameters, allResults, backendInfo, snapshotBefore, snapshotAfter).Write();
                 console.DisplayTextLine($"Markdown written to {Path.GetFullPath(parameters.MarkdownReport!)}");
             }
 
@@ -237,6 +248,61 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
         throw new PayrollException(
             $"Payrun job {jobId} did not complete within {maxWaitMinutes} minutes");
     }
+
+    /// <summary>Take a point-in-time system resource snapshot</summary>
+    private static SystemSnapshot TakeSystemSnapshot()
+    {
+        double diskFreeGb = 0;
+        double ramAvailableGb = 0;
+
+        try
+        {
+            var drive = new DriveInfo(
+                Path.GetPathRoot(Directory.GetCurrentDirectory()) ?? "C:\\");
+            diskFreeGb = drive.AvailableFreeSpace / (1024.0 * 1024 * 1024);
+        }
+        catch { /* ignore */ }
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            try { ramAvailableGb = GetWindowsAvailRamGb(); }
+            catch { /* ignore */ }
+        }
+
+        return new SystemSnapshot
+        {
+            Timestamp = DateTimeOffset.Now,
+            DiskFreeGb = diskFreeGb,
+            RamAvailableGb = ramAvailableGb
+        };
+    }
+
+    /// <summary>P/Invoke: available physical RAM in GB via GlobalMemoryStatusEx</summary>
+    private static double GetWindowsAvailRamGb()
+    {
+        var ms = new MEMORYSTATUSEX { dwLength = (uint)Marshal.SizeOf<MEMORYSTATUSEX>() };
+        return GlobalMemoryStatusEx(ref ms)
+            ? ms.ullAvailPhys / (1024.0 * 1024 * 1024)
+            : 0;
+    }
+
+    [System.Runtime.InteropServices.StructLayout(
+        System.Runtime.InteropServices.LayoutKind.Sequential)]
+    private struct MEMORYSTATUSEX
+    {
+        internal uint dwLength;
+        internal uint dwMemoryLoad;
+        internal ulong ullTotalPhys;
+        internal ulong ullAvailPhys;
+        internal ulong ullTotalPageFile;
+        internal ulong ullAvailPageFile;
+        internal ulong ullTotalVirtual;
+        internal ulong ullAvailVirtual;
+        internal ulong ullAvailExtendedVirtual;
+    }
+
+    [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 
     /// <summary>Create a fresh invocation with unique name for each run</summary>
     private static PayrunJobInvocation CreateInvocation(PayrunJobInvocation template, string suffix) =>
