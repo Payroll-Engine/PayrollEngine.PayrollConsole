@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -49,7 +50,9 @@ internal sealed class PayrunLoadTestExcelWriter
 
         var directory = Path.GetDirectoryName(Path.GetFullPath(path));
         if (!string.IsNullOrEmpty(directory))
+        {
             Directory.CreateDirectory(directory);
+        }
 
         using var stream = new FileStream(path, FileMode.Create, FileAccess.Write);
         workbook.Write(stream);
@@ -105,9 +108,9 @@ internal sealed class PayrunLoadTestExcelWriter
         var median = runTotals[runTotals.Count / 2];
         WriteMeta(sheet, row++, "Median Server Total (ms)", median.ServerTotal.ToString());
         WriteMeta(sheet, row++, "Median Avg ms/Employee",
-            (median.EmployeeTotal > 0 ? median.ServerTotal / (double)median.EmployeeTotal : 0).ToString("F1"));
+            (median.EmployeeTotal > 0 ? median.ServerTotal / (double)median.EmployeeTotal : 0).ToString("F1", CultureInfo.InvariantCulture));
         WriteMeta(sheet, row, "Test Date",
-            results.FirstOrDefault()?.Timestamp.ToString("yyyy-MM-dd HH:mm") ?? "—");
+            results.FirstOrDefault()?.Timestamp.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) ?? "—");
     }
 
     // results sheet: one row per period/run, same structure as CSV
@@ -137,9 +140,9 @@ internal sealed class PayrunLoadTestExcelWriter
         foreach (var r in results)
         {
             var row = sheet.CreateRow(rowIndex++);
-            WriteCell(row, 0, r.Timestamp.ToString("yyyy-MM-dd HH:mm:ss"), dataTimestampStyle);
+            WriteCell(row, 0, r.Timestamp.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), dataTimestampStyle);
             WriteCell(row, 1, r.RunNumber, dataNumberStyle);
-            WriteCell(row, 2, r.Period.ToString("yyyy-MM"), dataPeriodStyle);
+            WriteCell(row, 2, r.Period.ToString("yyyy-MM", CultureInfo.InvariantCulture), dataPeriodStyle);
             WriteCell(row, 3, r.EmployeeCount, dataNumberStyle);
             WriteCell(row, 4, r.ClientDurationMs, dataNumberStyle);
             WriteCell(row, 5, r.ServerJobDurationMs, dataNumberStyle);
@@ -162,13 +165,17 @@ internal sealed class PayrunLoadTestExcelWriter
         // column widths
         sheet.SetColumnWidth(0, 16 * 256);
         for (var i = 0; i < runs.Count; i++)
+        {
             sheet.SetColumnWidth(i + 1, 14 * 256);
+        }
 
         // header row: Period | Run 1 | Run 2 | ...
         var header = sheet.CreateRow(0);
         WriteCell(header, 0, "Period", headerStyle);
         for (var i = 0; i < runs.Count; i++)
+        {
             WriteCell(header, i + 1, $"Run {runs[i]}", headerStyle);
+        }
 
         // data rows
         var lookup = results.ToDictionary(
@@ -179,7 +186,7 @@ internal sealed class PayrunLoadTestExcelWriter
         foreach (var period in periods)
         {
             var row = sheet.CreateRow(rowIndex++);
-            WriteCell(row, 0, period.ToString("yyyy-MM"), dataPeriodStyle);
+            WriteCell(row, 0, period.ToString("yyyy-MM", CultureInfo.InvariantCulture), dataPeriodStyle);
             for (var i = 0; i < runs.Count; i++)
             {
                 var value = lookup.GetValueOrDefault((period, runs[i]), 0);

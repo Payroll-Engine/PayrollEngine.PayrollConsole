@@ -286,8 +286,8 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
             : 0;
     }
 
-    [System.Runtime.InteropServices.StructLayout(
-        System.Runtime.InteropServices.LayoutKind.Sequential)]
+    // ReSharper disable once IdentifierTypo
+    [StructLayout(LayoutKind.Sequential)]
     private struct MEMORYSTATUSEX
     {
         internal uint dwLength;
@@ -301,7 +301,7 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
         internal ulong ullAvailExtendedVirtual;
     }
 
-    [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
+    [DllImport("kernel32.dll", SetLastError = true)]
     private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 
     /// <summary>Create a fresh invocation with unique name for each run</summary>

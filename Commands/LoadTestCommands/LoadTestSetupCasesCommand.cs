@@ -116,7 +116,7 @@ internal sealed class LoadTestSetupCasesCommand : CommandBase<LoadTestSetupCases
                         if (!userIdCache.TryGetValue(caseChange.UserIdentifier, out var userId))
                         {
                             var user = await userService.GetAsync<User>(tenantContext, caseChange.UserIdentifier);
-                            userId = user?.Id ?? throw new Exception(
+                            userId = user?.Id ?? throw new PayrollException(
                                 $"User '{caseChange.UserIdentifier}' not found in tenant {exchangeTenant.Identifier}");
                             userIdCache[caseChange.UserIdentifier] = userId;
                         }
@@ -129,7 +129,7 @@ internal sealed class LoadTestSetupCasesCommand : CommandBase<LoadTestSetupCases
                         if (!employeeIdCache.TryGetValue(caseChange.EmployeeIdentifier, out var employeeId))
                         {
                             var employee = await employeeService.GetAsync<Employee>(tenantContext, caseChange.EmployeeIdentifier);
-                            employeeId = employee?.Id ?? throw new Exception(
+                            employeeId = employee?.Id ?? throw new PayrollException(
                                 $"Employee '{caseChange.EmployeeIdentifier}' not found in tenant {exchangeTenant.Identifier}");
                             employeeIdCache[caseChange.EmployeeIdentifier] = employeeId;
                         }
@@ -142,7 +142,7 @@ internal sealed class LoadTestSetupCasesCommand : CommandBase<LoadTestSetupCases
                         if (!divisionIdCache.TryGetValue(caseChange.DivisionName, out var divisionId))
                         {
                             var division = await divisionService.GetAsync<Division>(tenantContext, caseChange.DivisionName);
-                            divisionId = division?.Id ?? throw new Exception(
+                            divisionId = division?.Id ?? throw new PayrollException(
                                 $"Division '{caseChange.DivisionName}' not found in tenant {exchangeTenant.Identifier}");
                             divisionIdCache[caseChange.DivisionName] = divisionId;
                         }

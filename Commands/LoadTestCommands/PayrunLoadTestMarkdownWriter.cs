@@ -1,11 +1,12 @@
+using PayrollEngine.Client.Model;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using PayrollEngine.Client.Model;
 
 // ReSharper disable InconsistentNaming
 
@@ -54,7 +55,7 @@ internal sealed class PayrunLoadTestMarkdownWriter
         File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
     }
 
-    private void WriteTitle(StringBuilder sb)
+    private static void WriteTitle(StringBuilder sb)
     {
         sb.AppendLine("# Payrun Load Test Report");
         sb.AppendLine();
@@ -68,6 +69,7 @@ internal sealed class PayrunLoadTestMarkdownWriter
         var periods = results.Select(r => r.Period).Distinct().Count();
         var testDate = results.FirstOrDefault()?.Timestamp.ToString("yyyy-MM-dd HH:mm") ?? "—";
 
+        // values
         var runTotals = results
             .GroupBy(r => r.RunNumber)
             .Select(g => (
@@ -80,6 +82,7 @@ internal sealed class PayrunLoadTestMarkdownWriter
             ? median.ServerTotal / (double)median.EmployeeTotal
             : 0;
 
+        // metrics
         sb.AppendLine("| Metric | Value |");
         sb.AppendLine("|:---|:---|");
         sb.AppendLine($"| Test Date | {testDate} |");
@@ -128,7 +131,7 @@ internal sealed class PayrunLoadTestMarkdownWriter
         sb.AppendLine($"| CPU Cores | {Environment.ProcessorCount} |");
         sb.AppendLine($"| CPU Model | {GetProcessorName()} |");
 
-        // RAM — total (static) + available before/after
+        // RAM — total (static) + available before
         try
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -145,6 +148,7 @@ internal sealed class PayrunLoadTestMarkdownWriter
         }
         catch { sb.AppendLine("| RAM Total | — |"); }
 
+        // RAM — total (static) + available after
         if (snapshotBefore != null && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             sb.AppendLine($"| RAM Available (before) | {snapshotBefore.RamAvailableGb:F1} GB |");
@@ -206,7 +210,7 @@ internal sealed class PayrunLoadTestMarkdownWriter
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
             ?.InformationalVersion ?? "unknown";
         var buildDate = File.Exists(assembly.Location)
-            ? File.GetLastWriteTimeUtc(assembly.Location).ToString("yyyy-MM-dd")
+            ? File.GetLastWriteTimeUtc(assembly.Location).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
             : "—";
 
         sb.AppendLine($"| Version | {version} |");
@@ -226,17 +230,20 @@ internal sealed class PayrunLoadTestMarkdownWriter
             return;
         }
 
+        // version
         sb.AppendLine("| Property | Value |");
         sb.AppendLine("|:---|:---|");
         sb.AppendLine($"| Version | {backendInfo.Version} |");
         sb.AppendLine($"| Build Date | {backendInfo.BuildDate:yyyy-MM-dd} |");
         sb.AppendLine($"| API Version | {backendInfo.ApiVersion} |");
 
+        // security
         if (backendInfo.Authentication != null)
         {
             sb.AppendLine($"| Auth Mode | {backendInfo.Authentication.Mode} |");
         }
 
+        // backend
         if (backendInfo.Runtime != null)
         {
             sb.AppendLine($"| Max Parallel Employees | {backendInfo.Runtime.MaxParallelEmployees} |");
@@ -248,6 +255,7 @@ internal sealed class PayrunLoadTestMarkdownWriter
             sb.AppendLine($"| Script Safety Analysis | {backendInfo.Runtime.ScriptSafetyAnalysis} |");
         }
 
+        // backend database
         if (backendInfo.Database != null)
         {
             sb.AppendLine();
@@ -264,6 +272,7 @@ internal sealed class PayrunLoadTestMarkdownWriter
             }
         }
 
+        // backend audit trail
         if (backendInfo.Runtime?.AuditTrail != null)
         {
             var at = backendInfo.Runtime.AuditTrail;
@@ -279,6 +288,7 @@ internal sealed class PayrunLoadTestMarkdownWriter
             sb.AppendLine($"| Report | {at.Report} |");
         }
 
+        // CORS
         if (backendInfo.Runtime?.Cors is { IsActive: true })
         {
             sb.AppendLine();
@@ -292,6 +302,7 @@ internal sealed class PayrunLoadTestMarkdownWriter
             }
         }
 
+        // rates
         if (backendInfo.Runtime?.RateLimiting is { IsActive: true })
         {
             var rl = backendInfo.Runtime.RateLimiting;
@@ -339,6 +350,7 @@ internal sealed class PayrunLoadTestMarkdownWriter
     #region Windows Memory P/Invoke
 
     [StructLayout(LayoutKind.Sequential)]
+    // ReSharper disable once IdentifierTypo
     private struct MEMORYSTATUSEX
     {
         internal uint dwLength;
@@ -355,12 +367,15 @@ internal sealed class PayrunLoadTestMarkdownWriter
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 
+    // ReSharper disable once UnusedTupleComponentInReturnValue
     /// <summary>Returns (totalGb, availableGb) via GlobalMemoryStatusEx</summary>
-    private static (double totalGb, double availGb) GetWindowsRamInfo()
+    private static (double totalGb, double _) GetWindowsRamInfo()
     {
         var ms = new MEMORYSTATUSEX { dwLength = (uint)Marshal.SizeOf<MEMORYSTATUSEX>() };
         if (!GlobalMemoryStatusEx(ref ms))
+        {
             return (0, 0);
+        }
         const double gb = 1024.0 * 1024 * 1024;
         return (ms.ullTotalPhys / gb, ms.ullAvailPhys / gb);
     }
