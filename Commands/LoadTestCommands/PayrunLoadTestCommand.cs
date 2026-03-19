@@ -312,6 +312,7 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
             PayrunName = template.PayrunName,
             UserIdentifier = template.UserIdentifier,
             JobStatus = template.JobStatus,
+            CompletedJobStatus = template.CompletedJobStatus,
             PeriodStart = template.PeriodStart,
             EvaluationDate = template.EvaluationDate,
             Reason = $"{template.Reason} ({suffix})"
