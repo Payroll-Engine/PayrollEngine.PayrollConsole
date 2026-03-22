@@ -2867,47 +2867,6 @@
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.TestCommandBase">
-            <summary>
-            Test command base
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.TestCommandBase.GetTestFileNames(System.String)">
-            <summary>
-            Get test file names
-            </summary>
-            <param name="fileMask">File mask</param>
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.TestCommandBase.DisplayTestResults``1(PayrollEngine.ILogger,PayrollEngine.Client.Command.ICommandConsole,PayrollEngine.PayrollConsole.Commands.TestDisplayMode,System.Collections.Generic.ICollection{``0})">
-            <summary>
-            Display test results
-            </summary>
-            <param name="logger">Logger</param>
-            <param name="console">Console</param>
-            <param name="displayMode">Display mode</param>
-            <param name="results">Test results</param>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.TestCommandBase`1">
-            <summary>
-            Test command base
-            </summary>
-            <typeparam name="TArgs">Command argument type</typeparam>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.TestDisplayMode">
-            <summary>
-            Test display mode
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.TestDisplayMode.ShowFailed">
-            <summary>
-            Show failed tests
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.TestDisplayMode.ShowAll">
-            <summary>
-            Show all tests
-            </summary>
-        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordCommand">
             <summary>
             Change password command

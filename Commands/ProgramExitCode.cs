@@ -1,4 +1,4 @@
-﻿namespace PayrollEngine.PayrollConsole.Commands;
+namespace PayrollEngine.PayrollConsole.Commands;
 
 /// <summary>
 /// Program exit code
