@@ -1960,6 +1960,69 @@
             Invalid input (e.g. missing or invalid source files)
             </summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageCommand">
+            <summary>
+            InstallRegulationPackage command — installs a regulation NuGet package into a PE backend tenant.
+            The package source can be a local file path, a file wildcard, or an HTTP(S) URL.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageParameters)">
+            <summary>Install a regulation package into the backend</summary>
+            <param name="context">Command execution context</param>
+            <param name="parameters">Command parameters</param>
+            <returns>0 on success</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageCommand.ResolvePackageSource(PayrollEngine.Client.Command.ICommandConsole,System.String)">
+            <summary>
+            Returns the resolved package source:
+            - HTTP(S) URLs are passed through unchanged
+            - Existing local paths are returned as-is
+            - Wildcards are resolved to a single match
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageParameters">
+            <summary>
+            InstallRegulationPackage command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageParameters.PackageFile">
+            <summary>
+            Path to the .nupkg file to install
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageParameters.Tenant">
+            <summary>
+            Target tenant identifier — the tenant into which the regulation is imported
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageParameters.InstallMode">
+            <summary>
+            Install mode: New (default) fails if regulation already exists; Overwrite replaces
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageParameters.DryRun">
+            <summary>
+            Dry-run mode: Execute (default) performs the import; DryRun validates without changes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.InstallRegulationPackageParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+            <param name="parser">Parameter parser</param>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImport">
             <summary>
             Import text file to lookup
@@ -2155,6 +2218,21 @@
             Boolean value
             </summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationDryRun">
+            <summary>
+            Regulation package dry-run mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationDryRun.Execute">
+            <summary>
+            Execute the installation (default)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationDryRun.DryRun">
+            <summary>
+            Validate and report what would be imported without making any changes
+            </summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationExcelImportCommand">
             <summary>
             Regulation excel import command
@@ -2207,6 +2285,74 @@
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationInstallMode">
+            <summary>
+            Regulation package installation mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationInstallMode.New">
+            <summary>
+            Fail if the regulation already exists in the target tenant (default)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationInstallMode.Overwrite">
+            <summary>
+            Overwrite existing regulation objects
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationPackageInstaller">
+            <summary>
+            Installs a regulation NuGet package (.nupkg) into a PE backend tenant.
+            The package source can be a local file path, a file wildcard, or an HTTP(S) URL.
+            The package is opened as a ZIP archive; the manifest and import files are read
+            from the <c>regulation/</c> folder within the archive.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationPackageInstaller.InstallAsync(System.String,System.String,PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationInstallMode,PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationDryRun)">
+            <summary>
+            Installs the regulation package into the specified tenant.
+            </summary>
+            <param name="packageSource">Local file path, file wildcard, or HTTP(S) URL to the .nupkg</param>
+            <param name="tenantIdentifier">Target tenant identifier</param>
+            <param name="installMode">New or Overwrite</param>
+            <param name="dryRun">DryRun validates without importing; Execute performs the import</param>
+            <returns>0 on success, non-zero on error</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationPackageInstaller.ResolveLocalFileAsync(System.String)">
+            <summary>
+            Returns the path to a local .nupkg file.
+            If <paramref name="source"/> is an HTTP(S) URL the package is downloaded
+            to a temp file. The caller is responsible for deleting it when done.
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationPackageManifest">
+            <summary>
+            Regulation package manifest — embedded as <c>regulation-package.json</c> in the NuGet package.
+            Defines install metadata and the ordered list of files to import.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationPackageManifest.PackageId">
+            <summary>NuGet package identifier (e.g. Acme.Regulation.Country)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationPackageManifest.RegulationName">
+            <summary>PE regulation name as registered in the backend (e.g. Acme.Regulation.Country)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationPackageManifest.Version">
+            <summary>Package version (calendar-semantic, e.g. 2026.1 or 2026.1-beta.1)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationPackageManifest.BaseRegulations">
+            <summary>
+            PE regulation names this package depends on. Each must already be installed in the
+            target tenant before this package can be installed.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationPackageManifest.InstallFiles">
+            <summary>
+            Files to import, in order, relative to the package root within the NuGet ZIP
+            (under the <c>regulation/</c> folder). The first entry must create the regulation;
+            subsequent entries extend it.
+            </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationRebuildCommand">
             <summary>

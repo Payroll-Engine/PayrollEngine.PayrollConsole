@@ -445,6 +445,32 @@ RegulationRebuild MyTenantName MyRegulationName CaseRelation SourceCaseName;Targ
 RegulationRebuild MyTenantName MyRegulationName WageType 115
 ```
 
+### InstallRegulationPackage
+Install a regulation NuGet package (`.nupkg`) into a PE backend tenant. The package is opened as a ZIP archive; the `regulation/regulation-package.json` manifest defines the ordered list of files to import. Supports local file paths, wildcards, and HTTP(S) URLs (e.g. GitHub Release assets).
+
+The command validates base regulation dependencies across all tenants before importing. If the target tenant does not yet exist, it is created by the first import file.
+
+| # | Argument      | Description                                                      |
+|---|:--------------|:----------------------------------------------------------------|
+| 1 | `PackageFile` | Local `.nupkg` path, wildcard (single match), or HTTP(S) URL   |
+| 2 | `Tenant`      | Target tenant identifier                                         |
+
+**Toggles:**
+- install mode: `/new` (default, fails if regulation exists) or `/overwrite`
+- dry-run mode: `/execute` (default) or `/dryrun` (validate only, no changes)
+
+**Examples:**
+```cmd
+InstallRegulationPackage Acme.Regulation.Country.2026.1.nupkg MyTenant
+InstallRegulationPackage Acme.Regulation.Country.2026.1.nupkg MyTenant /dryrun
+InstallRegulationPackage Acme.Regulation.Country.2026.2.nupkg MyTenant /overwrite
+InstallRegulationPackage Acme.Regulation.Country.2026.2.nupkg MyTenant /overwrite /dryrun
+InstallRegulationPackage Acme.Regulation.Country.*.nupkg MyTenant /dryrun
+InstallRegulationPackage https://github.com/Acme/Reg/releases/download/v2026.1/Acme.Regulation.Country.2026.1.nupkg MyTenant
+```
+
+---
+
 ### RegulationShare
 Manage regulation shares.
 

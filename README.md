@@ -97,6 +97,7 @@ The Payroll Console provides the following commands, grouped by area. For detail
 | `LookupTextImport` | Import lookup data from text file |
 | `RegulationRebuild` | Rebuild the regulation objects |
 | `RegulationShare` | Manage regulation shares |
+| `InstallRegulationPackage` | Install a regulation NuGet package into a PE backend tenant |
 
 ### Load Test
 
