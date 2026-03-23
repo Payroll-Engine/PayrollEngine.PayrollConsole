@@ -100,21 +100,27 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
 
                 using var cts = new CancellationTokenSource();
                 var progressTask = RunProgressAsync(context.Console, cts.Token);
-                var results = await testRunner.TestAllAsync(exchange);
-                await cts.CancelAsync();
-                await progressTask;
-
-                // display test results
-                context.Console.DisplayNewLine();
-                DisplayTestResults(context.Logger, context.Console, testFileName, parameters.DisplayMode, results);
-
-                // failed test
-                foreach (var resultValues in results.Values)
+                try
                 {
-                    if (resultValues.Any(x => x.Failed))
+                    var results = await testRunner.TestAllAsync(exchange);
+
+                    // display test results
+                    context.Console.DisplayNewLine();
+                    DisplayTestResults(context.Logger, context.Console, testFileName, parameters.DisplayMode, results);
+
+                    // failed test
+                    foreach (var resultValues in results.Values)
                     {
-                        return (int)ProgramExitCode.FailedTest;
+                        if (resultValues.Any(x => x.Failed))
+                        {
+                            return (int)ProgramExitCode.FailedTest;
+                        }
                     }
+                }
+                finally
+                {
+                    await cts.CancelAsync();
+                    await progressTask;
                 }
             }
             return (int)ProgramExitCode.Ok;

@@ -103,26 +103,32 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
                 // run payrun test with progress indicator
                 using var cts = new CancellationTokenSource();
                 var progressTask = RunProgressAsync(context.Console, cts.Token);
-                var results = await testRunner.TestAsync(exchange);
-                await cts.CancelAsync();
-                await progressTask;
-
-                // display test results
-                context.Console.DisplayNewLine();
-                DisplayTestResults(
-                    logger: context.Logger,
-                    console: context.Console,
-                    fileName: testFileName,
-                    displayMode: parameters.DisplayMode,
-                    tenantResults: results);
-
-                // failed test
-                foreach (var resultValues in results.Values)
+                try
                 {
-                    if (resultValues.Any(x => x.Failed))
+                    var results = await testRunner.TestAsync(exchange);
+
+                    // display test results
+                    context.Console.DisplayNewLine();
+                    DisplayTestResults(
+                        logger: context.Logger,
+                        console: context.Console,
+                        fileName: testFileName,
+                        displayMode: parameters.DisplayMode,
+                        tenantResults: results);
+
+                    // failed test
+                    foreach (var resultValues in results.Values)
                     {
-                        return (int)ProgramExitCode.FailedTest;
+                        if (resultValues.Any(x => x.Failed))
+                        {
+                            return (int)ProgramExitCode.FailedTest;
+                        }
                     }
+                }
+                finally
+                {
+                    await cts.CancelAsync();
+                    await progressTask;
                 }
             }
             return (int)ProgramExitCode.Ok;
