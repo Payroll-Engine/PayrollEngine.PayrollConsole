@@ -1,11 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Exchange;
+using PayrollEngine.Client.Model;
 using PayrollEngine.Client.Test;
 using PayrollEngine.Client.Test.Payrun;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.PayrollConsole.Commands.PayrunCommands;
 
@@ -87,6 +92,13 @@ internal sealed class PayrunEmployeePreviewTestCommand : PayrunTestCommandBase<P
                 context.Console.DisplayNewLine();
                 DisplayTestResults(context.Logger, context.Console, testFileName, parameters.DisplayMode, results);
 
+                // write actual results to file if requested
+                if (!string.IsNullOrWhiteSpace(parameters.ActualOutputFile))
+                {
+                    await WriteActualResultsAsync(results, parameters.ActualOutputFile);
+                    context.Console.DisplayTextLine($"Actual results written to: {parameters.ActualOutputFile}");
+                }
+
                 // failed test
                 foreach (var resultValues in results.Values)
                 {
@@ -105,6 +117,53 @@ internal sealed class PayrunEmployeePreviewTestCommand : PayrunTestCommandBase<P
         }
     }
 
+    // ── Actual results writer ──────────────────────────────────────────────
+
+    private static async Task WriteActualResultsAsync(
+        Dictionary<Tenant, List<PayrollTestResult>> tenantResults,
+        string outputFile)
+    {
+        var payrollResults = new List<object>();
+
+        foreach (var tenantResult in tenantResults)
+        {
+            foreach (var result in tenantResult.Value)
+            {
+                var employeeIdentifier = Regex.Replace(
+                    result.Employee.Identifier,
+                    @"\s+Test\s+\d+$",
+                    string.Empty,
+                    RegexOptions.IgnoreCase);
+
+                var wageTypeResults = result.WageTypeResults
+                    .Where(w => w.ActualResult != null)
+                    .OrderBy(w => w.ActualResult.WageTypeNumber)
+                    .Select(w => new { wageTypeNumber = w.ActualResult.WageTypeNumber, value = w.ActualResult.Value })
+                    .ToList();
+
+                var collectorResults = result.CollectorResults
+                    .Where(c => c.ActualResult != null)
+                    .OrderBy(c => c.ActualResult.CollectorName)
+                    .Select(c => new { collectorName = c.ActualResult.CollectorName, value = c.ActualResult.Value })
+                    .ToList();
+
+                payrollResults.Add(new
+                {
+                    payrunJobName = result.PayrunJob.Name,
+                    employeeIdentifier,
+                    wageTypeResults,
+                    collectorResults
+                });
+            }
+        }
+
+        var json = JsonSerializer.Serialize(
+            payrollResults,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        await File.WriteAllTextAsync(outputFile, json);
+    }
+
     /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         PayrunEmployeePreviewTestParameters.ParserFrom(parser);
@@ -120,9 +179,11 @@ internal sealed class PayrunEmployeePreviewTestCommand : PayrunTestCommandBase<P
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
         console.DisplayTextLine("          test precision: /TestPrecisionOff or /TestPrecision1 to /TestPrecision6 (default: /TestPrecision2)");
+        console.DisplayTextLine("          actual output: ActualOutputFile:<path> — write actual results as JSON (payrollResults format)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          PayrunEmployeePreviewTest Test.et.json");
         console.DisplayTextLine("          PayrunEmployeePreviewTest *.et.json");
         console.DisplayTextLine("          PayrunEmployeePreviewTest Test.et.json /showall /TestPrecision3");
+        console.DisplayTextLine("          PayrunEmployeePreviewTest Test.et.json /ActualOutputFile:Test.actual.json");
     }
 }

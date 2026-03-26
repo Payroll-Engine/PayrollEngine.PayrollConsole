@@ -51,6 +51,14 @@ public class PayrunEmployeeTestParameters : ICommandParameters
     /// </summary>
     public TestPrecision Precision { get; private init; } = TestPrecision.TestPrecision2;
 
+    /// <summary>
+    /// Optional output file path for actual payroll results as JSON.
+    /// When set, the actual WageType and Collector results are written to this file
+    /// in payrollResults format — ready for direct use as expected values in .et.json files.
+    /// The test run proceeds normally; this is a side-effect only.
+    /// </summary>
+    public string ActualOutputFile { get; init; }
+
     /// <inheritdoc />
     public Type[] Toggles =>
     [
@@ -80,6 +88,7 @@ public class PayrunEmployeeTestParameters : ICommandParameters
             RunMode = parser.GetEnumToggle(TestRunMode.RunTests),
             DisplayMode = parser.GetEnumToggle(TestDisplayMode.ShowFailed),
             ResultMode = parser.GetEnumToggle(TestResultMode.CleanTest),
-            Precision = parser.GetEnumToggle(TestPrecision.TestPrecision2)
+            Precision = parser.GetEnumToggle(TestPrecision.TestPrecision2),
+            ActualOutputFile = parser.GetByName(nameof(ActualOutputFile))
         };
 }

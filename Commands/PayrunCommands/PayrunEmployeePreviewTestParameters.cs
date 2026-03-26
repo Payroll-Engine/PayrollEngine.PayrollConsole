@@ -29,6 +29,13 @@ public class PayrunEmployeePreviewTestParameters : ICommandParameters
     /// </summary>
     public TestPrecision Precision { get; private init; } = TestPrecision.TestPrecision2;
 
+    /// <summary>
+    /// Optional output file path for actual payroll results as JSON.
+    /// When set, the actual WageType and Collector results are written to this file
+    /// in payrollResults format — ready for direct use as expected values in .et.json files.
+    /// </summary>
+    public string ActualOutputFile { get; init; }
+
     /// <inheritdoc />
     public Type[] Toggles =>
     [
@@ -50,6 +57,7 @@ public class PayrunEmployeePreviewTestParameters : ICommandParameters
             FileMask = parser.Get(2, nameof(FileMask)),
             Owner = parser.Get(3, nameof(Owner)),
             DisplayMode = parser.GetEnumToggle(TestDisplayMode.ShowFailed),
-            Precision = parser.GetEnumToggle(TestPrecision.TestPrecision2)
+            Precision = parser.GetEnumToggle(TestPrecision.TestPrecision2),
+            ActualOutputFile = parser.GetByName(nameof(ActualOutputFile))
         };
 }

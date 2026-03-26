@@ -1603,6 +1603,13 @@
             Test precision (default: 2)
             </summary>
         </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestParameters.ActualOutputFile">
+            <summary>
+            Optional output file path for actual payroll results as JSON.
+            When set, the actual WageType and Collector results are written to this file
+            in payrollResults format — ready for direct use as expected values in .et.json files.
+            </summary>
+        </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestParameters.Toggles">
             <inheritdoc />
         </member>
@@ -1633,6 +1640,22 @@
             <param name="context">Command execution context</param>
             <param name="parameters">Command parameters</param>
             <returns>Program exit ok, 0 on success</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestCommand.InjectPayrollResultPlaceholders(PayrollEngine.Client.Model.Exchange)">
+            <summary>
+            Injects minimal payrollResults placeholders into the exchange so that
+            TestPayrunJobAsync runs fully and populates ActualResult on each test result.
+            Each invocation gets one placeholder with empty wageTypeResults and collectorResults.
+            The employee identifier is taken from the first case change in the payroll.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestCommand.WriteActualResultsAsync(System.Collections.Generic.Dictionary{PayrollEngine.Client.Model.Tenant,System.Collections.Generic.List{PayrollEngine.Client.Test.Payrun.PayrollTestResult}},System.String)">
+            <summary>
+            Serializes actual WageType and Collector results from all test results to a JSON file.
+            Output format matches the payrollResults block in .et.json — ready for direct use
+            as expected values without manual editing.
+            Employee identifier is reverse-mapped from the test clone ("X Test N" → "X").
+            </summary>
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
             <inheritdoc />
@@ -1683,6 +1706,14 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.Precision">
             <summary>
             Test precision (default: 2)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.ActualOutputFile">
+            <summary>
+            Optional output file path for actual payroll results as JSON.
+            When set, the actual WageType and Collector results are written to this file
+            in payrollResults format — ready for direct use as expected values in .et.json files.
+            The test run proceeds normally; this is a side-effect only.
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.Toggles">

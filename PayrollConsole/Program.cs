@@ -86,6 +86,12 @@ sealed class Program : ConsoleProgram<Program>
             var exitCode = await CommandManager.ExecuteAsync(HttpClient);
             ProgramEnd(exitCode);
         }
+        catch (CommandException exception)
+        {
+            Log.Error(exception, $"Command error: {exception.GetBaseException().Message}");
+            Console.DisplayErrorLine($"Command error: {exception.GetBaseException().Message}");
+            PressAnyKey();
+        }
         catch (Exception exception)
         {
             Log.Critical(exception, exception.GetBaseException().Message);

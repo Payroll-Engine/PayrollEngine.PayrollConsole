@@ -1,14 +1,19 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Test;
 using PayrollEngine.Client.Script;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Exchange;
+using PayrollEngine.Client.Model;
 using PayrollEngine.Client.Test.Payrun;
 using PayrollEngine.Client.Scripting.Script;
+using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.PayrollConsole.Commands.PayrunCommands;
 
@@ -75,10 +80,18 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
                 context.Console.DisplayTextLine("Running test...");
 
                 // load test data
-                var exchange = await FileReader.ReadAsync<Client.Model.Exchange>(testFileName);
+                var exchange = await FileReader.ReadAsync<Exchange>(testFileName);
                 if (exchange == null)
                 {
                     throw new PayrollException($"Invalid employee payrun test file {testFileName}.");
+                }
+
+                // when capturing actual results: inject minimal payrollResults placeholders so
+                // TestPayrunJobAsync runs fully and populates ActualResult on each test result object
+                var captureActual = !string.IsNullOrWhiteSpace(parameters.ActualOutputFile);
+                if (captureActual)
+                {
+                    InjectPayrollResultPlaceholders(exchange);
                 }
 
                 // test settings
@@ -108,6 +121,13 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
                     context.Console.DisplayNewLine();
                     DisplayTestResults(context.Logger, context.Console, testFileName, parameters.DisplayMode, results);
 
+                    // write actual results to file if requested
+                    if (captureActual)
+                    {
+                        await WriteActualResultsAsync(results, parameters.ActualOutputFile);
+                        context.Console.DisplayTextLine($"Actual results written to: {parameters.ActualOutputFile}");
+                    }
+
                     // failed test
                     foreach (var resultValues in results.Values)
                     {
@@ -132,6 +152,110 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
         }
     }
 
+    // ── Actual results capture ─────────────────────────────────────────────
+
+    /// <summary>
+    /// Injects minimal payrollResults placeholders into the exchange so that
+    /// TestPayrunJobAsync runs fully and populates ActualResult on each test result.
+    /// Each invocation gets one placeholder with empty wageTypeResults and collectorResults.
+    /// The employee identifier is taken from the first case change in the payroll.
+    /// </summary>
+    private static void InjectPayrollResultPlaceholders(Exchange exchange)
+    {
+        foreach (var tenant in exchange.Tenants ?? [])
+        {
+            if (tenant.PayrunJobInvocations == null || !tenant.PayrunJobInvocations.Any())
+            {
+                continue;
+            }
+
+            // only inject if no payrollResults present
+            if (tenant.PayrollResults != null && tenant.PayrollResults.Any())
+            {
+                continue;
+            }
+
+            tenant.PayrollResults ??= [];
+
+            // resolve employee identifier from case changes
+            var employeeIdentifier = tenant.Payrolls?
+                .SelectMany(p => p.Cases ?? [])
+                .Select(c => c.EmployeeIdentifier)
+                .FirstOrDefault(id => !string.IsNullOrWhiteSpace(id));
+
+            foreach (var invocation in tenant.PayrunJobInvocations)
+            {
+                tenant.PayrollResults.Add(new PayrollResultSet
+                {
+                    PayrunJobName = invocation.Name,
+                    EmployeeIdentifier = employeeIdentifier,
+                    WageTypeResults = [],
+                    CollectorResults = []
+                });
+            }
+        }
+    }
+
+    /// <summary>
+    /// Serializes actual WageType and Collector results from all test results to a JSON file.
+    /// Output format matches the payrollResults block in .et.json — ready for direct use
+    /// as expected values without manual editing.
+    /// Employee identifier is reverse-mapped from the test clone ("X Test N" → "X").
+    /// </summary>
+    private static async Task WriteActualResultsAsync(
+        Dictionary<Tenant, List<PayrollTestResult>> tenantResults,
+        string outputFile)
+    {
+        var payrollResults = new List<object>();
+
+        foreach (var tenantResult in tenantResults)
+        {
+            foreach (var result in tenantResult.Value)
+            {
+                // reverse-map test clone identifier back to the original employee identifier
+                var employeeIdentifier = Regex.Replace(
+                    result.Employee.Identifier,
+                    @"\s+Test\s+\d+$",
+                    string.Empty,
+                    RegexOptions.IgnoreCase);
+
+                var wageTypeResults = result.WageTypeResults
+                    .Where(w => w.ActualResult != null)
+                    .OrderBy(w => w.ActualResult.WageTypeNumber)
+                    .Select(w => new
+                    {
+                        wageTypeNumber = w.ActualResult.WageTypeNumber,
+                        value = w.ActualResult.Value
+                    })
+                    .ToList();
+
+                var collectorResults = result.CollectorResults
+                    .Where(c => c.ActualResult != null)
+                    .OrderBy(c => c.ActualResult.CollectorName)
+                    .Select(c => new
+                    {
+                        collectorName = c.ActualResult.CollectorName,
+                        value = c.ActualResult.Value
+                    })
+                    .ToList();
+
+                payrollResults.Add(new
+                {
+                    payrunJobName = result.PayrunJob.Name,
+                    employeeIdentifier,
+                    wageTypeResults,
+                    collectorResults
+                });
+            }
+        }
+
+        var json = JsonSerializer.Serialize(
+            payrollResults,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        await File.WriteAllTextAsync(outputFile, json);
+    }
+
     /// <inheritdoc />
     public override ICommandParameters GetParameters(CommandLineParser parser) =>
         PayrunEmployeeTestParameters.ParserFrom(parser);
@@ -151,10 +275,12 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
         console.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
         console.DisplayTextLine("          test result mode: /cleantest, /keepfailedtest or /keeptest (default: cleantest)");
         console.DisplayTextLine("          test precision: /TestPrecisionOff or /TestPrecision1 to /TestPrecision6 (default: /TestPrecision2)");
+        console.DisplayTextLine("          actual output: ActualOutputFile:<path> — write actual results as JSON (payrollResults format)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          PayrunEmployeeTest Test.json");
         console.DisplayTextLine("          PayrunEmployeeTest *.et.json");
         console.DisplayTextLine("          PayrunEmployeeTest Test.json /showall /TestPrecision3");
         console.DisplayTextLine("          PayrunEmployeeTest Test.json /bulk /showall");
+        console.DisplayTextLine("          PayrunEmployeeTest Test.json ActualOutputFile:Test.actual.json");
     }
 }
