@@ -231,9 +231,15 @@ OwnerTest.pecmd owner:Test01
 
 ### File Type Registration
 
-The release package includes setup scripts that register the `.pecmd` extension with the operating system. Registration is scoped to the current user and does not require administrator privileges.
+The release package includes setup scripts that register the `.pecmd` extension with the
+operating system. Registration is scoped to the current user and does not require
+administrator privileges.
 
-**Windows:**
+> **Important:** Run the registration script from the **published console folder**
+> (e.g. `Bin\Console\`) where `PayrollEngine.PayrollConsole.exe` is located,
+> not from the source repository.
+
+**Windows** — run from `Bin\Console\`:
 ```powershell
 .\Register-PecmdExtension.ps1
 ```
@@ -243,7 +249,13 @@ To unregister:
 .\Register-PecmdExtension.ps1 -Unregister
 ```
 
-**Linux / macOS:**
+If an older system-wide registration exists (installed via the legacy `FileType.Reg.cmd`
+which required admin rights), remove it first before running the new script:
+```cmd
+FileType.Unreg.cmd
+```
+
+**Linux / macOS** — run from the published console folder:
 ```sh
 ./register-pecmd.sh
 ```
