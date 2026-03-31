@@ -111,6 +111,23 @@ Write "My logger warning" /wan
 
 ## HTTP Commands
 
+All HTTP commands support URL placeholders resolved against the backend at runtime.
+Placeholders are resolved **left-to-right** — `{tenant:X}` must appear before any tenant-scoped placeholder.
+
+| Placeholder | Resolved to |
+|:---|:---|
+| `{tenant:Identifier}` | Numeric tenant id |
+| `{user:Identifier}` | Numeric user id |
+| `{division:Name}` | Numeric division id |
+| `{employee:Identifier}` | Numeric employee id |
+| `{regulation:Name}` | Numeric regulation id |
+| `{payroll:Name}` | Numeric payroll id |
+| `{payrun:Name}` | Numeric payrun id |
+| `{payrunJob:Name}` | Numeric payrun job id |
+
+**Example:** `tenants/{tenant:MyTenant}/employees/{employee:anna@foo.com}/casevalues`
+→ `tenants/42/employees/7/casevalues`
+
 ### HttpGet
 Execute HTTP GET request.
 
@@ -122,6 +139,7 @@ Execute HTTP GET request.
 ```cmd
 HttpGet tenants
 HttpGet tenants/1
+HttpGet tenants/{tenant:MyTenant}/payrollresults/sets
 ```
 
 ### HttpPost
@@ -136,6 +154,7 @@ Execute HTTP POST request.
 ```cmd
 HttpPost tenants/1 MyTenant.json
 HttpPost admin/application/stop
+HttpPost tenants/{tenant:MyTenant}/payrollresults/sets/import Results.json
 ```
 
 ### HttpPut
@@ -149,6 +168,7 @@ Execute HTTP PUT request.
 **Examples:**
 ```cmd
 HttpPut tenants/1 MyTenant.json
+HttpPut tenants/{tenant:MyTenant}/payrolls/1 Payroll.json
 ```
 
 ### HttpDelete
@@ -161,6 +181,7 @@ Execute HTTP DELETE request.
 **Examples:**
 ```cmd
 HttpDelete tenants/1
+HttpDelete tenants/{tenant:MyTenant}/payruns/jobs/1
 ```
 
 ---

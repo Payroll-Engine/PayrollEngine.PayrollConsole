@@ -19,7 +19,7 @@ internal sealed class HttpDeleteCommand : HttpCommandBase<HttpDeleteParameters>
     {
         try
         {
-            parameters.Url = GetRequestUrl(parameters.Url);
+            parameters.Url = await ResolveUrlAsync(context, parameters.Url);
             DisplayTitle(context.Console, $"HTTP DELETE - {parameters.Url}");
 
             await context.HttpClient.DeleteAsync(parameters.Url);
@@ -45,7 +45,10 @@ internal sealed class HttpDeleteCommand : HttpCommandBase<HttpDeleteParameters>
         console.DisplayTextLine("      Execute http DELETE request");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. End point url [Url]");
+        console.DisplayTextLine("      URL placeholders: {tenant:X}, {user:X}, {division:X}, {employee:X}, {regulation:X}, {payroll:X}, {payrun:X}, {payrunJob:X}");
+        console.DisplayTextLine("      Note: tenant-scoped placeholders require {tenant:X} earlier in the URL");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          HttpDelete tenants/1");
+        console.DisplayTextLine("          HttpDelete tenants/{tenant:MyTenant}/payruns/jobs/{payrunJob:Jan24}");
     }
 }

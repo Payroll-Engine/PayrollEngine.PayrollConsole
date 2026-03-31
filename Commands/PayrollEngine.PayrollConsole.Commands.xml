@@ -747,21 +747,32 @@
             <param name="parser">Parameter parser</param>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpCommandBase`1">
+             <summary>
+             Base class for http commands.
+             Supports URL placeholders resolved against the backend at runtime.
+             Placeholders are resolved left-to-right, so {tenant:X} must appear
+             before any tenant-scoped placeholder in the URL.
+            
+             Supported placeholders:
+               {tenant:Identifier}   → numeric tenant id
+               {user:Identifier}     → numeric user id       (requires tenant placeholder before)
+               {division:Name}       → numeric division id   (requires tenant placeholder before)
+               {employee:Identifier} → numeric employee id   (requires tenant placeholder before)
+               {regulation:Name}     → numeric regulation id (requires tenant placeholder before)
+               {payroll:Name}        → numeric payroll id    (requires tenant placeholder before)
+               {payrun:Name}         → numeric payrun id     (requires tenant placeholder before)
+               {payrunJob:Name}      → numeric payrun job id (requires tenant placeholder before)
+             </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpCommandBase`1.ResolveUrlAsync(PayrollEngine.Client.Command.CommandContext,System.String)">
             <summary>
-            Base class for http commands
+            Resolve {type:value} placeholders in a URL against the backend.
+            Placeholders are resolved left-to-right — {tenant:X} must precede
+            all tenant-scoped placeholders.
             </summary>
-            <typeparam name="TArgs"></typeparam>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpCommandBase`1.BackendCommand">
-            <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpCommandBase`1.GetRequestUrl(System.String)">
-            <summary>Get request url</summary>
-            <param name="url"></param>
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpCommandBase`1.GetFileContent(System.String)">
             <summary>Get the file content</summary>
-            <param name="fileName">File name</param>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpDeleteCommand">
             <summary>

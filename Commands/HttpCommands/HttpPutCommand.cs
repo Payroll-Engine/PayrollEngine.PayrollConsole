@@ -20,7 +20,7 @@ internal sealed class HttpPutCommand : HttpCommandBase<HttpPutParameters>
     {
         try
         {
-            parameters.Url = GetRequestUrl(parameters.Url);
+            parameters.Url = await ResolveUrlAsync(context, parameters.Url);
             DisplayTitle(context.Console, $"HTTP PUT - {parameters.Url}");
 
             var content = await GetFileContent(parameters.FileName);
@@ -48,7 +48,10 @@ internal sealed class HttpPutCommand : HttpCommandBase<HttpPutParameters>
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. End point url [Url]");
         console.DisplayTextLine("          2. Content file name (optional) [FileName]");
+        console.DisplayTextLine("      URL placeholders: {tenant:X}, {user:X}, {division:X}, {employee:X}, {regulation:X}, {payroll:X}, {payrun:X}, {payrunJob:X}");
+        console.DisplayTextLine("      Note: tenant-scoped placeholders require {tenant:X} earlier in the URL");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          HttpPut tenants/1 MyTenant.json");
+        console.DisplayTextLine("          HttpPut tenants/{tenant:MyTenant}/payrolls/1 Payroll.json");
     }
 }
