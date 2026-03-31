@@ -1901,8 +1901,13 @@
             Payrun test command base
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommandBase.RunProgressAsync(PayrollEngine.Client.Command.ICommandConsole,System.Threading.CancellationToken)">
-            <summary>Show a waiting indicator every 10 seconds until cancelled</summary>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommandBase.RunProgressAsync(PayrollEngine.Client.Command.ICommandConsole,System.Threading.CancellationToken,System.Func{System.Int64})">
+            <summary>
+            Show a waiting indicator every 10 seconds until cancelled.
+            Pass a <paramref name="getElapsedMs"/> delegate to support phase resets:
+            resetting the underlying <see cref="T:System.Diagnostics.Stopwatch"/> causes the counter to restart from zero.
+            When null, an internal stopwatch is used.
+            </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommandBase`1">
             <summary>
