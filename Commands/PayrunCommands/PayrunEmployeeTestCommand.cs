@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -111,8 +112,12 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
                     employeeMode: parameters.TestMode,
                     runMode: parameters.RunMode);
 
+                // progress stopwatch: reset to 0 when import completes and payrun phase begins
+                var progressStopwatch = Stopwatch.StartNew();
+                testRunner.PhaseChanged += () => progressStopwatch.Restart();
+
                 using var cts = new CancellationTokenSource();
-                var progressTask = RunProgressAsync(context.Console, cts.Token);
+                var progressTask = RunProgressAsync(context.Console, cts.Token, () => progressStopwatch.ElapsedMilliseconds);
                 try
                 {
                     var results = await testRunner.TestAllAsync(exchange);

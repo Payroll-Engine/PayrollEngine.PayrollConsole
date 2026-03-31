@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,21 +18,39 @@ namespace PayrollEngine.PayrollConsole.Commands.PayrunCommands;
 /// </summary>
 internal abstract class PayrunTestCommandBase : TestCommandBase
 {
-    /// <summary>Show a waiting indicator every 10 seconds until cancelled</summary>
-    protected static async Task RunProgressAsync(ICommandConsole console, CancellationToken cancellationToken)
+    /// <summary>
+    /// Show a waiting indicator every 10 seconds until cancelled.
+    /// Pass a <paramref name="getElapsedMs"/> delegate to support phase resets:
+    /// resetting the underlying <see cref="Stopwatch"/> causes the counter to restart from zero.
+    /// When null, an internal stopwatch is used.
+    /// </summary>
+    protected static async Task RunProgressAsync(ICommandConsole console, CancellationToken cancellationToken,
+        Func<long> getElapsedMs = null)
     {
         const int intervalMs = 10000;
         const int tickMs = 500;
-        var elapsed = 0;
+        Stopwatch ownStopwatch = null;
+        if (getElapsedMs == null)
+        {
+            ownStopwatch = Stopwatch.StartNew();
+            getElapsedMs = () => ownStopwatch.ElapsedMilliseconds;
+        }
+        var lastDisplayedInterval = 0;
         try
         {
             while (!cancellationToken.IsCancellationRequested)
             {
                 await Task.Delay(tickMs, cancellationToken);
-                elapsed += tickMs;
-                if (elapsed % intervalMs == 0)
+                var currentInterval = (int)(getElapsedMs() / intervalMs);
+                // detect phase reset: stopwatch was restarted externally
+                if (currentInterval < lastDisplayedInterval)
                 {
-                    console.DisplayTextLine($"  ... waiting ({elapsed / 1000}s)");
+                    lastDisplayedInterval = 0;
+                }
+                if (currentInterval > lastDisplayedInterval)
+                {
+                    lastDisplayedInterval = currentInterval;
+                    console.DisplayTextLine($"  ... waiting ({currentInterval * intervalMs / 1000}s)");
                 }
             }
         }

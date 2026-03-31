@@ -12,7 +12,12 @@ public class HttpGetParameters : ICommandParameters
     /// Url
     /// </summary>
     public string Url { get; set; }
- 
+
+    /// <summary>
+    /// Output file name (optional) — when provided, response body is written to this file
+    /// </summary>
+    public string FileName { get; init; }
+
     /// <inheritdoc />
     public Type[] Toggles => null;
 
@@ -27,6 +32,7 @@ public class HttpGetParameters : ICommandParameters
     public static HttpGetParameters ParserFrom(CommandLineParser parser) =>
         new()
         {
-            Url = parser.Get(2, nameof(Url))
+            Url = parser.Get(2, nameof(Url)),
+            FileName = parser.Get(3, nameof(FileName))
         };
 }

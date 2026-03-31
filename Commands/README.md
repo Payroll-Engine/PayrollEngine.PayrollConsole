@@ -131,15 +131,17 @@ Placeholders are resolved **left-to-right** — `{tenant:X}` must appear before 
 ### HttpGet
 Execute HTTP GET request.
 
-| # | Argument | Description       |
-|---|:---------|:------------------|
-| 1 | `Url`    | End point url     |
+| # | Argument   | Description                                        |
+|---|:-----------|:---------------------------------------------------|
+| 1 | `Url`      | End point url                                      |
+| 2 | `FileName` | Output file name (optional) — writes response to file |
 
 **Examples:**
 ```cmd
 HttpGet tenants
 HttpGet tenants/1
 HttpGet tenants/{tenant:MyTenant}/payrollresults/sets
+HttpGet tenants/{tenant:MyTenant}/payrollresults/sets Export.json
 ```
 
 ### HttpPost

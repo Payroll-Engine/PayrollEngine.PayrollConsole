@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 
@@ -23,7 +25,9 @@ internal sealed class HttpPostCommand : HttpCommandBase<HttpPostParameters>
             DisplayTitle(context.Console, $"HTTP POST - {parameters.Url}");
 
             var content = await GetFileContent(parameters.FileName);
-            using var response = await context.HttpClient.PostAsync(parameters.Url, new(content));
+            var httpContent = new StringContent(content);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            using var response = await context.HttpClient.PostAsync(parameters.Url, httpContent);
 
             context.Console.DisplaySuccessLine($"POST request successfully ({response.StatusCode})");
             await DisplayResponseContent(context.Console, response);

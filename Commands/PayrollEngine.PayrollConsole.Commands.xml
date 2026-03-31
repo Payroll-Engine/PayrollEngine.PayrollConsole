@@ -840,6 +840,11 @@
             Url
             </summary>
         </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetParameters.FileName">
+            <summary>
+            Output file name (optional) — when provided, response body is written to this file
+            </summary>
+        </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.HttpCommands.HttpGetParameters.Toggles">
             <inheritdoc />
         </member>

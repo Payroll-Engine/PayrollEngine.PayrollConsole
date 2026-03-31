@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 
@@ -24,7 +25,9 @@ internal sealed class HttpPutCommand : HttpCommandBase<HttpPutParameters>
             DisplayTitle(context.Console, $"HTTP PUT - {parameters.Url}");
 
             var content = await GetFileContent(parameters.FileName);
-            await context.HttpClient.PutAsync(parameters.Url, new StringContent(content));
+            var httpContent = new StringContent(content);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            await context.HttpClient.PutAsync(parameters.Url, httpContent);
 
             context.Console.DisplaySuccessLine("PUT request successfully");
             return (int)ProgramExitCode.Ok;

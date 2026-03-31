@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 
@@ -25,7 +26,18 @@ internal sealed class HttpGetCommand : HttpCommandBase<HttpGetParameters>
             using var response = await context.HttpClient.GetAsync(parameters.Url);
 
             context.Console.DisplaySuccessLine($"GET request successfully ({response.StatusCode})");
-            await DisplayResponseContent(context.Console, response);
+
+            if (!string.IsNullOrWhiteSpace(parameters.FileName))
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                await File.WriteAllTextAsync(parameters.FileName, body);
+                context.Console.DisplayInfoLine($"Response written to {parameters.FileName}");
+            }
+            else
+            {
+                await DisplayResponseContent(context.Console, response);
+            }
+
             return (int)ProgramExitCode.Ok;
         }
         catch (Exception exception)
@@ -46,6 +58,7 @@ internal sealed class HttpGetCommand : HttpCommandBase<HttpGetParameters>
         console.DisplayTextLine("      Execute http GET request");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. End point url [Url]");
+        console.DisplayTextLine("          2. Output file name (optional) [FileName] — writes response body to file");
         console.DisplayTextLine("      URL placeholders (resolved left-to-right):");
         console.DisplayTextLine("          {tenant:Identifier}   - numeric tenant id");
         console.DisplayTextLine("          {user:Identifier}     - numeric user id");
