@@ -1729,7 +1729,7 @@
             Optional output file path for actual payroll results as JSON.
             When set, the actual WageType and Collector results are written to this file
             in payrollResults format — ready for direct use as expected values in .et.json files.
-            The test run proceeds normally; this is a side-effect only.
+            The test run proceeds normally; this is a side effect only.
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.Toggles">
@@ -1901,13 +1901,8 @@
             Payrun test command base
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommandBase.RunProgressAsync(PayrollEngine.Client.Command.ICommandConsole,System.Threading.CancellationToken,System.Func{System.Int64})">
-            <summary>
-            Show a waiting indicator every 10 seconds until cancelled.
-            Pass a <paramref name="getElapsedMs"/> delegate to support phase resets:
-            resetting the underlying <see cref="T:System.Diagnostics.Stopwatch"/> causes the counter to restart from zero.
-            When null, an internal stopwatch is used.
-            </summary>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommandBase.RunProgressAsync(PayrollEngine.Client.Command.ICommandConsole,System.Threading.CancellationToken)">
+            <summary>Show a waiting indicator every 10 seconds until cancelled</summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestCommandBase`1">
             <summary>

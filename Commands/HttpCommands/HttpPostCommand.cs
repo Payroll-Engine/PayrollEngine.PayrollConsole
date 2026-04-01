@@ -57,6 +57,7 @@ internal sealed class HttpPostCommand : HttpCommandBase<HttpPostParameters>
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          HttpPost tenants/1 MyTenant.json");
         console.DisplayTextLine("          HttpPost admin/application/stop");
+        // ReSharper disable once StringLiteralTypo
         console.DisplayTextLine("          HttpPost tenants/{tenant:MyTenant}/payrollresults/sets/import Results.json");
     }
 }

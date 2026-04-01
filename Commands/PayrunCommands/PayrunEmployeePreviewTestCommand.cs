@@ -69,7 +69,7 @@ internal sealed class PayrunEmployeePreviewTestCommand : PayrunTestCommandBase<P
                 context.Console.DisplayTextLine("Running preview test...");
 
                 // load test data
-                var exchange = await FileReader.ReadAsync<Client.Model.Exchange>(testFileName);
+                var exchange = await FileReader.ReadAsync<Exchange>(testFileName);
                 if (exchange == null)
                 {
                     throw new PayrollException($"Invalid employee payrun preview test file {testFileName}.");

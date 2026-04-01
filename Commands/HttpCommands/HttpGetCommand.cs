@@ -72,7 +72,9 @@ internal sealed class HttpGetCommand : HttpCommandBase<HttpGetParameters>
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          HttpGet tenants");
         console.DisplayTextLine("          HttpGet tenants/1");
+        // ReSharper disable StringLiteralTypo
         console.DisplayTextLine("          HttpGet tenants/{tenant:MyTenant}/payrollresults/sets");
         console.DisplayTextLine("          HttpGet tenants/{tenant:MyTenant}/employees/{employee:anna@foo.com}/casevalues");
+        // ReSharper restore StringLiteralTypo
     }
 }
