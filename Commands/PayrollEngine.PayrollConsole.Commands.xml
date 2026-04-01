@@ -1729,7 +1729,7 @@
             Optional output file path for actual payroll results as JSON.
             When set, the actual WageType and Collector results are written to this file
             in payrollResults format — ready for direct use as expected values in .et.json files.
-            The test run proceeds normally; this is a side effect only.
+            The test run proceeds normally; this is a side-effect only.
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.Toggles">
