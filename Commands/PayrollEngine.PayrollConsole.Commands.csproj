@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<AssemblyName>PayrollEngine.PayrollConsole.Commands</AssemblyName>
@@ -12,9 +12,19 @@
 		<DocumentationFile>$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<AcceptNPOIOSMFLicense>true</AcceptNPOIOSMFLicense>
+	</PropertyGroup>
+
+	<!-- suppress unpatched low-severity advisories in transitive System.Security.Cryptography.Xml -->
 	<ItemGroup>
-		<PackageReference Include="NPOI" Version="2.7.6" />
-		<PackageReference Include="PayrollEngine.Client.Services" Version="0.10.0-beta.dev" />
-		<PackageReference Include="PayrollEngine.Document" Version="0.10.0-beta.dev" />
+		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-37gx-xxp4-5rgx" />
+		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-w3x6-4m5h-cxqf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NPOI" Version="2.8.0" />
+		<PackageReference Include="PayrollEngine.Client.Services" Version="$(PayrollEngineVersion)" />
+		<PackageReference Include="PayrollEngine.Document" Version="$(PayrollEngineVersion)" />
 	</ItemGroup>
 </Project>
