@@ -375,17 +375,6 @@ The Payroll Console is available as a pre-built Docker image from the GitHub Con
 ### Pre-built image (ghcr.io)
 Run a command against a Backend running in Docker Compose:
 ```bash
-<<<<<<< HEAD
-docker build --no-cache -t payroll-console .
-```
-
-Run the container to deploy the examples/local files  with the environment variable (if appsettings.json is not used):
-```bash
-docker run -it --rm \
-  -e PayrollApiConnection="baseUrl=http://<backend-url>;port=<backend-port>;..." \
-  -v "$(pwd)/PayrollEngine/examples":/examples \
-  payroll-console /examples/Setup.All.pecmd
-=======
 docker run --rm --network payroll-engine_default \
   -e PayrollApiConnection="BaseUrl=http://backend-api:8080; Port=8080;" \
   ghcr.io/payroll-engine/payrollengine.payrollconsole:latest \
@@ -412,7 +401,6 @@ docker run --rm \
 ```bash
 docker build -t payroll-console .
 docker run --rm -it payroll-console Help
->>>>>>> 8037570 (New `PayrunEmployeePreviewTest` command for testing payrun job preview results)
 ```
 
 See the [Container Setup](https://payrollengine.org/setup/container-setup) documentation for the full Docker Compose stack.

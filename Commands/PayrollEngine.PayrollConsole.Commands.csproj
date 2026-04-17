@@ -16,15 +16,11 @@
 		<AcceptNPOIOSMFLicense>true</AcceptNPOIOSMFLicense>
 	</PropertyGroup>
 
-	<!-- suppress unpatched low-severity advisories in transitive System.Security.Cryptography.Xml -->
-	<ItemGroup>
-		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-37gx-xxp4-5rgx" />
-		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-w3x6-4m5h-cxqf" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="NPOI" Version="2.8.0" />
 		<PackageReference Include="PayrollEngine.Client.Services" Version="$(PayrollEngineVersion)" />
 		<PackageReference Include="PayrollEngine.Document" Version="$(PayrollEngineVersion)" />
+		<!-- Pin patched version: CVE-2026-26171 (GHSA-w3x6-4m5h-cxqf), GHSA-37gx-xxp4-5rgx; transitive via Document/NPOI -->
+		<PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.6" />
 	</ItemGroup>
 </Project>
