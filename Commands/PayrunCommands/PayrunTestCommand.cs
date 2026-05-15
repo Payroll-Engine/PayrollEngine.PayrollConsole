@@ -50,6 +50,7 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
 
         try
         {
+            var anyFailed = false;
             foreach (var testFileName in testFileNames)
             {
                 DisplayTitle(context.Console, $"Payrun test - {testFileName}");
@@ -117,12 +118,13 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
                         tenantResults: results);
 
                     // failed test
-                    foreach (var resultValues in results.Values)
+                    if (results.Values.Any(rv => rv.Any(x => x.Failed)))
                     {
-                        if (resultValues.Any(x => x.Failed))
+                        if (parameters.ExitMode == TestExitMode.ErrorOnFail)
                         {
                             return (int)ProgramExitCode.FailedTest;
                         }
+                        anyFailed = true;
                     }
                 }
                 finally
@@ -130,6 +132,11 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
                     await cts.CancelAsync();
                     await progressTask;
                 }
+            }
+
+            if (anyFailed)
+            {
+                context.Console.DisplayInfoLine("Tests completed with failures — exit code Ok (OkOnFail mode)");
             }
             return (int)ProgramExitCode.Ok;
         }
@@ -158,10 +165,12 @@ internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParame
         console.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
         console.DisplayTextLine("          test result mode: /cleantest, /keepfailedtest or /keeptest (default: cleantest)");
         console.DisplayTextLine("          test precision: /TestPrecisionOff or /TestPrecision1 to /TestPrecision6 (default: /TestPrecision2)");
+        console.DisplayTextLine("          exit mode: /erroronfail or /okonfail (default: erroronfail)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          PayrunTest Test.json");
         console.DisplayTextLine("          PayrunTest *.pt.json");
         console.DisplayTextLine("          PayrunTest *.pt.json MyOwner");
         console.DisplayTextLine("          PayrunTest Test.pt.json /single /showall /keeptest /TestPrecision3");
+        console.DisplayTextLine("          PayrunTest *.pt.json /okonfail");
     }
 }

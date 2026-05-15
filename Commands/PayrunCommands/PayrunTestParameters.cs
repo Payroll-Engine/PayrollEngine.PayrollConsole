@@ -46,6 +46,13 @@ public class PayrunTestParameters : ICommandParameters
     /// </summary>
     public TestPrecision Precision { get; private init; } = TestPrecision.TestPrecision2;
 
+    /// <summary>
+    /// Test exit mode (default: error on fail).
+    /// When set to OkOnFail, all test files are processed and the program exits with Ok
+    /// even if tests fail — failures are still logged for collection in a log file.
+    /// </summary>
+    public TestExitMode ExitMode { get; private init; } = TestExitMode.ErrorOnFail;
+
     /// <inheritdoc />
     public Type[] Toggles =>
     [
@@ -53,7 +60,8 @@ public class PayrunTestParameters : ICommandParameters
         typeof(TestRunMode),
         typeof(TestDisplayMode),
         typeof(TestResultMode),
-        typeof(TestPrecision)
+        typeof(TestPrecision),
+        typeof(TestExitMode)
     ];
 
     /// <inheritdoc />
@@ -73,6 +81,7 @@ public class PayrunTestParameters : ICommandParameters
             RunMode = parser.GetEnumToggle(TestRunMode.RunTests),
             DisplayMode = parser.GetEnumToggle(TestDisplayMode.ShowFailed),
             ResultMode = parser.GetEnumToggle(TestResultMode.CleanTest),
-            Precision = parser.GetEnumToggle(TestPrecision.TestPrecision2)
+            Precision = parser.GetEnumToggle(TestPrecision.TestPrecision2),
+            ExitMode = parser.GetEnumToggle(TestExitMode.ErrorOnFail)
         };
 }

@@ -35,6 +35,7 @@ internal sealed class ReportTestCommand : TestCommandBase<ReportTestParameters>
 
         try
         {
+            var anyFailed = false;
             foreach (var testFileName in testFileNames)
             {
                 DisplayTitle(context.Console, $"Report test - {testFileName}");
@@ -73,8 +74,17 @@ internal sealed class ReportTestCommand : TestCommandBase<ReportTestParameters>
                 // failed test
                 if (testResult.IsFailed())
                 {
-                    return (int)ProgramExitCode.FailedTest;
+                    if (parameters.ExitMode == TestExitMode.ErrorOnFail)
+                    {
+                        return (int)ProgramExitCode.FailedTest;
+                    }
+                    anyFailed = true;
                 }
+            }
+
+            if (anyFailed)
+            {
+                context.Console.DisplayInfoLine("Tests completed with failures — exit code Ok (OkOnFail mode)");
             }
             return (int)ProgramExitCode.Ok;
         }
@@ -99,9 +109,11 @@ internal sealed class ReportTestCommand : TestCommandBase<ReportTestParameters>
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
         console.DisplayTextLine("          test precision: /TestPrecisionOff or /TestPrecision1 to /TestPrecision6 (default: /TestPrecision2)");
+        console.DisplayTextLine("          exit mode: /erroronfail or /okonfail (default: erroronfail)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          ReportTest *.rt.json");
         console.DisplayTextLine("          ReportTest Test.rt.json /showall");
         console.DisplayTextLine("          ReportTest Test.rt.json /TestPrecision3");
+        console.DisplayTextLine("          ReportTest *.rt.json /okonfail");
     }
 }

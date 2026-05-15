@@ -47,6 +47,7 @@ internal sealed class PayrunEmployeePreviewTestCommand : PayrunTestCommandBase<P
 
         try
         {
+            var anyFailed = false;
             foreach (var testFileName in testFileNames)
             {
                 DisplayTitle(context.Console, "Payrun employee preview test");
@@ -100,13 +101,19 @@ internal sealed class PayrunEmployeePreviewTestCommand : PayrunTestCommandBase<P
                 }
 
                 // failed test
-                foreach (var resultValues in results.Values)
+                if (results.Values.Any(rv => rv.Any(x => x.Failed)))
                 {
-                    if (resultValues.Any(x => x.Failed))
+                    if (parameters.ExitMode == TestExitMode.ErrorOnFail)
                     {
                         return (int)ProgramExitCode.FailedTest;
                     }
+                    anyFailed = true;
                 }
+            }
+
+            if (anyFailed)
+            {
+                context.Console.DisplayInfoLine("Tests completed with failures — exit code Ok (OkOnFail mode)");
             }
             return (int)ProgramExitCode.Ok;
         }
@@ -179,11 +186,13 @@ internal sealed class PayrunEmployeePreviewTestCommand : PayrunTestCommandBase<P
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
         console.DisplayTextLine("          test precision: /TestPrecisionOff or /TestPrecision1 to /TestPrecision6 (default: /TestPrecision2)");
+        console.DisplayTextLine("          exit mode: /erroronfail or /okonfail (default: erroronfail)");
         console.DisplayTextLine("          actual output: ActualOutputFile:<path> — write actual results as JSON (payrollResults format)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          PayrunEmployeePreviewTest Test.et.json");
         console.DisplayTextLine("          PayrunEmployeePreviewTest *.et.json");
         console.DisplayTextLine("          PayrunEmployeePreviewTest Test.et.json /showall /TestPrecision3");
+        console.DisplayTextLine("          PayrunEmployeePreviewTest *.et.json /okonfail");
         console.DisplayTextLine("          PayrunEmployeePreviewTest Test.et.json /ActualOutputFile:Test.actual.json");
     }
 }

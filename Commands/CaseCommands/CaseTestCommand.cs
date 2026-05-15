@@ -35,6 +35,7 @@ internal sealed class CaseTestCommand : TestCommandBase<CaseTestParameters>
 
         try
         {
+            var anyFailed = false;
             foreach (var testFileName in testFileNames)
             {
                 DisplayTitle(context.Console, $"Case test - {testFileName}");
@@ -71,8 +72,17 @@ internal sealed class CaseTestCommand : TestCommandBase<CaseTestParameters>
                 // failed test
                 if (testResult.IsFailed())
                 {
-                    return (int)ProgramExitCode.FailedTest;
+                    if (parameters.ExitMode == TestExitMode.ErrorOnFail)
+                    {
+                        return (int)ProgramExitCode.FailedTest;
+                    }
+                    anyFailed = true;
                 }
+            }
+
+            if (anyFailed)
+            {
+                context.Console.DisplayInfoLine("Tests completed with failures — exit code Ok (OkOnFail mode)");
             }
             return (int)ProgramExitCode.Ok;
         }
@@ -97,9 +107,11 @@ internal sealed class CaseTestCommand : TestCommandBase<CaseTestParameters>
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
         console.DisplayTextLine("          test precision: /TestPrecisionOff or /TestPrecision1 to /TestPrecision6 (default: /TestPrecision2)");
+        console.DisplayTextLine("          exit mode: /erroronfail or /okonfail (default: erroronfail)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          CaseTest *.ct.json");
         console.DisplayTextLine("          CaseTest Test.ct.json /showall");
         console.DisplayTextLine("          CaseTest Test.ct.json /TestPrecision3");
+        console.DisplayTextLine("          CaseTest *.ct.json /okonfail");
     }
 }

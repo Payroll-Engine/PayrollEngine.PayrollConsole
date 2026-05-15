@@ -54,6 +54,7 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
 
         try
         {
+            var anyFailed = false;
             foreach (var testFileName in testFileNames)
             {
                 DisplayTitle(context.Console, "Payrun employee test");
@@ -133,12 +134,13 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
                     }
 
                     // failed test
-                    foreach (var resultValues in results.Values)
+                    if (results.Values.Any(rv => rv.Any(x => x.Failed)))
                     {
-                        if (resultValues.Any(x => x.Failed))
+                        if (parameters.ExitMode == TestExitMode.ErrorOnFail)
                         {
                             return (int)ProgramExitCode.FailedTest;
                         }
+                        anyFailed = true;
                     }
                 }
                 finally
@@ -146,6 +148,11 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
                     await cts.CancelAsync();
                     await progressTask;
                 }
+            }
+
+            if (anyFailed)
+            {
+                context.Console.DisplayInfoLine("Tests completed with failures — exit code Ok (OkOnFail mode)");
             }
             return (int)ProgramExitCode.Ok;
         }
@@ -279,12 +286,14 @@ internal sealed class PayrunEmployeeTestCommand : PayrunTestCommandBase<PayrunEm
         console.DisplayTextLine("          test display mode: /showfailed or /showall (default: showfailed)");
         console.DisplayTextLine("          test result mode: /cleantest, /keepfailedtest or /keeptest (default: cleantest)");
         console.DisplayTextLine("          test precision: /TestPrecisionOff or /TestPrecision1 to /TestPrecision6 (default: /TestPrecision2)");
+        console.DisplayTextLine("          exit mode: /erroronfail or /okonfail (default: erroronfail)");
         console.DisplayTextLine("          actual output: ActualOutputFile:<path> — write actual results as JSON (payrollResults format)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          PayrunEmployeeTest Test.json");
         console.DisplayTextLine("          PayrunEmployeeTest *.et.json");
         console.DisplayTextLine("          PayrunEmployeeTest Test.json /showall /TestPrecision3");
         console.DisplayTextLine("          PayrunEmployeeTest Test.json /bulk /showall");
+        console.DisplayTextLine("          PayrunEmployeeTest *.et.json /okonfail");
         console.DisplayTextLine("          PayrunEmployeeTest Test.json ActualOutputFile:Test.actual.json");
     }
 }

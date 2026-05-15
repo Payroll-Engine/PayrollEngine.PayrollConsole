@@ -162,6 +162,13 @@
             Test precision (default: 2)
             </summary>
         </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestParameters.ExitMode">
+            <summary>
+            Test exit mode (default: error on fail).
+            When set to OkOnFail, all test files are processed and the program exits with Ok
+            even if tests fail — failures are still logged for collection in a log file.
+            </summary>
+        </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseTestParameters.Toggles">
             <inheritdoc />
         </member>
@@ -1626,6 +1633,13 @@
             in payrollResults format — ready for direct use as expected values in .et.json files.
             </summary>
         </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestParameters.ExitMode">
+            <summary>
+            Test exit mode (default: error on fail).
+            When set to OkOnFail, all test files are processed and the program exits with Ok
+            even if tests fail — failures are still logged for collection in a log file.
+            </summary>
+        </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeePreviewTestParameters.Toggles">
             <inheritdoc />
         </member>
@@ -1730,6 +1744,13 @@
             When set, the actual WageType and Collector results are written to this file
             in payrollResults format — ready for direct use as expected values in .et.json files.
             The test run proceeds normally; this is a side-effect only.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.ExitMode">
+            <summary>
+            Test exit mode (default: error on fail).
+            When set to OkOnFail, all test files are processed and the program exits with Ok
+            even if tests fail — failures are still logged for collection in a log file.
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.Toggles">
@@ -1948,6 +1969,13 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters.Precision">
             <summary>
             Test precision (default: 2)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters.ExitMode">
+            <summary>
+            Test exit mode (default: error on fail).
+            When set to OkOnFail, all test files are processed and the program exits with Ok
+            even if tests fail — failures are still logged for collection in a log file.
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunTestParameters.Toggles">
@@ -2819,6 +2847,13 @@
             Test precision (default: 2)
             </summary>
         </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestParameters.ExitMode">
+            <summary>
+            Test exit mode (default: error on fail).
+            When set to OkOnFail, all test files are processed and the program exits with Ok
+            even if tests fail — failures are still logged for collection in a log file.
+            </summary>
+        </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.ReportCommands.ReportTestParameters.Toggles">
             <inheritdoc />
         </member>
@@ -3059,6 +3094,21 @@
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.TestExitMode">
+            <summary>
+            Controls the program exit behavior when test failures are detected
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.TestExitMode.ErrorOnFail">
+            <summary>Exit with FailedTest when any test fails (default)</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.TestExitMode.OkOnFail">
+            <summary>
+            Exit with Ok even when tests fail — all test files are processed and all failures
+            are logged, but the process exits with code 0. Use for bulk runs where errors
+            should be collected without stopping the pipeline.
+            </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.UserCommands.ChangePasswordCommand">
             <summary>

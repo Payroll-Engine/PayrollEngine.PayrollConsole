@@ -36,11 +36,19 @@ public class PayrunEmployeePreviewTestParameters : ICommandParameters
     /// </summary>
     public string ActualOutputFile { get; init; }
 
+    /// <summary>
+    /// Test exit mode (default: error on fail).
+    /// When set to OkOnFail, all test files are processed and the program exits with Ok
+    /// even if tests fail — failures are still logged for collection in a log file.
+    /// </summary>
+    public TestExitMode ExitMode { get; private init; } = TestExitMode.ErrorOnFail;
+
     /// <inheritdoc />
     public Type[] Toggles =>
     [
         typeof(TestDisplayMode),
-        typeof(TestPrecision)
+        typeof(TestPrecision),
+        typeof(TestExitMode)
     ];
 
     /// <inheritdoc />
@@ -58,6 +66,7 @@ public class PayrunEmployeePreviewTestParameters : ICommandParameters
             Owner = parser.Get(3, nameof(Owner)),
             DisplayMode = parser.GetEnumToggle(TestDisplayMode.ShowFailed),
             Precision = parser.GetEnumToggle(TestPrecision.TestPrecision2),
-            ActualOutputFile = parser.GetByName(nameof(ActualOutputFile))
+            ActualOutputFile = parser.GetByName(nameof(ActualOutputFile)),
+            ExitMode = parser.GetEnumToggle(TestExitMode.ErrorOnFail)
         };
 }
