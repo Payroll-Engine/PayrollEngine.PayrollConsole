@@ -396,6 +396,225 @@ PayrunTest Test.pt.json /single /showall /keeptest /TestPrecision3
 
 ## Regulation Commands
 
+### LexSnapshot
+
+Create an immutable compliance snapshot from a `lex.json` source manifest. All referenced files are copied into the `.lex` folder — after creation, no external access is needed.
+
+If `snapshot.json` already exists in the target directory, the folder is **skipped with an info message** (not an error). This enables safe re-runs in recursive mode across an entire regulation repo tree.
+
+| # | Argument | Description |
+|---|:---------|:------------|
+| 1 | `FileMask` | Path to `lex.json`, or file mask (e.g. `lex.json`, `*.json`) |
+
+**Named:**
+
+| Name | Default | Description |
+|:-----|:--------|:------------|
+| `TargetPath` | Directory of `FileMask` | Output directory for `snapshot.json` and copied files |
+
+**Toggles:**
+- snapshot mode: `/execute` (default) or `/dryrun` — dryrun validates and reports without writing
+- directory mode: `/top` (default) or `/recursive` — recursive scans all subdirectories
+- schema output: `/schema` — print the JSON Schema for `lex.json` and exit
+
+**Examples:**
+```cmd
+LexSnapshot .lex/lex.json
+LexSnapshot lex.json /recursive
+LexSnapshot .lex/lex.json /dryrun
+LexSnapshot .lex/lex.json /TargetPath:C:\Output
+LexSnapshot /schema
+```
+
+---
+
+#### lex.json — Source Manifest Schema
+
+The `lex.json` file documents the provenance of compliance values in a data regulation satellite. It is **created manually** before populating a data satellite with statutory values.
+
+**Root structure:**
+
+```json
+{
+  "$schema": "https://payrollengine.org/schemas/lex/v1.json",
+  "authority": "DE",
+  "regulation": "Data.LSt",
+  "validFrom": "2026-01-01",
+  "provider": "BMF",
+  "sources": [ ],
+  "values": [ ],
+  "files": [ ]
+}
+```
+
+**Root properties:**
+
+| Property | Type | Required | Description |
+|:---------|:-----|:--------:|:------------|
+| `$schema` | string | No | JSON Schema URI for IDE validation |
+| `authority` | string | **Yes** | Country/jurisdiction code (`DE`, `CH`, `SG`, `UK`, ...) |
+| `regulation` | string | **Yes** | Regulation identifier (`Data.LSt`, `Data.QST`, `Data.CPF`, ...) |
+| `validFrom` | string | **Yes** | Effective date in `YYYY-MM-DD` format |
+| `provider` | string | No | Issuing authority (`BMF`, `ESTV`, `HMRC`, `IRAS`, ...) |
+| `sources` | array | No | Document-level source references (general provenance) |
+| `values` | array | No | Compliance values with content and precise provenance |
+| `files` | array | No | Source documents to copy into the `.lex` folder |
+
+**`sources[]` — document-level provenance:**
+
+| Property | Required | Description |
+|:---------|:--------:|:------------|
+| `url` | **Yes** | URL to the source document or page |
+| `description` | No | Human-readable description |
+| `legalBasis` | No | Legal basis (e.g. `§39b EStG`, `DBG Art. 83-101`) |
+
+**`values[]` — compliance values:**
+
+Each value must have exactly one of `content` or `contentFile` — they are mutually exclusive.
+
+| Property | Required | Description |
+|:---------|:--------:|:------------|
+| `key` | **Yes** | Unique identifier within this manifest |
+| `content` | Conditional | Inline value — scalar, JSON object, or JSON array |
+| `contentFile` | Conditional | Relative path to a source file (copied into `.lex`) |
+| `unit` | No | Unit of measure (`EUR`, `%`, `CHF`, `SGD`, ...) |
+| `sourceUrl` | No | URL where this specific value can be found |
+| `sourceLocation` | No | Precise location within the source document (free text) |
+| `legalReference` | No | Legal norm reference (e.g. `§32a EStG`) |
+| `description` | No | Human-readable description |
+
+**`content` vs. `contentFile` — when to use which:**
+
+| Criterion | `content` | `contentFile` |
+|:----------|:----------|:--------------|
+| Data size | Small — scalars, compact JSON objects | Large — tariff tables, full lookup files |
+| Readability | Value visible inline in `lex.json` | Value in separate file |
+| Snapshot | Embedded in `snapshot.json` values | File copied into `.lex`, referenced by name |
+| Typical examples | `"12096"`, `"0.145"`, `"{\"Rate\":0.2}"` | `"../Lookups/Lookups.QstBe.json"` |
+
+**`sourceLocation` — examples by source type:**
+
+| Source type | Example value |
+|:------------|:--------------|
+| PDF document | `"PAP 2026, Page 12, Section 3.2.1"` |
+| Legal paragraph | `"§32a Abs. 1 S. 2 Nr. 1 EStG"` |
+| Government gazette | `"BGBl. I Nr. 153/2023, Anlage 1, Tabelle 3, Zeile 5"` |
+| Website with anchors | `"Section 'Tax rates and bands', Table 2026-27"` |
+| Circular / directive | `"Rundschreiben 2025/42, Randziffer 18"` |
+| ESTV tariff file | `"Datei tar22be.txt — converted via pecmd LookupTextImport"` |
+| MOM / government portal | `"cpf.gov.sg > Employers > CPF contribution rates, Table 1"` |
+
+**`files[]` — source documents:**
+
+| Property | Required | Description |
+|:---------|:--------:|:------------|
+| `fileName` | **Yes** | Target file name in the `.lex` folder |
+| `sourcePath` | No | Local path to the source file (copied by `LexSnapshot`) |
+| `sourceUrl` | No | Original download URL (provenance only — not fetched) |
+| `description` | No | Human-readable description |
+
+---
+
+#### snapshot.json — Generated Output
+
+`snapshot.json` is **generated by `LexSnapshot`** and must not be edited manually. It is an immutable compliance record — no external access is needed after creation.
+
+**Root properties:**
+
+| Property | Source | Description |
+|:---------|:-------|:------------|
+| `created` | Generated | ISO 8601 UTC timestamp |
+| `tool` | Generated | Tool name and version |
+| `authority` | From `lex.json` | Country/jurisdiction code |
+| `regulation` | From `lex.json` | Regulation identifier |
+| `validFrom` | From `lex.json` | Effective date |
+| `provider` | From `lex.json` | Issuing authority |
+| `sourceHash` | Generated | SHA256 over all value contents and file hashes |
+| `sources` | From `lex.json` | Copied as-is |
+| `values` | From `lex.json` | Copied; `contentFile` paths resolved to `.lex`-local names |
+| `files` | Enriched | All copied files with `sha256`, `fileSizeBytes`, `contentType` |
+
+---
+
+#### Examples
+
+**Minimal (DE Data.LSt — scalar values):**
+
+```json
+{
+  "$schema": "https://payrollengine.org/schemas/lex/v1.json",
+  "authority": "DE",
+  "regulation": "Data.LSt",
+  "validFrom": "2026-01-01",
+  "provider": "BMF",
+  "sources": [
+    {
+      "url": "https://www.bundesfinanzministerium.de/Content/DE/Downloads/Steuern/PAP2026.pdf",
+      "description": "Programmablaufplan 2026 (BMF 14.8.2025)",
+      "legalBasis": "§39b EStG"
+    }
+  ],
+  "values": [
+    {
+      "key": "Grundfreibetrag",
+      "content": "12096",
+      "unit": "EUR",
+      "sourceUrl": "https://www.bundesfinanzministerium.de/Content/DE/Downloads/Steuern/PAP2026.pdf",
+      "sourceLocation": "PAP 2026, Abschnitt 3.2.1, Schritt UPTAB",
+      "legalReference": "§32a Abs. 1 S. 2 Nr. 1 EStG",
+      "description": "Basic tax-free allowance"
+    }
+  ],
+  "files": [
+    {
+      "fileName": "PAP2026.pdf",
+      "sourcePath": "C:/Sources/PAP2026.pdf",
+      "sourceUrl": "https://www.bundesfinanzministerium.de/Content/DE/Downloads/Steuern/PAP2026.pdf",
+      "description": "Programmablaufplan 2026 (BMF 14.8.2025)"
+    }
+  ]
+}
+```
+
+**Large data via `contentFile` (CH Data.QST — canton tariff tables):**
+
+```json
+{
+  "$schema": "https://payrollengine.org/schemas/lex/v1.json",
+  "authority": "CH",
+  "regulation": "Data.QST",
+  "validFrom": "2022-01-01",
+  "provider": "ESTV",
+  "sources": [
+    {
+      "url": "https://www.estv.admin.ch/de/quellensteuertarife-import-in-lohnbuchhaltungssysteme",
+      "description": "ESTV — Quellensteuertarife 2022",
+      "legalBasis": "DBG Art. 83-101, StHG"
+    }
+  ],
+  "values": [
+    {
+      "key": "QstCantons.BE",
+      "content": "{\"name\":\"CH.BE\",\"Median\":0,\"CalculationCycle\":\"M\"}",
+      "sourceUrl": "https://www.estv.admin.ch/de/quellensteuertarife-import-in-lohnbuchhaltungssysteme",
+      "sourceLocation": "Datei tar22be.txt / tar22be.zip",
+      "legalReference": "DBG Art. 85, StHG Art. 32-33",
+      "description": "Canton Bern — metadata (monthly model)"
+    },
+    {
+      "key": "QstTarif.BE",
+      "contentFile": "../Lookups/Lookups.QstBe.json",
+      "sourceUrl": "https://www.estv.admin.ch/de/quellensteuertarife-import-in-lohnbuchhaltungssysteme",
+      "sourceLocation": "Datei tar22be.txt — converted via pecmd LookupTextImport",
+      "legalReference": "DBG Art. 83-101",
+      "description": "Canton Bern — full tariff bracket table"
+    }
+  ]
+}
+```
+
+---
+
 ### LookupTextImport
 Import regulation lookups to backend and/or file.
 

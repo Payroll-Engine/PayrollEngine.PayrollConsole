@@ -2098,6 +2098,371 @@
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSchemaMode">
+            <summary>
+            LexSnapshot schema output mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSchemaMode.NoSchema">
+            <summary>
+            Normal execution (default)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSchemaMode.Schema">
+            <summary>
+            Print the JSON Schema for lex.json and exit
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotCommand">
+            <summary>
+            Creates a compliance snapshot from a lex.json source manifest.
+            Supports file masks and recursive directory scanning.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotParameters)">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotMode">
+            <summary>
+            LexSnapshot execution mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotMode.Execute">
+            <summary>
+            Create snapshot.json and copy files (default)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotMode.DryRun">
+            <summary>
+            Validate lex.json and report what would be created — no files written
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotParameters">
+            <summary>
+            LexSnapshot command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotParameters.FileMask">
+            <summary>
+            File name or file mask (e.g. lex.json or *.json)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotParameters.TargetPath">
+            <summary>
+            Output directory for snapshot.json and copied files (default: directory of lex.json)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotParameters.SnapshotMode">
+            <summary>
+            Dry-run mode: validate and report without writing anything (default: Execute)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotParameters.DirectoryMode">
+            <summary>
+            Directory scan mode: top-level only or recursive (default: Top)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotParameters.SchemaMode">
+            <summary>
+            Print JSON Schema for lex.json and exit
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexFile">
+            <summary>
+            Source document to copy into the .lex folder
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexFile.FileName">
+            <summary>
+            Target file name in the .lex folder
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexFile.SourcePath">
+            <summary>
+            Local path to the source file (copied by LexSnapshot)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexFile.SourceUrl">
+            <summary>
+            Source URL — file is downloaded automatically when sourcePath is empty
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexFile.Description">
+            <summary>
+            Human-readable description
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest">
+            <summary>
+            Deserialized lex.json manifest — source of truth for compliance value provenance
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.Schema">
+            <summary>
+            JSON Schema URI ($schema field)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.Authority">
+            <summary>
+            Country/jurisdiction code (e.g. DE, CH, SG)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.Regulation">
+            <summary>
+            Regulation identifier (e.g. Data.LSt, Data.QST)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.ValidFrom">
+            <summary>
+            Effective date in YYYY-MM-DD format
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.Provider">
+            <summary>
+            Issuing authority (e.g. BMF, ESTV, HMRC)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.Sources">
+            <summary>
+            Document-level source references
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.Values">
+            <summary>
+            Compliance values with content and provenance
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.Files">
+            <summary>
+            Source documents to copy into the .lex folder
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSchema">
+            <summary>
+            JSON Schema for lex.json (https://payrollengine.org/schemas/lex/v1.json)
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshot">
+            <summary>
+            Generated snapshot.json — immutable compliance record
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshot.Created">
+            <summary>
+            ISO 8601 UTC creation timestamp
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshot.Tool">
+            <summary>
+            Tool identifier and version (e.g. "pecmd LexSnapshot 1.0")
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshot.Authority">
+            <summary>
+            Country/jurisdiction code — from lex.json
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshot.Regulation">
+            <summary>
+            Regulation identifier — from lex.json
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshot.ValidFrom">
+            <summary>
+            Effective date — from lex.json
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshot.Provider">
+            <summary>
+            Issuing authority — from lex.json
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshot.SourceHash">
+            <summary>
+            SHA256 hash computed over all value contents and content file hashes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshot.Sources">
+            <summary>
+            Source document references — copied from lex.json
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshot.Values">
+            <summary>
+            Compliance values — copied from lex.json; contentFile paths resolved to .lex-local names
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshot.Files">
+            <summary>
+            All files in the .lex folder — includes both explicit files[] and values with contentFile
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshotFile">
+            <summary>
+            File entry in snapshot.json — enriched with computed metadata
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshotFile.FileName">
+            <summary>
+            Original file name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshotFile.ContentFile">
+            <summary>
+            Relative path to the file in the .lex folder
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshotFile.ContentType">
+            <summary>
+            MIME type (detected from extension)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshotFile.Sha256">
+            <summary>
+            SHA256 hash of the file content
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshotFile.FileSizeBytes">
+            <summary>
+            File size in bytes
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshotFile.Description">
+            <summary>
+            Human-readable description
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshotWriter">
+            <summary>
+            Generates snapshot.json from a validated <see cref="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest"/> and copies referenced files.
+            Downloads files from sourceUrl when no local sourcePath is provided.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshotWriter.WriteAsync(PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest,System.String,System.String,System.Boolean,PayrollEngine.Client.Command.ICommandConsole)">
+            <summary>
+            Creates the snapshot: downloads/copies files and writes snapshot.json
+            </summary>
+            <param name="manifest">Validated manifest</param>
+            <param name="manifestDirectory">Directory of lex.json (source root)</param>
+            <param name="targetDirectory">Output directory (default: same as manifestDirectory)</param>
+            <param name="dryRun">When true, reports without writing anything</param>
+            <param name="console">Optional console for download progress messages</param>
+            <returns>Written snapshot (for reporting)</returns>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSource">
+            <summary>
+            Document-level source reference in lex.json
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSource.Url">
+            <summary>
+            URL to the source document or page
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSource.Description">
+            <summary>
+            Human-readable description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSource.LegalBasis">
+            <summary>
+            Legal basis (e.g. §39b EStG)
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValidator">
+            <summary>
+            Validates a <see cref="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest"/> for structural correctness
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValidator.Validate(PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest,System.String)">
+            <summary>
+            Validates the manifest. Returns a list of error messages (empty = valid).
+            </summary>
+            <param name="manifest">Manifest to validate</param>
+            <param name="manifestDirectory">Directory containing lex.json (used to resolve relative ContentFile paths)</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue">
+            <summary>
+            Compliance value entry in lex.json.
+            Exactly one of <see cref="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.Content"/> or <see cref="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.ContentFile"/> must be set.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.Key">
+            <summary>
+            Unique value identifier within the manifest
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.Content">
+            <summary>
+            Inline value — scalar, JSON object, or JSON array (mutually exclusive with ContentFile)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.ContentFile">
+            <summary>
+            Relative path to a source file to copy into the .lex folder (mutually exclusive with Content)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.DocumentRef">
+            <summary>
+            Reference to a local evidence document in the files[] array (e.g. "ahv-beitraege-2026.pdf").
+            The referenced file must be declared in the manifest's files[] array.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.Unit">
+            <summary>
+            Unit of measure (EUR, %, CHF, months, ...)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.SourceUrl">
+            <summary>
+            URL where this specific value can be found
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.SourceLocation">
+            <summary>
+            Precise location within the source document (free text)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.LegalReference">
+            <summary>
+            Legal norm reference (e.g. §32a EStG)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.Description">
+            <summary>
+            Human-readable description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.HasInlineContent">
+            <summary>
+            Returns true if this value uses an inline content string
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.HasContentFile">
+            <summary>
+            Returns true if this value references an external file
+            </summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImport">
             <summary>
             Import text file to lookup
