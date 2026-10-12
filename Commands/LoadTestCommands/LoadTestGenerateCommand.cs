@@ -360,6 +360,7 @@ internal sealed class LoadTestGenerateCommand : CommandBase<LoadTestGeneratePara
                 RetroPayMode = RetroPayMode.None,
                 PeriodStart = invocation.PeriodStart,
                 EvaluationDate = invocation.EvaluationDate,
+                PayDate = invocation.PayDate,
                 Reason = $"Load test {employeeCount} employees",
                 StoreEmptyResults = invocation.StoreEmptyResults,
                 LogLevel = invocation.LogLevel
