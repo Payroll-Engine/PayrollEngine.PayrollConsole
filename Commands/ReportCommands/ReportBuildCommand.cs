@@ -24,6 +24,7 @@ namespace PayrollEngine.PayrollConsole.Commands.ReportCommands;
 /// </summary>
 [Command("ReportBuild")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class ReportBuildCommand : CommandBase<ReportBuildParameters>
 {
     /// <summary>Build report schema document</summary>
@@ -118,7 +119,7 @@ internal sealed class ReportBuildCommand : CommandBase<ReportBuildParameters>
 
             // report parameters
             var reportParameters = await GetParametersAsync(context.Console,
-                parameters.ParameterFile, parameters.DefaultParameterFileName);
+                parameters.ParameterFile, ReportBuildParameters.DefaultParameterFileName);
             if (reportParameters == null)
             {
                 return (int)ProgramExitCode.GenericError;

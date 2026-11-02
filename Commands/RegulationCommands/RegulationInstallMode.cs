@@ -13,5 +13,6 @@ public enum RegulationInstallMode
     /// <summary>
     /// Overwrite existing regulation objects
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     Overwrite
 }

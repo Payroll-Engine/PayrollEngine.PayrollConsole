@@ -80,7 +80,7 @@ internal sealed class CaseChangeImport
     }
 
     /// <summary>
-    /// Read case changes from excel file
+    /// Read case changes from Excel file
     /// </summary>
     /// <param name="httpClient">Http client</param>
     /// <param name="tenant">Tenant</param>

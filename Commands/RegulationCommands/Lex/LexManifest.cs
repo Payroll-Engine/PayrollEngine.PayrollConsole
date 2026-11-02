@@ -13,6 +13,7 @@ public sealed class LexManifest
     /// JSON Schema URI ($schema field)
     /// </summary>
     [JsonPropertyName("$schema")]
+    // ReSharper disable once UnusedMember.Global
     public string Schema { get; init; }
 
     /// <summary>
@@ -49,4 +50,9 @@ public sealed class LexManifest
     /// Source documents to copy into the .lex folder
     /// </summary>
     public List<LexFile> Files { get; init; } = [];
+
+    /// <summary>
+    /// Documented exclusions from the coverage and sourceLocation checks
+    /// </summary>
+    public List<LexExclusion> Exclusions { get; init; } = [];
 }

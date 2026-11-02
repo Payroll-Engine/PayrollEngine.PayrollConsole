@@ -11,6 +11,7 @@ namespace PayrollEngine.PayrollConsole.Commands.UserCommands;
 /// </summary>
 [Command("ChangePassword")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class ChangePasswordCommand : CommandBase<ChangePasswordParameters>
 {
     /// <summary>Change the user password</summary>

@@ -10,6 +10,7 @@ namespace PayrollEngine.PayrollConsole.Commands.HttpCommands;
 /// </summary>
 [Command("HttpGet")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class HttpGetCommand : HttpCommandBase<HttpGetParameters>
 {
     /// <summary>Http GET request</summary>

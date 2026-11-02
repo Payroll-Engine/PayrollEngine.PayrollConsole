@@ -12,6 +12,7 @@ namespace PayrollEngine.PayrollConsole.Commands.TenantCommands;
 /// </summary>
 [Command("TenantDelete")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class TenantDeleteCommand : CommandBase<TenantDeleteParameters>
 {
     /// <summary>Delete tenant</summary>

@@ -11,6 +11,7 @@ namespace PayrollEngine.PayrollConsole.Commands.LoadTestCommands;
 /// <summary>Delete load test employees (identified by filter pattern in identifier)</summary>
 [Command("LoadTestCleanup")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class LoadTestCleanupCommand : CommandBase<LoadTestCleanupParameters>
 {
     public override bool BackendCommand => true;

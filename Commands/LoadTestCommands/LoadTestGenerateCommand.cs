@@ -13,6 +13,7 @@ namespace PayrollEngine.PayrollConsole.Commands.LoadTestCommands;
 /// <summary>Generate scaled exchange files for payrun load testing</summary>
 [Command("LoadTestGenerate")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class LoadTestGenerateCommand : CommandBase<LoadTestGenerateParameters>
 {
     private static readonly JsonSerializerOptions JsonCloneOptions = new()

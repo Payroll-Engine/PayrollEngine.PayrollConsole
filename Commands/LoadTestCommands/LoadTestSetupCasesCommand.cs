@@ -15,6 +15,7 @@ namespace PayrollEngine.PayrollConsole.Commands.LoadTestCommands;
 /// <summary>Bulk-import case changes for load testing via AddCasesBulkAsync</summary>
 [Command("LoadTestSetupCases")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class LoadTestSetupCasesCommand : CommandBase<LoadTestSetupCasesParameters>
 {
     public override bool BackendCommand => true;

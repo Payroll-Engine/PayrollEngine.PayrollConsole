@@ -28,6 +28,7 @@ namespace PayrollEngine.PayrollConsole.Commands.ReportCommands;
 /// </summary>
 [Command("Report")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class ReportCommand : CommandBase<ReportParameters>
 {
     /// <summary>Build report</summary>
@@ -107,7 +108,7 @@ internal sealed class ReportCommand : CommandBase<ReportParameters>
             // report parameters
             var reportParameters = await GetParametersAsync(context.Console,
                 context.HttpClient, tenant.Id, regulation.Id,
-                parameters.ParameterFile, parameters.DefaultParameterFileName);
+                parameters.ParameterFile, ReportBuildParameters.DefaultParameterFileName);
 
             // report request
             var reportRequest = new ReportRequest

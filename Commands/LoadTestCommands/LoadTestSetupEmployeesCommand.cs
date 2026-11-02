@@ -13,6 +13,7 @@ namespace PayrollEngine.PayrollConsole.Commands.LoadTestCommands;
 /// <summary>Setup employees for load testing via bulk API</summary>
 [Command("LoadTestSetupEmployees")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class LoadTestSetupEmployeesCommand : CommandBase<LoadTestSetupEmployeesParameters>
 {
     public override bool BackendCommand => true;

@@ -13,6 +13,7 @@ namespace PayrollEngine.PayrollConsole.Commands.ReportCommands;
 /// </summary>
 [Command("ReportTest")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class ReportTestCommand : TestCommandBase<ReportTestParameters>
 {
     /// <summary>Test a report</summary>

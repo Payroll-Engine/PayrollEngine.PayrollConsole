@@ -17,6 +17,7 @@ namespace PayrollEngine.PayrollConsole.Commands.ReportCommands;
 /// </summary>
 [Command("DataReport")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class DataReportCommand : CommandBase<DataReportParameters>
 {
     /// <summary>Build report</summary>

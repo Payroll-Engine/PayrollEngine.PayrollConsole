@@ -11,6 +11,7 @@ namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 /// </summary>
 [Command("InstallRegulationPackage")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class InstallRegulationPackageCommand : CommandBase<InstallRegulationPackageParameters>
 {
     /// <summary>Install a regulation package into the backend</summary>

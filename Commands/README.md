@@ -426,6 +426,58 @@ LexSnapshot .lex/lex.json /TargetPath:C:\Output
 LexSnapshot /schema
 ```
 
+### LexVerify
+Verify that the `snapshot.json` next to a `lex.json` is intact and current. The command recomputes the file hashes and the `sourceHash` from `lex.json` and the files in the `.lex` folder and compares header, values and files with the snapshot. It detects changed or missing evidence files, values edited after the snapshot was created, and a stale snapshot. No backend connection is required.
+
+| # | Argument | Description |
+|---|:---------|:------------|
+| 1 | `FileMask` | Path to `lex.json`, or file mask (e.g. `lex.json`, `**/lex.json`) |
+
+**Toggles:**
+- directory mode: `/top` (default) or `/recursive`
+
+Exit code `6` (invalid input) if a snapshot is missing or differs, so the command can gate a CI pipeline.
+
+**Examples:**
+```cmd
+LexVerify .lex/lex.json
+LexVerify lex.json /recursive
+```
+
+### LexCheck
+Check `lex.json` manifests against the lookup values of their data regulation (the `Regulation` folder next to `.lex`). No backend connection is required.
+
+| Finding | Meaning |
+|:--------|:--------|
+| Without lex entry | A regulation lookup value is covered by no lex entry |
+| Orphan | A lex entry (inline content) matches no regulation value |
+| Value difference | Entry content differs from the regulation value (numbers compared numerically, text ignoring case); a candidate to review against the source |
+| Missing fields | `sourceUrl`, `sourceLocation` or `legalReference` is empty |
+| Evidence | A declared or referenced file is missing in `.lex`, untracked or ignored in git |
+| Snapshot / validFrom | `snapshot.json` is missing, or `validFrom` of lex and regulation differ |
+
+An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored as file). Satellites whose lookup values are not stored in the `Regulation` folder are reported with a note for manual review. The freshness of `snapshot.json` is checked by `LexVerify`.
+
+| # | Argument | Description |
+|---|:---------|:------------|
+| 1 | `FileMask` | Path to `lex.json`, or file mask (e.g. `lex.json`, `**/lex.json`) |
+
+**Named:**
+
+| Name | Default | Description |
+|:-----|:--------|:------------|
+| `Report` | none | Path of a Markdown report; a CSV file with the same name is written next to it |
+
+**Toggles:**
+- directory mode: `/top` (default) or `/recursive`
+- result mode: `/strict` (default; findings give exit code `6`) or `/lenient` (report only, exit code `0`)
+
+**Examples:**
+```cmd
+LexCheck .lex/lex.json
+LexCheck lex.json /recursive /lenient Report:C:\Reports\LexCheck.md
+```
+
 ---
 
 #### lex.json — Source Manifest Schema

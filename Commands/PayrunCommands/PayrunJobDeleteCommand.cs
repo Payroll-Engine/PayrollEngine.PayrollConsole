@@ -13,6 +13,7 @@ namespace PayrollEngine.PayrollConsole.Commands.PayrunCommands;
 /// </summary>
 [Command("PayrunJobDelete")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class PayrunJobDeleteCommand : CommandBase<PayrunJobDeleteParameters>
 {
     /// <summary>Delete payrun job</summary>

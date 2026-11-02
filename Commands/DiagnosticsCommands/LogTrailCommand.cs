@@ -18,6 +18,7 @@ namespace PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands;
 /// </summary>
 [Command("LogTrail")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class LogTrailCommand : CommandBase<LogTrailParameters>
 {
     /// <summary>Start log trail</summary>
@@ -69,6 +70,7 @@ internal sealed class LogTrailCommand : CommandBase<LogTrailParameters>
                 // listening to key press to cancel
                 var key = Console.ReadKey();
                 cancel = key.Key == ConsoleKey.X ||
+                         // ReSharper disable once MergeIntoPattern
                          key.Key == ConsoleKey.C && key.Modifiers == ConsoleModifiers.Control;
             }
             if (cancel)

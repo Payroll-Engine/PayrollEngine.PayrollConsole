@@ -13,6 +13,7 @@ namespace PayrollEngine.PayrollConsole.Commands.PayrollCommands;
 /// </summary>
 [Command("PayrollMerge")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class PayrollMergeCommand : CommandBase<PayrollMergeParameters>
 {
     /// <summary>Convert a JSON or YAML file</summary>

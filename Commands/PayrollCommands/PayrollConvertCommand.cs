@@ -16,6 +16,7 @@ namespace PayrollEngine.PayrollConsole.Commands.PayrollCommands;
 /// </summary>
 [Command("PayrollConvert")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class PayrollConvertCommand : CommandBase<PayrollConvertParameters>
 {
     private IScriptParser ScriptParser { get; } = new ScriptParser();

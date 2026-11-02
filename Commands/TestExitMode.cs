@@ -13,5 +13,6 @@ public enum TestExitMode
     /// are logged, but the process exits with code 0. Use for bulk runs where errors
     /// should be collected without stopping the pipeline.
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     OkOnFail
 }

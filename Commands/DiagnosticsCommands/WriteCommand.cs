@@ -9,6 +9,7 @@ namespace PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands;
 /// </summary>
 [Command("Write")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class WriteCommand : CommandBase<WriteParameters>
 {
     /// <summary>Process the variable</summary>

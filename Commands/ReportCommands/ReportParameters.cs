@@ -12,7 +12,8 @@ public class ReportParameters : ICommandParameters
     /// <summary>
     /// Default parameter file name
     /// </summary>
-    public readonly string DefaultParameterFileName = "parameters.json";
+    // ReSharper disable once UnusedMember.Global
+    public const string DefaultParameterFileName = ReportBuildParameters.DefaultParameterFileName;
 
     /// <summary>
     /// Tenant

@@ -18,5 +18,6 @@ public sealed class LexSource
     /// <summary>
     /// Legal basis (e.g. §39b EStG)
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public string LegalBasis { get; init; }
 }

@@ -12,6 +12,7 @@ namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 /// </summary>
 [Command("RegulationRebuild")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class RegulationRebuildCommand : CommandBase<RegulationRebuildParameters>
 {
     /// <summary>Rebuild the regulation</summary>

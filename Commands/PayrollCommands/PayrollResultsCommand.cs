@@ -9,6 +9,7 @@ namespace PayrollEngine.PayrollConsole.Commands.PayrollCommands;
 /// </summary>
 [Command("PayrollResults")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class PayrollResultsCommand : CommandBase<PayrollResultsParameters>
 {
     /// <summary>Show payroll payrun results</summary>

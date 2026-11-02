@@ -12,6 +12,10 @@
 		<DocumentationFile>$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="PayrollEngine.PayrollConsole.Commands.Tests" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<AcceptNPOIOSMFLicense>true</AcceptNPOIOSMFLicense>
 	</PropertyGroup>

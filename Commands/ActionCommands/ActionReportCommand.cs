@@ -16,6 +16,7 @@ namespace PayrollEngine.PayrollConsole.Commands.ActionCommands;
 /// </summary>
 [Command("ActionReport")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class ActionReportCommand : CommandBase<ActionReportParameters>
 {
     /// <summary>

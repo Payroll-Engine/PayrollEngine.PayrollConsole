@@ -14,6 +14,7 @@ namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 /// </summary>
 [Command("RegulationExcelImport")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class RegulationExcelImportCommand : CommandBase<RegulationExcelImportParameters>
 {
     private IScriptParser ScriptParser { get; } = new ScriptParser();
@@ -58,7 +59,7 @@ internal sealed class RegulationExcelImportCommand : CommandBase<RegulationExcel
             context.Console.DisplayInfoLine($"Importing excel {sourceFileInfo.Name}.");
             context.Console.DisplayNewLine();
 
-            // read regulation from excel
+            // read regulation from Excel
             var exchange = await Excel.ExchangeRegulationImport.ReadAsync(parameters.SourceFileName);
 
             // file import

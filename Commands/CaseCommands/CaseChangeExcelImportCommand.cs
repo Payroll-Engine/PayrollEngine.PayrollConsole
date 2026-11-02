@@ -9,10 +9,11 @@ using PayrollEngine.PayrollConsole.Commands.Excel;
 namespace PayrollEngine.PayrollConsole.Commands.CaseCommands;
 
 /// <summary>
-/// Case change import from excel command
+/// Case change import from Excel command
 /// </summary>
 [Command("CaseChangeExcelImport")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class CaseChangeExcelImportCommand : CommandBase<CaseChangeExcelImportParameters>
 {
     private IScriptParser ScriptParser { get; } = new ScriptParser();

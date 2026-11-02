@@ -13,6 +13,7 @@ namespace PayrollEngine.PayrollConsole.Commands.CaseCommands;
 /// </summary>
 [Command("CaseTest")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class CaseTestCommand : TestCommandBase<CaseTestParameters>
 {
     /// <summary>Test a case</summary>

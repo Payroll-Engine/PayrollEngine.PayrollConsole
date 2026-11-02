@@ -72,6 +72,23 @@ internal static class LexValidator
             }
         }
 
+        // exclusions
+        foreach (var exclusion in manifest.Exclusions)
+        {
+            if (exclusion.Kind != LexExclusion.KindCoverage && exclusion.Kind != LexExclusion.KindSourceLocation)
+            {
+                errors.Add($"Exclusion '{exclusion.Pattern}': kind must be '{LexExclusion.KindCoverage}' or '{LexExclusion.KindSourceLocation}'");
+            }
+            if (string.IsNullOrWhiteSpace(exclusion.Pattern))
+            {
+                errors.Add("An exclusion is missing the required 'pattern' field");
+            }
+            if (string.IsNullOrWhiteSpace(exclusion.Reason))
+            {
+                errors.Add($"Exclusion '{exclusion.Pattern}': the 'reason' is mandatory");
+            }
+        }
+
         // files — collect names first for documentRef cross-validation
         var declaredFileNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var file in manifest.Files)

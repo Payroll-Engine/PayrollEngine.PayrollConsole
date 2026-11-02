@@ -78,7 +78,7 @@
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportCommand">
             <summary>
-            Case change import from excel command
+            Case change import from Excel command
             </summary>
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.CaseCommands.CaseChangeExcelImportParameters)">
@@ -450,7 +450,7 @@
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.ReadAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.IWorkbook,System.String)">
             <summary>
-            Read case changes from excel file
+            Read case changes from Excel file
             </summary>
             <param name="httpClient">Http client</param>
             <param name="tenant">Tenant</param>
@@ -1743,7 +1743,7 @@
             Optional output file path for actual payroll results as JSON.
             When set, the actual WageType and Collector results are written to this file
             in payrollResults format — ready for direct use as expected values in .et.json files.
-            The test run proceeds normally; this is a side-effect only.
+            The test run proceeds normally; this is a side effect only.
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.PayrunCommands.PayrunEmployeeTestParameters.ExitMode">
@@ -2098,6 +2098,116 @@
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckCommand">
+            <summary>
+            Checks lex manifests against the lookup values of their data regulation:
+            coverage, orphan entries, value differences, traceability fields, evidence files and validFrom.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters)">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckMode">
+            <summary>
+            LexCheck result handling
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckMode.Strict">
+            <summary>
+            Findings fail the command with exit code 6 (default)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckMode.Lenient">
+            <summary>
+            Findings are reported, the exit code stays 0 (e.g. to write a report only)
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexLocationMode">
+            <summary>
+            LexCheck handling of entries without sourceLocation
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexLocationMode.Optional">
+            <summary>
+            A missing sourceLocation is reported as information, not as finding (default)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexLocationMode.Required">
+            <summary>
+            A missing sourceLocation is a finding
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexUrlMode">
+            <summary>
+            LexCheck handling of source URLs
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexUrlMode.SkipUrls">
+            <summary>
+            The source URLs are not requested (default, no network access)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexUrlMode.CheckUrls">
+            <summary>
+            Every source URL is requested: a missing page (404/410, unknown host) is a finding,
+            a host that blocks scripts (401/403/429) is only a note
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters">
+            <summary>
+            LexCheck command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.FileMask">
+            <summary>
+            File name or file mask (e.g. lex.json or *.json)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.Report">
+            <summary>
+            Optional path of the Markdown report; a CSV file with the same name is written next to it
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.DirectoryMode">
+            <summary>
+            Directory scan mode: top-level only or recursive (default: Top)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.CheckMode">
+            <summary>
+            Result handling: strict fails on findings (default), lenient only reports
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.LocationMode">
+            <summary>
+            Handling of entries without sourceLocation: optional (default) or required
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.UrlMode">
+            <summary>
+            Request the source URLs (default: skip)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSchemaMode">
             <summary>
             LexSnapshot schema output mode
@@ -2187,6 +2297,215 @@
             Parse command parameters
             </summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifyCommand">
+            <summary>
+            Verifies that the snapshot of a lex manifest is intact and current:
+            file hashes, source hash and content of the values are compared with lex.json and the .lex folder.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifyCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifyParameters)">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifyCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifyCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifyCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifyParameters">
+            <summary>
+            LexVerify command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifyParameters.FileMask">
+            <summary>
+            File name or file mask (e.g. lex.json or *.json)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifyParameters.DirectoryMode">
+            <summary>
+            Directory scan mode: top-level only or recursive (default: Top)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifyParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifyParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifyParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand">
+            <summary>
+            Looks up the numbers of every lex entry in its source (web page, spreadsheet or local evidence file)
+            and, on request, writes the found source location into the manifest.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.LocalEvidence(PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest,PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue,System.String)">
+            <summary>
+            Local evidence file of the entry: documentRef, otherwise a declared file with the same source URL
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSourceWriteMode">
+            <summary>
+            LexVerifySource write mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSourceWriteMode.ReportOnly">
+            <summary>
+            Report only (default)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSourceWriteMode.WriteLocations">
+            <summary>
+            Write the found source location into entries without sourceLocation
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters">
+            <summary>
+            LexVerifySource command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.FileMask">
+            <summary>
+            File name or file mask (e.g. lex.json or **/lex.json)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.DirectoryMode">
+            <summary>
+            Directory scan mode: top-level only or recursive (default: Top)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.CheckMode">
+            <summary>
+            Result handling: lenient only reports (default), strict fails when a value is missing in its source
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.WriteMode">
+            <summary>
+            Write mode (default: report only)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexCheckResult">
+            <summary>
+            Result of a lex check of one data regulation satellite
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexCheckResult.RequireLocation">
+            <summary>A missing sourceLocation is a finding only in the mode Required</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexCheckResult.HasFindings">
+            <summary>
+            Any finding that needs action
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexChecker">
+            <summary>
+            Checks a lex manifest against the lookup values of its data regulation satellite:
+            coverage, orphans, value differences, traceability fields, evidence files and validFrom.
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexChecker.ReferenceEntryPrefix">
+            <summary>Entries with this key prefix reference an official calculator and have no regulation value</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexChecker.Check(PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest,System.String,System.Boolean)">
+            <summary>
+            Check one satellite
+            </summary>
+            <param name="manifest">Manifest (lex.json)</param>
+            <param name="lexPath">Full path of lex.json</param>
+            <param name="requireLocation">Treat a missing sourceLocation as a finding</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexChecker.GitList(System.String,System.Boolean)">
+            <summary>
+            Lists untracked (or ignored) files below a directory using git. Returns an empty set without git or outside a repository.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexChecker.ScalarEquals(System.String,System.String)">
+            <summary>
+            Numbers are compared numerically, text ignoring case
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexChecker.Splits(System.String)">
+            <summary>
+            Candidate (lookup key, remaining property path) splits of a lex key, longest key first
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexCheckReport">
+            <summary>
+            Writes the LexCheck results as Markdown report and CSV file
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexCheckReport.Write(System.Collections.Generic.IReadOnlyList{PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexCheckResult},System.String)">
+            <summary>
+            Write the report (Markdown) and a CSV file with the same name
+            </summary>
+            <param name="results">Check results</param>
+            <param name="reportPath">Path of the Markdown file; the CSV file uses the same name with the extension .csv</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexExclusion">
+            <summary>
+            Documented exception to the lex coverage rules. An excluded item is not a finding,
+            but it is listed by name in the check report.
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexExclusion.KindCoverage">
+            <summary>Kind: regulation values without a lex entry</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexExclusion.KindSourceLocation">
+            <summary>Kind: lex entries without sourceLocation</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexExclusion.Kind">
+            <summary>
+            Exclusion kind: <c>coverage</c> (regulation values without lex entry) or
+            <c>sourceLocation</c> (lex entries without sourceLocation)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexExclusion.Pattern">
+            <summary>
+            Key pattern. Coverage: <c>Lookup</c>, <c>Lookup.Key</c> or a prefix with trailing <c>*</c>.
+            SourceLocation: lex entry key, same syntax. A name also matches all keys below it (<c>Name.*</c>).
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexExclusion.Reason">
+            <summary>
+            Mandatory justification
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexExclusion.Matches(System.String)">
+            <summary>
+            Test if a key is matched by this exclusion
+            </summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexFile">
             <summary>
             Source document to copy into the .lex folder
@@ -2210,6 +2529,44 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexFile.Description">
             <summary>
             Human-readable description
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexFileResolver">
+            <summary>
+            Resolves lex.json files from a file name or mask
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexFileResolver.Resolve(System.String,PayrollEngine.PayrollConsole.Commands.DirectoryMode)">
+            <summary>
+            Resolve the lex.json files for a file name or mask
+            </summary>
+            <param name="fileMask">File name or mask, default lex.json</param>
+            <param name="directoryMode">Top directory only or recursive</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexFileResolver.IsBuildOutput(System.String,System.String)">
+            <summary>
+            Test if the file lies in a bin or obj folder below the search root
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexHash">
+            <summary>
+            Hash helpers shared by LexSnapshot, LexVerify and LexCheck.
+            The hash algorithm is part of the snapshot format and must not change.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexHash.FileHash(System.String)">
+            <summary>
+            SHA-256 of a file as lower-case hex string
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexHash.StringHash(System.String)">
+            <summary>
+            SHA-256 of a string (UTF-8) as lower-case hex string
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexHash.ResolvePath(System.String,System.String)">
+            <summary>
+            Resolve a path relative to a base directory
             </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest">
@@ -2255,6 +2612,11 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.Files">
             <summary>
             Source documents to copy into the .lex folder
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.Exclusions">
+            <summary>
+            Documented exclusions from the coverage and sourceLocation checks
             </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSchema">
@@ -2389,6 +2751,138 @@
             Legal basis (e.g. §39b EStG)
             </summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceState">
+            <summary>
+            Readability of a source document
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceState.Readable">
+            <summary>Text could be extracted</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceState.Unreadable">
+            <summary>The page could not be requested or holds no text (blocked host, script-only page)</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceState.Unsupported">
+            <summary>The format cannot be read (e.g. PDF)</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceDocument">
+            <summary>
+            Text of a source document, split into sections (HTML headings, spreadsheet sheets)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceDocument.Numbers(System.String)">
+            <summary>
+            Numbers of one section as normalized decimal values (every separator interpretation)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceDocument.FromHtml(System.String)">
+            <summary>
+            Build a document from HTML
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceDocument.FromText(System.String)">
+            <summary>
+            Build a document from plain text
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceDocument.FromWorkbook(System.IO.Stream)">
+            <summary>
+            Build a document from a spreadsheet (one section per sheet)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceDocument.Load(System.String,System.String,System.Net.Http.HttpClient)">
+            <summary>
+            Load the source: a local evidence file when present, otherwise the URL
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceMatch">
+            <summary>
+            Verification state of one lex entry against its source
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceMatch.Found">
+            <summary>All numbers of the entry are found in the source</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceMatch.Partial">
+            <summary>Some numbers are found, others are not</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceMatch.NotFound">
+            <summary>None of the numbers is found</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceMatch.Unreadable">
+            <summary>The source cannot be read (blocked, script-only page, PDF)</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceMatch.NoNumbers">
+            <summary>The entry holds no numbers to look for</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceResult">
+            <summary>
+            Result for one entry
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceResult.Location">
+            <summary>Proposed source location (sections that hold the numbers)</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceVerifier">
+            <summary>
+            Looks up the numbers of lex entries in their source documents
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceVerifier.ContentNumbers(System.String)">
+            <summary>
+            Numbers of an entry content (scalars, object properties, array items); 0 and 1 carry no information
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceVerifier.Contains(System.Collections.Generic.HashSet{System.Decimal},System.Decimal)">
+            <summary>
+            A number matches when the source holds it, as a rate (0.085 as 8.5 or 8,5) or as it is
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceVerifier.Verify(PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue,PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceDocument)">
+            <summary>
+            Verify one entry against a source document
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexUrlStatus">
+            <summary>
+            Result of requesting one source URL
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexUrlStatus.Ok">
+            <summary>The page answers (2xx or redirect to an answering page)</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexUrlStatus.Blocked">
+            <summary>The host blocks scripted requests (401, 403, 429) or fails temporarily (5xx, timeout): not verifiable</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexUrlStatus.Dead">
+            <summary>The page does not exist (404, 410) or the host is unknown</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexUrlChecker">
+            <summary>
+            Requests the source URLs of lex manifests
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexUrlChecker.#ctor(System.Net.Http.HttpMessageHandler)">
+            <param name="handler">Optional message handler (tests)</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexUrlChecker.Check(System.String)">
+            <summary>
+            Check the URL (cached per run)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexUrlChecker.Urls(PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest)">
+            <summary>
+            All distinct http(s) URLs of the manifest: sources, entries and files
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexUrlChecker.Apply(PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest,PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexCheckResult)">
+            <summary>
+            Request all URLs of the manifest and record the result
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexUrlChecker.Dispose">
+            <inheritdoc />
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValidator">
             <summary>
             Validates a <see cref="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest"/> for structural correctness
@@ -2461,6 +2955,25 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.HasContentFile">
             <summary>
             Returns true if this value references an external file
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexVerifier">
+            <summary>
+            Verifies a snapshot against its manifest and the files in the .lex folder
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexVerifier.Verify(PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest,PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSnapshot,System.String)">
+            <summary>
+            Verify the snapshot. Returns the list of differences (empty = snapshot is intact and current).
+            </summary>
+            <param name="manifest">Manifest (lex.json)</param>
+            <param name="snapshot">Snapshot (snapshot.json)</param>
+            <param name="lexDirectory">Directory containing lex.json and snapshot.json</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexVerifier.ComputeSourceHash(PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            Recompute the source hash. Returns null when a file needed for the hash is missing (reported in errors).
+            Evidence copies in the .lex folder are the reference; an original outside .lex that differs from its copy is reported.
             </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImport">

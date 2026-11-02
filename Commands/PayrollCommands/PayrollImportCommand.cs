@@ -16,6 +16,7 @@ namespace PayrollEngine.PayrollConsole.Commands.PayrollCommands;
 /// </summary>
 [Command("PayrollImport")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class PayrollImportCommand : CommandBase<PayrollImportParameters>
 {
     private IScriptParser ScriptParser { get; } = new ScriptParser();

@@ -10,6 +10,7 @@ namespace PayrollEngine.PayrollConsole.Commands.DiagnosticsCommands;
 /// </summary>
 [Command("Stopwatch")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class StopwatchCommand : CommandBase<StopwatchParameters>
 {
     /// <summary>Process the variable</summary>

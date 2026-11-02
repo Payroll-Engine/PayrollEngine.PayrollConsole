@@ -11,6 +11,7 @@ namespace PayrollEngine.PayrollConsole.Commands.ScriptCommands;
 /// </summary>
 [Command("ScriptPublish")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class ScriptPublishCommand : CommandBase<ScriptPublishParameters>
 {
     /// <summary>Publish script</summary>

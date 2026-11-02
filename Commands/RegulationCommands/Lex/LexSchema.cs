@@ -60,9 +60,36 @@ internal static class LexSchema
               "items": {
                 "$ref": "#/$defs/file"
               }
+            },
+            "exclusions": {
+              "type": "array",
+              "description": "Documented exclusions from the coverage and sourceLocation checks. Excluded items are listed in the check report.",
+              "items": {
+                "$ref": "#/$defs/exclusion"
+              }
             }
           },
           "$defs": {
+            "exclusion": {
+              "type": "object",
+              "required": ["kind", "pattern", "reason"],
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["coverage", "sourceLocation"],
+                  "description": "coverage: regulation values without lex entry. sourceLocation: lex entries without sourceLocation."
+                },
+                "pattern": {
+                  "type": "string",
+                  "description": "Key pattern: Lookup, Lookup.Key, or a prefix with trailing '*'. A name also matches all keys below it."
+                },
+                "reason": {
+                  "type": "string",
+                  "description": "Mandatory justification for the exclusion"
+                }
+              }
+            },
             "source": {
               "type": "object",
               "required": ["url"],

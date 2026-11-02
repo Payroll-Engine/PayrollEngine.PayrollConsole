@@ -11,6 +11,7 @@ namespace PayrollEngine.PayrollConsole.Commands.HttpCommands;
 /// </summary>
 [Command("HttpPost")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class HttpPostCommand : HttpCommandBase<HttpPostParameters>
 {
     /// <summary>Http POST request</summary>

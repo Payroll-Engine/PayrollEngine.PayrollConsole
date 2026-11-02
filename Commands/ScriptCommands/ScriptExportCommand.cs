@@ -14,6 +14,7 @@ namespace PayrollEngine.PayrollConsole.Commands.ScriptCommands;
 /// </summary>
 [Command("ScriptExport")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class ScriptExportCommand : CommandBase<ScriptExportParameters>
 {
     /// <summary>Export script</summary>

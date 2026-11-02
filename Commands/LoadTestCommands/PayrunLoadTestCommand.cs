@@ -19,6 +19,7 @@ namespace PayrollEngine.PayrollConsole.Commands.LoadTestCommands;
 /// <summary>Execute payrun load test with timing metrics</summary>
 [Command("PayrunLoadTest")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParameters>
 {
     public override bool BackendCommand => true;
@@ -288,6 +289,7 @@ internal sealed class PayrunLoadTestCommand : CommandBase<PayrunLoadTestParamete
 
     // ReSharper disable once IdentifierTypo
     [StructLayout(LayoutKind.Sequential)]
+    // ReSharper disable once InconsistentNaming
     private struct MEMORYSTATUSEX
     {
         internal uint dwLength;

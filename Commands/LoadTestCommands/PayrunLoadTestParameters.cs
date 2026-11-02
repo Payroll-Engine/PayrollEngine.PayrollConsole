@@ -40,10 +40,10 @@ public class PayrunLoadTestParameters : ICommandParameters
     private static string ResolveExcelFile(CommandLineParser parser)
     {
         // explicit path: /ExcelFile=path/to/report.xlsx
-        var explicit_ = parser.GetByName(nameof(ExcelReport));
-        if (!string.IsNullOrWhiteSpace(explicit_))
+        var explicitName = parser.GetByName(nameof(ExcelReport));
+        if (!string.IsNullOrWhiteSpace(explicitName))
         {
-            return explicit_;
+            return explicitName;
         }
 
         // toggle only: /ExcelReport → derive from CSV path
@@ -58,10 +58,10 @@ public class PayrunLoadTestParameters : ICommandParameters
     private static string ResolveMarkdownFile(CommandLineParser parser)
     {
         // explicit path: /MarkdownFile=path/to/report.md
-        var explicit_ = parser.GetByName(nameof(MarkdownReport));
-        if (!string.IsNullOrWhiteSpace(explicit_))
+        var explicitName = parser.GetByName(nameof(MarkdownReport));
+        if (!string.IsNullOrWhiteSpace(explicitName))
         {
-            return explicit_;
+            return explicitName;
         }
 
         // toggle only: /MarkdownReport → derive from CSV path

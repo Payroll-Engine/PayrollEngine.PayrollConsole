@@ -134,6 +134,7 @@ internal static class SheetExtensions
     extension(ICell cell)
     {
         private bool IsDateCell() =>
+            // ReSharper disable once MergeIntoPattern
             cell.DateCellValue.HasValue && cell.DateCellValue.Value.Year > 1950;
 
         internal ValueType GetValueType()

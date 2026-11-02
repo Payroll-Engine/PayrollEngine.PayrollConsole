@@ -18,6 +18,7 @@ public enum ProgramExitCode
     /// <summary>
     /// Command file error (from client core command)
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     CommandFile = -2,
 
     /// <summary>

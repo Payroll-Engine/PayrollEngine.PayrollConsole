@@ -14,6 +14,7 @@ namespace PayrollEngine.PayrollConsole.Commands.PayrunCommands;
 /// </summary>
 [Command("PayrunStatistics")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class PayrunStatisticsCommand : CommandBase<PayrunStatisticsParameters>
 {
     /// <summary>Show the payrun statistics</summary>

@@ -7,7 +7,7 @@ namespace PayrollEngine.PayrollConsole.Commands.ReportCommands;
 public class ReportBuildParameters : ICommandParameters
 {
     /// <summary>Default parameter file name</summary>
-    public readonly string DefaultParameterFileName = "parameters.json";
+    public const string DefaultParameterFileName = "parameters.json";
 
     /// <summary>Tenant</summary>
     public string Tenant { get; init; }

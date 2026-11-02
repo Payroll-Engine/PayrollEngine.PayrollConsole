@@ -14,6 +14,7 @@ namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 /// </summary>
 [Command("LookupTextImport")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 public sealed class LookupTextImportCommand : CommandBase<LookupTextImportParameters>
 {
     /// <inheritdoc />

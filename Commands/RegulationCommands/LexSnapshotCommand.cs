@@ -15,6 +15,7 @@ namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 /// </summary>
 [Command("LexSnapshot")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
 {
     private static readonly JsonSerializerOptions ReadOptions = new()
@@ -34,6 +35,13 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
         }
 
         DisplayTitle(context.Console, "Lex Snapshot");
+        if (context.DisplayLevel == DisplayLevel.Full)
+        {
+            context.Console.DisplayTextLine($"File mask        {parameters.FileMask}");
+            context.Console.DisplayTextLine($"Target path      {(string.IsNullOrWhiteSpace(parameters.TargetPath) ? "-" : parameters.TargetPath)}");
+            context.Console.DisplayTextLine($"Snapshot mode    {parameters.SnapshotMode}");
+            context.Console.DisplayTextLine($"Directory mode   {parameters.DirectoryMode}");
+        }
         var dryRun = parameters.SnapshotMode == LexSnapshotMode.DryRun;
         if (dryRun)
         {

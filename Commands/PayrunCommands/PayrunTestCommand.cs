@@ -18,6 +18,7 @@ namespace PayrollEngine.PayrollConsole.Commands.PayrunCommands;
 /// </summary>
 [Command("PayrunTest")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class PayrunTestCommand : PayrunTestCommandBase<PayrunTestParameters>
 {
     private IScriptParser ScriptParser { get; } = new ScriptParser();

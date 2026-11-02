@@ -12,6 +12,7 @@ namespace PayrollEngine.PayrollConsole.Commands.PayrunCommands;
 /// </summary>
 [Command("PayrunRebuild")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class PayrunRebuildCommand : CommandBase<PayrunRebuildParameters>
 {
     /// <summary>Rebuild the payrun</summary>

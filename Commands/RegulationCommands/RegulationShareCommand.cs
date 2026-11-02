@@ -16,6 +16,7 @@ namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 /// </summary>
 [Command("RegulationShare")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class RegulationShareCommand : CommandBase<RegulationShareParameters>
 {
     /// <summary>Regulation share setup</summary>

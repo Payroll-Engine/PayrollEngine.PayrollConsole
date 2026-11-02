@@ -9,6 +9,7 @@ namespace PayrollEngine.PayrollConsole.Commands.HttpCommands;
 /// </summary>
 [Command("HttpDelete")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class HttpDeleteCommand : HttpCommandBase<HttpDeleteParameters>
 {
     /// <summary>Http DELETE request</summary>
