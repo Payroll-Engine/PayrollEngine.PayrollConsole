@@ -195,8 +195,8 @@ Uses `IEmployeeService.QueryAsync()` with OData `contains()` filter, then delete
 **Examples:**
 
 ```shell
-LoadTestCleanup CH.Swissdec
-LoadTestCleanup CH.Swissdec -C00
+LoadTestCleanup Demo.Tenant
+LoadTestCleanup Demo.Tenant -C00
 ```
 
 ## Workflow

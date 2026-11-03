@@ -489,10 +489,10 @@ The `lex.json` file documents the provenance of compliance values in a data regu
 ```json
 {
   "$schema": "https://payrollengine.org/schemas/lex/v1.json",
-  "authority": "DE",
-  "regulation": "Data.LSt",
+  "authority": "XX",
+  "regulation": "Data.Tax",
   "validFrom": "2026-01-01",
-  "provider": "BMF",
+  "provider": "Tax authority",
   "sources": [ ],
   "values": [ ],
   "files": [ ]
@@ -507,7 +507,7 @@ The `lex.json` file documents the provenance of compliance values in a data regu
 | `authority` | string | **Yes** | Country/jurisdiction code (`DE`, `CH`, `SG`, `UK`, ...) |
 | `regulation` | string | **Yes** | Regulation identifier (`Data.LSt`, `Data.QST`, `Data.CPF`, ...) |
 | `validFrom` | string | **Yes** | Effective date in `YYYY-MM-DD` format |
-| `provider` | string | No | Issuing authority (`BMF`, `ESTV`, `HMRC`, `IRAS`, ...) |
+| `provider` | string | No | Issuing authority or data provider (`Tax authority`, `Social security agency`, ...) |
 | `sources` | array | No | Document-level source references (general provenance) |
 | `values` | array | No | Compliance values with content and precise provenance |
 | `files` | array | No | Source documents to copy into the `.lex` folder |
@@ -518,7 +518,7 @@ The `lex.json` file documents the provenance of compliance values in a data regu
 |:---------|:--------:|:------------|
 | `url` | **Yes** | URL to the source document or page |
 | `description` | No | Human-readable description |
-| `legalBasis` | No | Legal basis (e.g. `§39b EStG`, `DBG Art. 83-101`) |
+| `legalBasis` | No | Legal basis (e.g. `Income Tax Act §12`, `Act 123/2025 Art. 4`) |
 
 **`values[]` — compliance values:**
 
@@ -532,7 +532,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 | `unit` | No | Unit of measure (`EUR`, `%`, `CHF`, `SGD`, ...) |
 | `sourceUrl` | No | URL where this specific value can be found |
 | `sourceLocation` | No | Precise location within the source document (free text) |
-| `legalReference` | No | Legal norm reference (e.g. `§32a EStG`) |
+| `legalReference` | No | Legal norm reference (e.g. `Income Tax Act §12(1)`) |
 | `description` | No | Human-readable description |
 
 **`content` vs. `contentFile` — when to use which:**
@@ -542,19 +542,19 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 | Data size | Small — scalars, compact JSON objects | Large — tariff tables, full lookup files |
 | Readability | Value visible inline in `lex.json` | Value in separate file |
 | Snapshot | Embedded in `snapshot.json` values | File copied into `.lex`, referenced by name |
-| Typical examples | `"12096"`, `"0.145"`, `"{\"Rate\":0.2}"` | `"../Lookups/Lookups.QstBe.json"` |
+| Typical examples | `"12000"`, `"0.145"`, `"{\"Rate\":0.2}"` | `"../Lookups/Lookups.Brackets.json"` |
 
 **`sourceLocation` — examples by source type:**
 
 | Source type | Example value |
 |:------------|:--------------|
-| PDF document | `"PAP 2026, Page 12, Section 3.2.1"` |
-| Legal paragraph | `"§32a Abs. 1 S. 2 Nr. 1 EStG"` |
-| Government gazette | `"BGBl. I Nr. 153/2023, Anlage 1, Tabelle 3, Zeile 5"` |
+| PDF document | `"Calculation guide 2026, Page 12, Section 3.2.1"` |
+| Legal paragraph | `"Income Tax Act §12(1) sentence 2 no. 1"` |
+| Government gazette | `"Gazette 153/2023, Annex 1, Table 3, Row 5"` |
 | Website with anchors | `"Section 'Tax rates and bands', Table 2026-27"` |
-| Circular / directive | `"Rundschreiben 2025/42, Randziffer 18"` |
-| ESTV tariff file | `"Datei tar22be.txt — converted via pecmd LookupTextImport"` |
-| MOM / government portal | `"cpf.gov.sg > Employers > CPF contribution rates, Table 1"` |
+| Circular / directive | `"Circular 2025/42, margin number 18"` |
+| Tariff file | `"File tariff-a.txt — converted via pecmd LookupTextImport"` |
+| Government portal | `"portal > Employers > Contribution rates, Table 1"` |
 
 **`files[]` — source documents:**
 
@@ -590,76 +590,76 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 
 #### Examples
 
-**Minimal (DE Data.LSt — scalar values):**
+**Minimal (scalar values):**
 
 ```json
 {
   "$schema": "https://payrollengine.org/schemas/lex/v1.json",
-  "authority": "DE",
-  "regulation": "Data.LSt",
+  "authority": "XX",
+  "regulation": "Data.Tax",
   "validFrom": "2026-01-01",
-  "provider": "BMF",
+  "provider": "Tax authority",
   "sources": [
     {
-      "url": "https://www.bundesfinanzministerium.de/Content/DE/Downloads/Steuern/PAP2026.pdf",
-      "description": "Programmablaufplan 2026 (BMF 14.8.2025)",
-      "legalBasis": "§39b EStG"
+      "url": "https://example.org/tax/calculation-guide-2026.pdf",
+      "description": "Calculation guide 2026",
+      "legalBasis": "Income Tax Act §12"
     }
   ],
   "values": [
     {
-      "key": "Grundfreibetrag",
-      "content": "12096",
+      "key": "TaxParameter.AllowanceBasic",
+      "content": "12000",
       "unit": "EUR",
-      "sourceUrl": "https://www.bundesfinanzministerium.de/Content/DE/Downloads/Steuern/PAP2026.pdf",
-      "sourceLocation": "PAP 2026, Abschnitt 3.2.1, Schritt UPTAB",
-      "legalReference": "§32a Abs. 1 S. 2 Nr. 1 EStG",
+      "sourceUrl": "https://example.org/tax/calculation-guide-2026.pdf",
+      "sourceLocation": "Calculation guide 2026, Section 3.2.1",
+      "legalReference": "Income Tax Act §12(1) sentence 2 no. 1",
       "description": "Basic tax-free allowance"
     }
   ],
   "files": [
     {
-      "fileName": "PAP2026.pdf",
-      "sourcePath": "C:/Sources/PAP2026.pdf",
-      "sourceUrl": "https://www.bundesfinanzministerium.de/Content/DE/Downloads/Steuern/PAP2026.pdf",
-      "description": "Programmablaufplan 2026 (BMF 14.8.2025)"
+      "fileName": "calculation-guide-2026.pdf",
+      "sourcePath": "C:/Sources/calculation-guide-2026.pdf",
+      "sourceUrl": "https://example.org/tax/calculation-guide-2026.pdf",
+      "description": "Calculation guide 2026"
     }
   ]
 }
 ```
 
-**Large data via `contentFile` (CH Data.QST — canton tariff tables):**
+**Large data via `contentFile` (region tariff tables):**
 
 ```json
 {
   "$schema": "https://payrollengine.org/schemas/lex/v1.json",
-  "authority": "CH",
-  "regulation": "Data.QST",
-  "validFrom": "2022-01-01",
-  "provider": "ESTV",
+  "authority": "XX",
+  "regulation": "Data.Brackets",
+  "validFrom": "2026-01-01",
+  "provider": "Tax authority",
   "sources": [
     {
-      "url": "https://www.estv.admin.ch/de/quellensteuertarife-import-in-lohnbuchhaltungssysteme",
-      "description": "ESTV — Quellensteuertarife 2022",
-      "legalBasis": "DBG Art. 83-101, StHG"
+      "url": "https://example.org/tax/tariffs",
+      "description": "Withholding tariffs 2026",
+      "legalBasis": "Income Tax Act §20"
     }
   ],
   "values": [
     {
-      "key": "QstCantons.BE",
-      "content": "{\"name\":\"CH.BE\",\"Median\":0,\"CalculationCycle\":\"M\"}",
-      "sourceUrl": "https://www.estv.admin.ch/de/quellensteuertarife-import-in-lohnbuchhaltungssysteme",
-      "sourceLocation": "Datei tar22be.txt / tar22be.zip",
-      "legalReference": "DBG Art. 85, StHG Art. 32-33",
-      "description": "Canton Bern — metadata (monthly model)"
+      "key": "RegionParameter.A",
+      "content": "{\"name\":\"A\",\"Median\":0,\"CalculationCycle\":\"M\"}",
+      "sourceUrl": "https://example.org/tax/tariffs",
+      "sourceLocation": "File tariff-a.txt",
+      "legalReference": "Income Tax Act §20(2)",
+      "description": "Region A — metadata (monthly model)"
     },
     {
-      "key": "QstTarif.BE",
-      "contentFile": "../Lookups/Lookups.QstBe.json",
-      "sourceUrl": "https://www.estv.admin.ch/de/quellensteuertarife-import-in-lohnbuchhaltungssysteme",
-      "sourceLocation": "Datei tar22be.txt — converted via pecmd LookupTextImport",
-      "legalReference": "DBG Art. 83-101",
-      "description": "Canton Bern — full tariff bracket table"
+      "key": "RegionTariff.A",
+      "contentFile": "../Lookups/Lookups.RegionA.json",
+      "sourceUrl": "https://example.org/tax/tariffs",
+      "sourceLocation": "File tariff-a.txt — converted via pecmd LookupTextImport",
+      "legalReference": "Income Tax Act §20",
+      "description": "Region A — full tariff bracket table"
     }
   ]
 }
@@ -1078,8 +1078,8 @@ Delete load test employees from a tenant. Identifies test employees by a filter 
 
 **Examples:**
 ```cmd
-LoadTestCleanup CH.Swissdec
-LoadTestCleanup CH.Swissdec -C00
+LoadTestCleanup Demo.Tenant
+LoadTestCleanup Demo.Tenant -C00
 ```
 
 See `Commands/LoadTestCommands/README.md` for detailed documentation including workflow, PECMD scripts, CSV format, and server-side metrics.

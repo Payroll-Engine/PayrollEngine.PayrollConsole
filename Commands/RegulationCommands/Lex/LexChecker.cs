@@ -53,6 +53,7 @@ internal sealed class LexCheckResult
     // documented exclusions
     internal int ExcludedCoverage { get; set; }
     internal int ExcludedSourceLocation { get; set; }
+    internal int ExcludedOrphans { get; set; }
     internal List<string> ExclusionNotes { get; } = [];
     internal int MissingLegalReference { get; set; }
 
@@ -321,6 +322,7 @@ internal static class LexChecker
         }
 
         var coverageExclusions = manifest.Exclusions.Where(x => x.Kind == LexExclusion.KindCoverage).ToList();
+        var orphanExclusions = manifest.Exclusions.Where(x => x.Kind == LexExclusion.KindOrphan).ToList();
         var usedExclusions = new HashSet<LexExclusion>();
         var coveredLookups = new HashSet<string>(StringComparer.Ordinal);
         foreach (var entry in manifest.Values)
@@ -367,6 +369,13 @@ internal static class LexChecker
             }
             if (!matched)
             {
+                var orphanExclusion = orphanExclusions.FirstOrDefault(x => x.Matches(entry.Key));
+                if (orphanExclusion != null)
+                {
+                    usedExclusions.Add(orphanExclusion);
+                    result.ExcludedOrphans++;
+                    continue;
+                }
                 result.Orphans++;
                 AddSample(result.OrphanSamples, entry.Key);
             }
@@ -401,6 +410,10 @@ internal static class LexChecker
         foreach (var exclusion in coverageExclusions.Where(x => !usedExclusions.Contains(x)))
         {
             result.ValidationErrors.Add($"Exclusion (coverage) '{exclusion.Pattern}' matches no uncovered value: remove it");
+        }
+        foreach (var exclusion in orphanExclusions.Where(x => !usedExclusions.Contains(x)))
+        {
+            result.ValidationErrors.Add($"Exclusion (orphan) '{exclusion.Pattern}' matches no lex entry without regulation value: remove it");
         }
     }
 

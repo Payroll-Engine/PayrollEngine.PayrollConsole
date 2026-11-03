@@ -113,7 +113,7 @@ internal static class LexCheckReport
             foreach (var r in excluded)
             {
                 text.AppendLine();
-                text.AppendLine($"### {r.Satellite} ({r.ExcludedCoverage} values, {r.ExcludedSourceLocation} entries)");
+                text.AppendLine($"### {r.Satellite} ({r.ExcludedCoverage} values, {r.ExcludedSourceLocation} entries without location, {r.ExcludedOrphans} entries without value)");
                 text.AppendLine();
                 foreach (var note in r.ExclusionNotes) text.AppendLine($"- {note}");
             }

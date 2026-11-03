@@ -21,13 +21,13 @@ internal static class LexSchema
             },
             "authority": {
               "type": "string",
-              "description": "Country/jurisdiction code (e.g. DE, CH, SG, US)",
-              "examples": ["DE", "CH", "SG", "UK", "US"]
+              "description": "Country/jurisdiction code (e.g. XX)",
+              "examples": ["XX"]
             },
             "regulation": {
               "type": "string",
-              "description": "Regulation identifier — typically the Data satellite name (e.g. Data.LSt, Data.QST)",
-              "examples": ["Data.LSt", "Data.SV", "Data.QST", "Data.CPF"]
+              "description": "Regulation identifier — typically the Data satellite name (e.g. Data.Tax, Data.Rates)",
+              "examples": ["Data.Tax", "Data.Rates", "Data.Brackets"]
             },
             "validFrom": {
               "type": "string",
@@ -37,8 +37,8 @@ internal static class LexSchema
             },
             "provider": {
               "type": "string",
-              "description": "Issuing authority or data provider (e.g. BMF, ESTV, HMRC, IRAS)",
-              "examples": ["BMF", "ESTV", "HMRC", "IRAS", "cpf.gov.sg"]
+              "description": "Issuing authority or data provider (e.g. Tax authority)",
+              "examples": ["Tax authority", "Social security agency"]
             },
             "sources": {
               "type": "array",
@@ -77,8 +77,8 @@ internal static class LexSchema
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["coverage", "sourceLocation"],
-                  "description": "coverage: regulation values without lex entry. sourceLocation: lex entries without sourceLocation."
+                  "enum": ["coverage", "sourceLocation", "orphan"],
+                  "description": "coverage: regulation values without lex entry. sourceLocation: lex entries without sourceLocation. orphan: lex entries without regulation value (evidence of a rule implemented in code)."
                 },
                 "pattern": {
                   "type": "string",
@@ -106,8 +106,8 @@ internal static class LexSchema
                 },
                 "legalBasis": {
                   "type": "string",
-                  "description": "Legal basis (e.g. §39b EStG, DBG Art. 83-101)",
-                  "examples": ["§39b EStG", "DBG Art. 83-101, StHG, QStV", "Employment Act s.38"]
+                  "description": "Legal basis (e.g. Income Tax Act §12, Act 123/2025 Art. 4)",
+                  "examples": ["Income Tax Act §12", "Act 123/2025 Art. 4", "Employment Act s.38"]
                 }
               }
             },
@@ -144,12 +144,12 @@ internal static class LexSchema
                 },
                 "sourceLocation": {
                   "type": "string",
-                  "description": "Precise location within the source document (free text). Examples: 'PAP 2026, Page 12, Section 3.2.1', '§32a Abs. 1 S. 2 Nr. 1 EStG', 'Datei tar22be.txt / tar22be.zip'"
+                  "description": "Precise location within the source document (free text). Examples: 'Calculation guide 2026, Page 12, Section 3.2.1', 'Income Tax Act §12(1) sentence 2', 'File tariff-a.txt'"
                 },
                 "legalReference": {
                   "type": "string",
                   "description": "Legal norm reference",
-                  "examples": ["§32a EStG", "DBG Art. 85", "Employment Act s.35(1)"]
+                  "examples": ["Income Tax Act §12(1)", "Act 123/2025 Art. 4", "Employment Act s.35(1)"]
                 },
                 "description": {
                   "type": "string",

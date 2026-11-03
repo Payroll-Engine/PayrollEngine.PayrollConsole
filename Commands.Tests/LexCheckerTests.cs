@@ -100,6 +100,27 @@ public class LexCheckerTests
     }
 
     [Fact]
+    public void OrphanExclusion_IsNotOrphan_AndUnusedOneIsFinding()
+    {
+        using var s = new TestSatellite();
+        s.WriteRegulation(TwoValues);
+        File.WriteAllText(Path.Combine(s.LexDirectory, "snapshot.json"), "{}");
+        var manifest = TestSatellite.Manifest(
+            TestSatellite.Value("Rates.A", "7.5"), TestSatellite.Value("Rates.B", "10"),
+            TestSatellite.Value("Evidence.X", "1"));
+
+        var result = LexChecker.Check(WithExclusions(manifest,
+            new LexExclusion { Kind = LexExclusion.KindOrphan, Pattern = "Evidence.*", Reason = "test" }), s.LexPath);
+        Assert.Equal(0, result.Orphans);
+        Assert.Equal(1, result.ExcludedOrphans);
+        Assert.False(result.HasFindings);
+
+        var unused = LexChecker.Check(WithExclusions(manifest,
+            new LexExclusion { Kind = LexExclusion.KindOrphan, Pattern = "Other.*", Reason = "test" }), s.LexPath);
+        Assert.True(unused.HasFindings);
+    }
+
+    [Fact]
     public void UnusedExclusion_IsFinding()
     {
         using var s = new TestSatellite();

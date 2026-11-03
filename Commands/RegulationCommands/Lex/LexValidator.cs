@@ -75,9 +75,10 @@ internal static class LexValidator
         // exclusions
         foreach (var exclusion in manifest.Exclusions)
         {
-            if (exclusion.Kind != LexExclusion.KindCoverage && exclusion.Kind != LexExclusion.KindSourceLocation)
+            if (exclusion.Kind != LexExclusion.KindCoverage && exclusion.Kind != LexExclusion.KindSourceLocation &&
+                exclusion.Kind != LexExclusion.KindOrphan)
             {
-                errors.Add($"Exclusion '{exclusion.Pattern}': kind must be '{LexExclusion.KindCoverage}' or '{LexExclusion.KindSourceLocation}'");
+                errors.Add($"Exclusion '{exclusion.Pattern}': kind must be '{LexExclusion.KindCoverage}', '{LexExclusion.KindSourceLocation}' or '{LexExclusion.KindOrphan}'");
             }
             if (string.IsNullOrWhiteSpace(exclusion.Pattern))
             {

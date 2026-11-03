@@ -14,9 +14,13 @@ public sealed class LexExclusion
     /// <summary>Kind: lex entries without sourceLocation</summary>
     public const string KindSourceLocation = "sourceLocation";
 
+    /// <summary>Kind: lex entries without a regulation value (evidence of a rule that is implemented in code or derived values)</summary>
+    public const string KindOrphan = "orphan";
+
     /// <summary>
-    /// Exclusion kind: <c>coverage</c> (regulation values without lex entry) or
-    /// <c>sourceLocation</c> (lex entries without sourceLocation)
+    /// Exclusion kind: <c>coverage</c> (regulation values without lex entry),
+    /// <c>sourceLocation</c> (lex entries without sourceLocation) or
+    /// <c>orphan</c> (lex entries without regulation value)
     /// </summary>
     public string Kind { get; init; }
 

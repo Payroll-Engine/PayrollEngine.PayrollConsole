@@ -22,7 +22,7 @@ public sealed class LexManifest
     public string Authority { get; init; }
 
     /// <summary>
-    /// Regulation identifier (e.g. Data.LSt, Data.QST)
+    /// Regulation identifier (e.g. Data.Tax, Data.Rates)
     /// </summary>
     public string Regulation { get; init; }
 
@@ -32,7 +32,7 @@ public sealed class LexManifest
     public string ValidFrom { get; init; }
 
     /// <summary>
-    /// Issuing authority (e.g. BMF, ESTV, HMRC)
+    /// Issuing authority (e.g. Tax authority)
     /// </summary>
     public string Provider { get; init; }
 

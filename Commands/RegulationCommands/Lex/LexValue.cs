@@ -46,7 +46,7 @@ public sealed class LexValue
     public string SourceLocation { get; init; }
 
     /// <summary>
-    /// Legal norm reference (e.g. §32a EStG)
+    /// Legal norm reference (e.g. Income Tax Act §12(1))
     /// </summary>
     public string LegalReference { get; init; }
 

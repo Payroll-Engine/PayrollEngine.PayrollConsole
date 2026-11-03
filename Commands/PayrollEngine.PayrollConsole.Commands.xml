@@ -2484,10 +2484,14 @@
         <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexExclusion.KindSourceLocation">
             <summary>Kind: lex entries without sourceLocation</summary>
         </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexExclusion.KindOrphan">
+            <summary>Kind: lex entries without a regulation value (evidence of a rule that is implemented in code or derived values)</summary>
+        </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexExclusion.Kind">
             <summary>
-            Exclusion kind: <c>coverage</c> (regulation values without lex entry) or
-            <c>sourceLocation</c> (lex entries without sourceLocation)
+            Exclusion kind: <c>coverage</c> (regulation values without lex entry),
+            <c>sourceLocation</c> (lex entries without sourceLocation) or
+            <c>orphan</c> (lex entries without regulation value)
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexExclusion.Pattern">
@@ -2586,7 +2590,7 @@
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.Regulation">
             <summary>
-            Regulation identifier (e.g. Data.LSt, Data.QST)
+            Regulation identifier (e.g. Data.Tax, Data.Rates)
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.ValidFrom">
@@ -2596,7 +2600,7 @@
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.Provider">
             <summary>
-            Issuing authority (e.g. BMF, ESTV, HMRC)
+            Issuing authority (e.g. Tax authority)
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexManifest.Sources">
@@ -2748,7 +2752,7 @@
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSource.LegalBasis">
             <summary>
-            Legal basis (e.g. §39b EStG)
+            Legal basis (e.g. Income Tax Act §12)
             </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexSourceState">
@@ -2939,7 +2943,7 @@
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.LegalReference">
             <summary>
-            Legal norm reference (e.g. §32a EStG)
+            Legal norm reference (e.g. Income Tax Act §12(1))
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexValue.Description">
