@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Lex;
+using PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex;
 
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 
@@ -52,7 +53,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             }
 
             var results = new List<LexCheckResult>();
-            using var urlChecker = parameters.UrlMode == LexUrlMode.CheckUrls ? new LexUrlChecker() : null;
+            using var urlChecker = parameters.UrlMode == LexUrlMode.CheckUrls ? new LexUrlChecker(LexWorkbookReader.Readers) : null;
             foreach (var lexFile in files)
             {
                 results.Add(await CheckFile(lexFile, parameters.LocationMode == LexLocationMode.Required, urlChecker));
@@ -127,6 +128,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         if (result.Drift > 0)
             console.DisplayErrorLine($"         {result.Drift} value difference(s): {string.Join("; ", result.DriftSamples)}");
         foreach (var url in result.DeadUrls) console.DisplayErrorLine($"         source URL not found: {url}");
+        foreach (var url in result.ChangedSources) console.DisplayErrorLine($"         source changed, check value: {url}");
         if (result.MissingSourceUrl + (result.RequireLocation ? result.MissingSourceLocation : 0) + result.MissingLegalReference > 0)
             console.DisplayErrorLine($"         missing fields: sourceUrl {result.MissingSourceUrl}, sourceLocation {result.MissingSourceLocation}, legalReference {result.MissingLegalReference}");
         foreach (var problem in result.FileProblems) console.DisplayErrorLine($"         evidence: {problem}");
@@ -159,7 +161,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("          directory mode: /top (default) or /recursive");
         console.DisplayTextLine("          result mode: /strict (default, findings give exit code 6) or /lenient (report only)");
         console.DisplayTextLine("          source location: /optional (default, a missing sourceLocation is information) or /required (finding)");
-        console.DisplayTextLine("          source URLs: /skipurls (default) or /checkurls (404/410 or unknown host is a finding, a blocking host a note)");
+        console.DisplayTextLine("          source URLs: /skipurls (default) or /checkurls (404/410 or unknown host is a finding, a blocking host a note;");
+        console.DisplayTextLine("                       a source whose normalized text differs from the snapshot hash is a finding: check the value)");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          LexCheck .lex/lex.json");
         console.DisplayTextLine("          LexCheck lex.json /recursive /lenient Report:C:\\Reports\\LexCheck.md");

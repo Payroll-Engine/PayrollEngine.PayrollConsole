@@ -1,10 +1,13 @@
 using System;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Lex;
+using PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex;
 
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 
@@ -60,9 +63,10 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
 
             int processed = 0, skipped = 0, failed = 0;
 
+            using var client = LexSourceDocument.CreateHttpClient();
             foreach (var lexFile in files)
             {
-                var result = await ProcessLexFile(context, lexFile, parameters, dryRun);
+                var result = await ProcessLexFile(context, lexFile, parameters, dryRun, client);
                 switch (result)
                 {
                     case ProcessResult.Created:
@@ -96,7 +100,8 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
         CommandContext context,
         string lexFilePath,
         LexSnapshotParameters parameters,
-        bool dryRun)
+        bool dryRun,
+        HttpClient client)
     {
         var manifestDir = Path.GetDirectoryName(lexFilePath)!;
         var targetDir = string.IsNullOrWhiteSpace(parameters.TargetPath)
@@ -153,11 +158,18 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
                         context.Console.DisplayInfoLine($"         Downloading {fileName} ...");
                     }
                 },
-                keepLocalFiles: parameters.OverwriteMode == LexOverwriteMode.Overwrite);
+                keepLocalFiles: parameters.OverwriteMode == LexOverwriteMode.Overwrite,
+                loadLiveSource: url => LexSourceDocument.LoadLive(url, client, LexWorkbookReader.Readers));
 
             var label = dryRun ? "[DRY-RUN]" : "[OK]";
             context.Console.DisplaySuccessLine(
                 $"  {label} {lexFilePath} — {snapshot.Values.Count} values, {snapshot.Files.Count} files");
+            if (snapshot.LiveSources != null)
+            {
+                var unreadable = snapshot.LiveSources.Count(x => x.TextHash == null);
+                context.Console.DisplayInfoLine(
+                    $"         live sources: {snapshot.LiveSources.Count - unreadable} hashed, {unreadable} not readable (no change detection)");
+            }
 
             return ProcessResult.Created;
         }
@@ -181,6 +193,8 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
         console.DisplayTitleLine("- LexSnapshot");
         console.DisplayTextLine("      Create a compliance snapshot from a lex.json source manifest.");
         console.DisplayTextLine("      The snapshot is self-contained: all referenced files are copied into the .lex folder.");
+        console.DisplayTextLine("      The snapshot records a hash of the normalized text of every source URL (LexCheck /checkurls");
+        console.DisplayTextLine("      reports changed sources); unreadable sources (blocked host, PDF) get no hash. Not in dry-run mode.");
         console.DisplayTextLine("      If snapshot.json already exists, the folder is skipped (info message only), unless /overwrite is set.");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. file name or file mask [FileMask] (e.g. lex.json or **/lex.json)");

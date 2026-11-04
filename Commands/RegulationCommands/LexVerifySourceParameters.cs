@@ -15,8 +15,25 @@ public enum LexSourceWriteMode
 
     /// <summary>
     /// Write the found source location into entries without sourceLocation
+    /// and the automatic verification record into entries whose numbers were all found
     /// </summary>
     WriteLocations
+}
+
+/// <summary>
+/// LexVerifySource source mode
+/// </summary>
+public enum LexSourceMode
+{
+    /// <summary>
+    /// Verify against the local evidence file in the .lex folder (default, reproducible and offline)
+    /// </summary>
+    Local,
+
+    /// <summary>
+    /// Verify against the live source URL
+    /// </summary>
+    Live
 }
 
 /// <summary>
@@ -44,8 +61,13 @@ public class LexVerifySourceParameters : ICommandParameters
     /// </summary>
     public LexSourceWriteMode WriteMode { get; private init; } = LexSourceWriteMode.ReportOnly;
 
+    /// <summary>
+    /// Source mode: local evidence file (default) or live source URL
+    /// </summary>
+    public LexSourceMode SourceMode { get; private init; } = LexSourceMode.Local;
+
     /// <inheritdoc />
-    public Type[] Toggles => [typeof(DirectoryMode), typeof(LexCheckMode), typeof(LexSourceWriteMode)];
+    public Type[] Toggles => [typeof(DirectoryMode), typeof(LexCheckMode), typeof(LexSourceWriteMode), typeof(LexSourceMode)];
 
     /// <inheritdoc />
     public string Test() =>
@@ -60,6 +82,7 @@ public class LexVerifySourceParameters : ICommandParameters
             FileMask = parser.Get(2, nameof(FileMask)),
             DirectoryMode = parser.GetEnumToggle(DirectoryMode.Top),
             CheckMode = parser.GetEnumToggle(LexCheckMode.Lenient),
-            WriteMode = parser.GetEnumToggle(LexSourceWriteMode.ReportOnly)
+            WriteMode = parser.GetEnumToggle(LexSourceWriteMode.ReportOnly),
+            SourceMode = parser.GetEnumToggle(LexSourceMode.Local)
         };
 }

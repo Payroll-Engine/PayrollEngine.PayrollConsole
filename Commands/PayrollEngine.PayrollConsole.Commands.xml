@@ -2730,12 +2730,17 @@
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand">
             <summary>
-            Looks up the numbers of every lex entry in its source (web page, spreadsheet or local evidence file)
-            and, on request, writes the found source location into the manifest.
+            Looks up the numbers of every lex entry in its source (local evidence file or live web page/spreadsheet)
+            and, on request, writes the found source location and the automatic verification record into the manifest.
             </summary>
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters)">
             <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.WriteResults(PayrollEngine.Client.Command.CommandContext,System.String,System.String,System.Collections.Generic.List{PayrollEngine.Lex.LexSourceResult},System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Write the found source locations and the automatic verification records of fully found entries
+            </summary>
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.LocalEvidence(PayrollEngine.Lex.LexManifest,PayrollEngine.Lex.LexValue,System.String)">
             <summary>
@@ -2764,6 +2769,22 @@
         <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSourceWriteMode.WriteLocations">
             <summary>
             Write the found source location into entries without sourceLocation
+            and the automatic verification record into entries whose numbers were all found
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSourceMode">
+            <summary>
+            LexVerifySource source mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSourceMode.Local">
+            <summary>
+            Verify against the local evidence file in the .lex folder (default, reproducible and offline)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSourceMode.Live">
+            <summary>
+            Verify against the live source URL
             </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters">
@@ -2789,6 +2810,11 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.WriteMode">
             <summary>
             Write mode (default: report only)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.SourceMode">
+            <summary>
+            Source mode: local evidence file (default) or live source URL
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.Toggles">

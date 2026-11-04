@@ -1,0 +1,32 @@
+using PayrollEngine.Client.Command;
+using PayrollEngine.PayrollConsole.Commands.RegulationCommands;
+using Xunit;
+
+namespace PayrollEngine.PayrollConsole.Commands.Tests;
+
+public class LexVerifySourceParametersTests
+{
+    private static LexVerifySourceParameters Parse(params string[] arguments) =>
+        LexVerifySourceParameters.ParserFrom(new CommandLineParser(["pecmd", "LexVerifySource", .. arguments]));
+
+    [Fact]
+    public void SourceMode_DefaultsToLocal()
+    {
+        var parameters = Parse("lex.json");
+        Assert.Equal(LexSourceMode.Local, parameters.SourceMode);
+        Assert.Equal(LexSourceWriteMode.ReportOnly, parameters.WriteMode);
+    }
+
+    [Fact]
+    public void LiveToggle_SetsLiveMode()
+    {
+        var parameters = Parse("lex.json", "/recursive", "/live", "/writelocations");
+        Assert.Equal(LexSourceMode.Live, parameters.SourceMode);
+        Assert.Equal(LexSourceWriteMode.WriteLocations, parameters.WriteMode);
+        Assert.Equal(DirectoryMode.Recursive, parameters.DirectoryMode);
+    }
+
+    [Fact]
+    public void SourceMode_IsDeclaredToggle() =>
+        Assert.Contains(typeof(LexSourceMode), Parse("lex.json").Toggles);
+}
