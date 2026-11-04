@@ -98,6 +98,15 @@ The Payroll Console provides the following commands, grouped by area. For detail
 | `RegulationRebuild` | Rebuild the regulation objects |
 | `RegulationShare` | Manage regulation shares |
 | `InstallRegulationPackage` | Install a regulation NuGet package into a PE backend tenant |
+| `LexFetch` | Download a source document into the `.lex` folder of a data regulation |
+| `LexAdd` | Add a lex entry with value and provenance |
+| `LexVerifySource` | Look up the lex values in their sources, optionally record an automatic verification |
+| `LexAttest` | Record the manual verification and the second review of lex entries |
+| `LexSnapshot` | Create the compliance snapshot of a lex manifest |
+| `LexVerify` | Verify that the snapshot is intact and current |
+| `LexCheck` | Check lex manifests against the lookup values of their data regulation |
+| `LexApply` | Write the lex values into the lookup values of the data regulation |
+| `LexRollover` | Prepare the data regulation satellite of the next cycle |
 
 ### Load Test
 

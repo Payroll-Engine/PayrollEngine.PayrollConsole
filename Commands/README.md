@@ -429,11 +429,81 @@ PayrunTest Test.pt.json /single /showall /keeptest /TestPrecision3
 
 ## Regulation Commands
 
+The Lex commands document and check the provenance of the compliance values in a data regulation satellite. The manifest `lex.json` is stored in the `.lex` folder next to the `Regulation` folder, together with the evidence files and the generated `snapshot.json` (see [lex.json — Source Manifest Schema](#lexjson--source-manifest-schema)).
+
+Lifecycle of a satellite:
+
+| Step | Command | Result |
+|:-----|:--------|:-------|
+| Collect evidence | `LexFetch` | Source document in `.lex`, declared in `files[]` |
+| Record values | `LexAdd` | New entry with value and provenance |
+| Verify values | `LexVerifySource`, `LexAttest` | Verification record per entry (auto or manual) |
+| Freeze | `LexSnapshot` | `snapshot.json` with hashes of values, files and sources |
+| Write regulation | `LexApply` | Lex values in the lookup values of the regulation |
+| Check | `LexVerify`, `LexCheck` | Snapshot intact; regulation, lex and evidence consistent |
+| Next cycle | `LexRollover` | Satellite of the next cycle with open entries |
+
+Except `LexRollover` (payroll calendar), the Lex commands work on files only and require no backend connection.
+
+### LexFetch
+Download a source document unchanged into the `.lex` folder and declare it in `files[]` (`fileName`, `sourceUrl`). Hash and size are shown; `LexSnapshot` records them in the snapshot. An existing file with the same content is kept, a different one is only replaced with `/overwrite`.
+
+| # | Argument | Description |
+|---|:---------|:------------|
+| 1 | `Url` | Source URL (http or https) |
+| 2 | `FileName` | Target file name (optional, default from the URL) |
+
+**Named:**
+
+| Name | Default | Description |
+|:-----|:--------|:------------|
+| `Lex` | `lex.json` or `.lex/lex.json` in the current folder | Path of `lex.json` or of its folder |
+| `Description` | none | Description of the file in `files[]` |
+
+**Toggles:**
+- overwrite mode: `/skip` (default) or `/overwrite` (replace a file with different content)
+
+Exit codes: `0` ok, `3` source not loaded (HTTP error), `6` `lex.json` missing or file differs, `-1` invalid parameters or error.
+
+**Examples:**
+```cmd
+LexFetch https://example.org/tax-rates-2026.pdf
+LexFetch https://example.org/rates rates-2026.html Lex:Data.Tax.2026 "Description:Tax rates 2026"
+```
+
+### LexAdd
+Add a lex entry. The value is read from the source by a person; the command checks the format. The key must be new and have the format `Lookup.Key`, structured content must be valid JSON, the source URL must be declared in `sources[]` and the document in `files[]`. Missing `content`, `sourceUrl`, `sourceLocation` and `legalReference` are written empty, `LexCheck` reports them.
+
+| # | Argument | Description |
+|---|:---------|:------------|
+| 1 | `Key` | Entry key (`Lookup.Key`) |
+
+**Named:**
+
+| Name | Description |
+|:-----|:------------|
+| `Lex` | Path of `lex.json` or of its folder (default: `lex.json` or `.lex/lex.json` in the current folder) |
+| `Content` | Value read from the source |
+| `Unit` | Unit of the value |
+| `SourceUrl` | Source URL (declared in `sources[]`) |
+| `SourceLocation` | Location in the source (e.g. page, section, table) |
+| `LegalReference` | Legal reference |
+| `DocumentRef` | Evidence document (declared in `files[]`) |
+| `Description` | Description of the entry |
+
+Exit codes: `0` ok, `6` `lex.json` missing, key exists or source/document not declared, `-1` invalid parameters or error.
+
+**Examples:**
+```cmd
+LexAdd Rates.Standard Content:0.081 Unit:rate SourceUrl:https://example.org/rates
+LexAdd Rates.Reduced Lex:Data.Tax.2026 "LegalReference:Tax Act s. 12"
+```
+
 ### LexSnapshot
 
-Create an immutable compliance snapshot from a `lex.json` source manifest. All referenced files are copied into the `.lex` folder — after creation, no external access is needed.
+Create an immutable compliance snapshot from a `lex.json` source manifest. All referenced files are copied into the `.lex` folder — after creation, no external access is needed. A file with a `sourceUrl` and without `sourcePath` is downloaded. The snapshot records a hash of the normalized text of every source URL (`LexCheck /checkurls` reports changed sources); unreadable sources (blocked host, PDF) get no hash. Source hashes are not recorded in dry-run mode.
 
-If `snapshot.json` already exists in the target directory, the folder is **skipped with an info message** (not an error). This enables safe re-runs in recursive mode across an entire regulation repo tree.
+If `snapshot.json` already exists in the target directory, the folder is **skipped with an info message** (not an error), unless `/overwrite` is set. This enables safe re-runs in recursive mode across an entire regulation repo tree.
 
 | # | Argument | Description |
 |---|:---------|:------------|
@@ -448,6 +518,7 @@ If `snapshot.json` already exists in the target directory, the folder is **skipp
 **Toggles:**
 - snapshot mode: `/execute` (default) or `/dryrun` — dryrun validates and reports without writing
 - directory mode: `/top` (default) or `/recursive` — recursive scans all subdirectories
+- overwrite mode: `/skip` (default) or `/overwrite` — regenerate an existing `snapshot.json`; files with a `sourceUrl` and an existing local copy are not downloaded again
 - schema output: `/schema` — print the JSON Schema for `lex.json` and exit
 
 **Examples:**
@@ -455,6 +526,7 @@ If `snapshot.json` already exists in the target directory, the folder is **skipp
 LexSnapshot .lex/lex.json
 LexSnapshot lex.json /recursive
 LexSnapshot .lex/lex.json /dryrun
+LexSnapshot .lex/lex.json /overwrite
 LexSnapshot .lex/lex.json /TargetPath:C:\Output
 LexSnapshot /schema
 ```
@@ -485,11 +557,14 @@ Check `lex.json` manifests against the lookup values of their data regulation (t
 | Without lex entry | A regulation lookup value is covered by no lex entry |
 | Orphan | A lex entry (inline content) matches no regulation value |
 | Value difference | Entry content differs from the regulation value (numbers compared numerically, text ignoring case); a candidate to review against the source |
-| Missing fields | `sourceUrl`, `sourceLocation` or `legalReference` is empty |
-| Evidence | A declared or referenced file is missing in `.lex`, untracked or ignored in git |
+| Missing fields | `sourceUrl` or `legalReference` is empty; `sourceLocation` with `/required` (otherwise information) |
+| Evidence | A declared or referenced file is missing in `.lex`, untracked or ignored in git, or a verification evidence is not in the snapshot |
 | Snapshot / validFrom | `snapshot.json` is missing, or `validFrom` of lex and regulation differ |
+| Verification | A manual verification of a `FourEyes` source without `reviewedBy`/`reviewedOn`; with `/verificationrequired` an entry without verification record |
+| Open entry | An entry taken from the previous cycle by `LexRollover`, to be verified again |
+| Source URL | With `/checkurls`: 404/410 or unknown host, or a source text changed since the snapshot (check the value); a blocking host is a note |
 
-An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored as file). Satellites whose lookup values are not stored in the `Regulation` folder are reported with a note for manual review. The freshness of `snapshot.json` is checked by `LexVerify`.
+An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored as file). Satellites whose lookup values are not stored in the `Regulation` folder are reported with a note for manual review. Documented `exclusions` are listed in the report instead of the findings. The verification records are counted per satellite (auto, manual, without, open). The freshness of `snapshot.json` is checked by `LexVerify`.
 
 | # | Argument | Description |
 |---|:---------|:------------|
@@ -500,15 +575,138 @@ An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored 
 | Name | Default | Description |
 |:-----|:--------|:------------|
 | `Report` | none | Path of a Markdown report; a CSV file with the same name is written next to it |
+| `Root` | none | Root folder; the file mask is resolved in every repository folder below it |
+| `RepoMask` | `*` | Mask of the repository folders below the root (requires `Root`) |
 
 **Toggles:**
 - directory mode: `/top` (default) or `/recursive`
-- result mode: `/strict` (default; findings give exit code `6`) or `/lenient` (report only, exit code `0`)
+- result mode: `/strict` (default; findings give exit code `4`) or `/lenient` (report only, exit code `0`)
+- source location: `/optional` (default, a missing `sourceLocation` is information) or `/required` (finding)
+- verification: `/verificationoptional` (default, entries without verification are counted) or `/verificationrequired` (finding)
+- source URLs: `/skipurls` (default) or `/checkurls` (load every source URL)
+
+Exit codes: `0` no findings (or `/lenient`), `4` findings (`/strict`), `6` no `lex.json` found or root folder missing, `-1` invalid parameters or error.
 
 **Examples:**
 ```cmd
 LexCheck .lex/lex.json
 LexCheck lex.json /recursive /lenient Report:C:\Reports\LexCheck.md
+LexCheck lex.json /recursive Root:C:\Repos RepoMask:Payroll.*
+```
+
+### LexVerifySource
+Look up the numbers of every lex entry in its source: the local evidence file (`documentRef` or declared file with the same `sourceUrl`) or, with `/live`, the `sourceUrl` (web page, xlsx).
+
+| Result | Meaning |
+|:-------|:--------|
+| Found | All numbers of the entry are in the source |
+| Partial / not found | Numbers are missing in the source — review the value |
+| Unreadable / no local evidence | Blocked host, PDF or script-only page, or no local file — verify the value manually (`LexAttest`) |
+
+With `/writelocations` the command sets the `sourceLocation` of found entries without one and writes an `auto` verification record for entries whose numbers were all found. A manual record is never replaced. Afterwards regenerate the snapshot with `LexSnapshot /overwrite`.
+
+| # | Argument | Description |
+|---|:---------|:------------|
+| 1 | `FileMask` | Path to `lex.json`, or file mask (e.g. `lex.json`, `**/lex.json`) |
+
+**Toggles:**
+- directory mode: `/top` (default) or `/recursive`
+- result mode: `/lenient` (default, report only) or `/strict` (exit code `6` when numbers are missing in the source)
+- source mode: `/local` (default, local evidence file, offline) or `/live` (source URL)
+- write mode: `/reportonly` (default) or `/writelocations`
+
+**Examples:**
+```cmd
+LexVerifySource lex.json /recursive
+LexVerifySource .lex/lex.json /writelocations
+LexVerifySource .lex/lex.json /live
+```
+
+### LexAttest
+Record the manual verification of lex entries: a person confirms the values against the evidence. The evidence must be declared in `files[]` and exist in the `.lex` folder. An automatic record is replaced, a manual record only with `/overwrite`. With `ReviewedBy` the command records the second review (four-eyes) of existing manual records.
+
+| # | Argument | Description |
+|---|:---------|:------------|
+| 1 | `Key` | Entry key or pattern (`Name` matches all keys below it, `Prefix*` matches a prefix) |
+
+**Named:**
+
+| Name | Default | Description |
+|:-----|:--------|:------------|
+| `Lex` | `lex.json` or `.lex/lex.json` in the current folder | Path of `lex.json` or of its folder |
+| `VerifiedBy` | none | Person who verified the values |
+| `VerifiedOn` | today | Verification date `yyyy-MM-dd` |
+| `Evidence` | none | Evidence document (declared in `files[]`) |
+| `ReviewedBy` | none | Second person (review of a manual verification) |
+| `ReviewedOn` | today | Review date `yyyy-MM-dd` |
+
+**Toggles:**
+- overwrite mode: `/skip` (default) or `/overwrite` (replace a manual record or review)
+
+Exit codes: `0` ok (skipped entries included), `6` `lex.json` missing, no matching entry or evidence missing, `-1` invalid parameters or error.
+
+**Examples:**
+```cmd
+LexAttest Rates.Standard "VerifiedBy:Jane Doe" Evidence:tax-rates-2026.pdf
+LexAttest Rates Lex:Data.Tax.2026 "VerifiedBy:Jane Doe" Evidence:tax-rates-2026.pdf VerifiedOn:2026-11-03
+LexAttest Rates.* "ReviewedBy:John Doe"
+```
+
+### LexApply
+Write the lex values into the lookup values of the data regulation (`Regulation/*.json`). The mapping is the same as in `LexCheck`: the lex key is `Lookup.Key`, a further key part addresses a property of the value object; a `contentFile` key may end with the year of `validFrom`. Only differing values are replaced and missing values of an existing lookup are added; descriptions and file formatting are kept, so a second run changes nothing. Open entries are skipped until they are verified.
+
+| # | Argument | Description |
+|---|:---------|:------------|
+| 1 | `FileMask` | Path to `lex.json`, or file mask (e.g. `lex.json`, `**/lex.json`) |
+
+**Toggles:**
+- directory mode: `/top` (default) or `/recursive`
+- apply mode: `/write` (default) or `/dryrun` (show the differences only)
+
+Exit codes: `0` applied (or nothing to apply; skipped entries are listed), `6` `lex.json` or regulation JSON invalid, nothing written for that satellite.
+
+**Examples:**
+```cmd
+LexApply .lex/lex.json /dryrun
+LexApply lex.json /recursive
+```
+
+### LexRollover
+Prepare the data regulation satellite of the next cycle. The cycle containing the date is read from the payroll calendar of the tenant (backend connection): the cycle start becomes the new `validFrom`, its year the new year tag of folder, files and version. A mid-year edition (e.g. `Data.Tax.2026b`) rolls to the year without suffix (`Data.Tax.2027`).
+
+The command creates a new satellite folder; the previous satellite is not changed:
+- The folder is copied without `bin`, `obj`, `nupkgs` and `.lex/snapshot.json`; evidence files are copied unchanged.
+- Names with the year tag are renamed and their references in the text files updated.
+- `validFrom` of lex and regulation and a version starting with the year (`Directory.Build.props`, `regulation-package.json`) are set.
+- All lex entries become open: the verification record is removed and `"open": true` is set. `LexCheck` reports open entries and `LexApply` skips them until they are verified again (`LexVerifySource /writelocations` or `LexAttest`).
+- Values, descriptions and lookup keys are not changed; lines still mentioning the previous year are listed for review.
+
+An existing target folder is never overwritten. Solution and test projects are not part of the rollover.
+
+| # | Argument | Description |
+|---|:---------|:------------|
+| 1 | `Satellite` | Satellite directory of the previous cycle |
+
+**Named:**
+
+| Name | Default | Description |
+|:-----|:--------|:------------|
+| `Date` | none (required) | Date within the new cycle `yyyy-MM-dd` |
+| `Tenant` | none (required) | Tenant of the payroll calendar |
+| `Calendar` | tenant calendar | Calendar name |
+| `Culture` | tenant culture | Culture name |
+
+**Toggles:**
+- rollover mode: `/write` (default) or `/dryrun` (show the planned satellite only)
+
+Exit codes: `0` satellite created (or planned with `/dryrun`), `2` backend not reachable, `6` unknown tenant, no cycle, target exists or satellite invalid — nothing written.
+
+Next steps after the rollover: enter and verify the values of the open entries, then `LexSnapshot`, `LexApply` and `LexCheck`.
+
+**Examples:**
+```cmd
+LexRollover Data.Tax.2026 Date:2027-01-01 Tenant:MyTenant /dryrun
+LexRollover Data.Tax.2026 Date:2027-07-01 Tenant:MyTenant Calendar:FiscalYear
 ```
 
 ---
@@ -544,6 +742,7 @@ The `lex.json` file documents the provenance of compliance values in a data regu
 | `sources` | array | No | Document-level source references (general provenance) |
 | `values` | array | No | Compliance values with content and precise provenance |
 | `files` | array | No | Source documents to copy into the `.lex` folder |
+| `exclusions` | array | No | Documented exclusions from the coverage, orphan and `sourceLocation` checks |
 
 **`sources[]` — document-level provenance:**
 
@@ -552,6 +751,7 @@ The `lex.json` file documents the provenance of compliance values in a data regu
 | `url` | **Yes** | URL to the source document or page |
 | `description` | No | Human-readable description |
 | `legalBasis` | No | Legal basis (e.g. `Income Tax Act §12`, `Act 123/2025 Art. 4`) |
+| `review` | No | Review rule for the values with this `sourceUrl`: `SingleAuthor` (default) or `FourEyes` (a manual verification requires `reviewedBy` and `reviewedOn`) |
 
 **`values[]` — compliance values:**
 
@@ -566,7 +766,29 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 | `sourceUrl` | No | URL where this specific value can be found |
 | `sourceLocation` | No | Precise location within the source document (free text) |
 | `legalReference` | No | Legal norm reference (e.g. `Income Tax Act §12(1)`) |
+| `documentRef` | No | Local evidence document, declared in `files[]` |
 | `description` | No | Human-readable description |
+| `verification` | No | Verification record (see below) |
+| `open` | No | `true`: value taken from the previous cycle by `LexRollover`, to be verified again; a new verification record removes the flag. Not allowed together with `verification` |
+
+**`verification` — who verified the value and how:**
+
+| Property | Required | Description |
+|:---------|:--------:|:------------|
+| `mode` | **Yes** | `auto` (verified by a tool against the source, `LexVerifySource`) or `manual` (verified by a person, `LexAttest`) |
+| `verifiedOn` | **Yes** | Verification date `YYYY-MM-DD` |
+| `method` | `auto` | Tool and version (e.g. `LexVerifySource 1.2`) |
+| `verifiedBy` | `manual` | Person who verified the value |
+| `evidence` | `manual` | Evidence document declared in `files[]` |
+| `reviewedBy`, `reviewedOn` | `FourEyes` | Second person and date of the review; only together |
+
+**`exclusions[]` — documented exceptions:**
+
+| Property | Required | Description |
+|:---------|:--------:|:------------|
+| `kind` | **Yes** | `coverage` (regulation values without lex entry), `orphan` (lex entries without regulation value, e.g. a rule implemented in code) or `sourceLocation` (entries without `sourceLocation`) |
+| `pattern` | **Yes** | `Lookup`, `Lookup.Key` or a prefix with trailing `*`; a name also matches all keys below it |
+| `reason` | **Yes** | Justification, shown in the check report |
 
 **`content` vs. `contentFile` — when to use which:**
 
@@ -595,7 +817,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 |:---------|:--------:|:------------|
 | `fileName` | **Yes** | Target file name in the `.lex` folder |
 | `sourcePath` | No | Local path to the source file (copied by `LexSnapshot`) |
-| `sourceUrl` | No | Original download URL (provenance only — not fetched) |
+| `sourceUrl` | No | Original download URL; downloaded by `LexSnapshot` when `sourcePath` is empty (`LexFetch` downloads and declares the file) |
 | `description` | No | Human-readable description |
 
 ---
@@ -618,6 +840,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 | `sources` | From `lex.json` | Copied as-is |
 | `values` | From `lex.json` | Copied; `contentFile` paths resolved to `.lex`-local names |
 | `files` | Enriched | All copied files with `sha256`, `fileSizeBytes`, `contentType` |
+| `liveSources` | Generated | Hash of the normalized text per source URL (`textHash`), or the `reason` why the source is not comparable; compared by `LexCheck /checkurls` |
 
 ---
 
