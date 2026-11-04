@@ -35,17 +35,29 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         if (context.DisplayLevel == DisplayLevel.Full)
         {
             context.Console.DisplayTextLine($"File mask        {parameters.FileMask}");
+            if (!string.IsNullOrWhiteSpace(parameters.Root))
+            {
+                context.Console.DisplayTextLine($"Root             {parameters.Root}");
+                context.Console.DisplayTextLine($"Repository mask  {(string.IsNullOrWhiteSpace(parameters.RepoMask) ? "*" : parameters.RepoMask)}");
+            }
             context.Console.DisplayTextLine($"Report           {(string.IsNullOrWhiteSpace(parameters.Report) ? "-" : parameters.Report)}");
             context.Console.DisplayTextLine($"Directory mode   {parameters.DirectoryMode}");
             context.Console.DisplayTextLine($"Check mode       {parameters.CheckMode}");
             context.Console.DisplayTextLine($"Location mode    {parameters.LocationMode}");
+            context.Console.DisplayTextLine($"Verification     {parameters.VerificationMode}");
             context.Console.DisplayTextLine($"URL mode         {parameters.UrlMode}");
         }
         context.Console.DisplayNewLine();
 
         try
         {
-            var files = LexFileResolver.Resolve(parameters.FileMask, parameters.DirectoryMode == DirectoryMode.Recursive);
+            if (!string.IsNullOrWhiteSpace(parameters.Root) && !Directory.Exists(parameters.Root))
+            {
+                context.Console.DisplayErrorLine($"Root folder not found: {parameters.Root}");
+                return (int)ProgramExitCode.InvalidInput;
+            }
+            var files = LexFileResolver.Resolve(parameters.Root, parameters.RepoMask, parameters.FileMask,
+                parameters.DirectoryMode == DirectoryMode.Recursive);
             if (files.Count == 0)
             {
                 context.Console.DisplayErrorLine($"No lex.json files found matching: {parameters.FileMask}");
@@ -56,7 +68,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             using var urlChecker = parameters.UrlMode == LexUrlMode.CheckUrls ? new LexUrlChecker(LexWorkbookReader.Readers) : null;
             foreach (var lexFile in files)
             {
-                results.Add(await CheckFile(lexFile, parameters.LocationMode == LexLocationMode.Required, urlChecker));
+                results.Add(await CheckFile(lexFile, parameters.LocationMode == LexLocationMode.Required,
+                    parameters.VerificationMode == LexVerificationMode.VerificationRequired, urlChecker));
             }
 
             foreach (var result in results)
@@ -72,9 +85,11 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
 
             var withFindings = results.Count(r => r.HasFindings);
             context.Console.DisplayNewLine();
+            context.Console.DisplayTextLine($"Verification: auto {results.Sum(r => r.VerifiedAuto)}, " +
+                                            $"manual {results.Sum(r => r.VerifiedManual)}, without {results.Sum(r => r.Unverified)}");
             context.Console.DisplayTextLine($"Summary: {results.Count - withFindings} without findings, {withFindings} with findings");
             return withFindings > 0 && parameters.CheckMode == LexCheckMode.Strict
-                ? (int)ProgramExitCode.InvalidInput
+                ? (int)ProgramExitCode.FailedTest
                 : (int)ProgramExitCode.Ok;
         }
         catch (Exception exception)
@@ -84,7 +99,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         }
     }
 
-    private static async Task<LexCheckResult> CheckFile(string lexFilePath, bool requireLocation, LexUrlChecker urlChecker)
+    private static async Task<LexCheckResult> CheckFile(string lexFilePath, bool requireLocation,
+        bool requireVerification, LexUrlChecker urlChecker)
     {
         LexManifest manifest;
         try
@@ -101,7 +117,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             };
         }
         manifest ??= new LexManifest();
-        var result = LexChecker.Check(manifest, lexFilePath, requireLocation);
+        var result = LexChecker.Check(manifest, lexFilePath, requireLocation, requireVerification);
         if (urlChecker != null)
         {
             await urlChecker.Apply(manifest, result);
@@ -131,6 +147,10 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         foreach (var url in result.ChangedSources) console.DisplayErrorLine($"         source changed, check value: {url}");
         if (result.MissingSourceUrl + (result.RequireLocation ? result.MissingSourceLocation : 0) + result.MissingLegalReference > 0)
             console.DisplayErrorLine($"         missing fields: sourceUrl {result.MissingSourceUrl}, sourceLocation {result.MissingSourceLocation}, legalReference {result.MissingLegalReference}");
+        if (result.RequireVerification && result.Unverified > 0)
+            console.DisplayErrorLine($"         {result.Unverified} entr(ies) without verification: {string.Join(", ", result.UnverifiedSamples)}");
+        if (result.MissingReview > 0)
+            console.DisplayErrorLine($"         {result.MissingReview} manual verification(s) without second review: {string.Join(", ", result.MissingReviewSamples)}");
         foreach (var problem in result.FileProblems) console.DisplayErrorLine($"         evidence: {problem}");
         if (!result.ValidFromMatch)
             console.DisplayErrorLine($"         validFrom: lex {result.LexValidFrom}, regulation {result.RegulationValidFrom}");
@@ -151,20 +171,30 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("      Check lex manifests against the lookup values of their data regulation (folder Regulation next to .lex).");
         console.DisplayTextLine("      Reports: regulation values without lex entry, lex entries without regulation value,");
         console.DisplayTextLine("      value differences, missing sourceUrl/sourceLocation/legalReference, evidence files");
-        console.DisplayTextLine("      (missing, untracked or ignored in git), missing snapshot and validFrom differences.");
+        console.DisplayTextLine("      (missing, untracked or ignored in git, verification evidence not in the snapshot), missing snapshot");
+        console.DisplayTextLine("      and validFrom differences. Verification records are counted (auto, manual, without); a manual");
+        console.DisplayTextLine("      verification of a source with review FourEyes needs reviewedBy and reviewedOn.");
         console.DisplayTextLine("      Freshness of snapshot.json is checked by LexVerify.");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. file name or file mask [FileMask] (e.g. lex.json or **/lex.json)");
         console.DisplayTextLine("      Named:");
         console.DisplayTextLine("          Report: path of a Markdown report; a CSV file with the same name is written next to it");
+        console.DisplayTextLine("          Root: root folder; the file mask is resolved in every repository folder below it");
+        console.DisplayTextLine("          RepoMask: mask of the repository folders below the root (default *, requires Root)");
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          directory mode: /top (default) or /recursive");
-        console.DisplayTextLine("          result mode: /strict (default, findings give exit code 6) or /lenient (report only)");
+        console.DisplayTextLine("          result mode: /strict (default, findings give exit code 4) or /lenient (report only)");
         console.DisplayTextLine("          source location: /optional (default, a missing sourceLocation is information) or /required (finding)");
+        console.DisplayTextLine("          verification: /verificationoptional (default, entries without verification are counted)");
+        console.DisplayTextLine("                        or /verificationrequired (an entry without verification is a finding)");
         console.DisplayTextLine("          source URLs: /skipurls (default) or /checkurls (404/410 or unknown host is a finding, a blocking host a note;");
         console.DisplayTextLine("                       a source whose normalized text differs from the snapshot hash is a finding: check the value)");
+        console.DisplayTextLine("      Exit codes:");
+        console.DisplayTextLine("          0 no findings (or /lenient), 4 findings (/strict), 6 no lex.json found or root folder missing,");
+        console.DisplayTextLine("          -1 invalid parameters or unexpected error");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          LexCheck .lex/lex.json");
         console.DisplayTextLine("          LexCheck lex.json /recursive /lenient Report:C:\\Reports\\LexCheck.md");
+        console.DisplayTextLine("          LexCheck lex.json /recursive Root:C:\\Repos RepoMask:Payroll.*");
     }
 }

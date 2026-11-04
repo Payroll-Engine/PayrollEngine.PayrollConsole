@@ -6,7 +6,7 @@ namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 public enum LexCheckMode
 {
     /// <summary>
-    /// Findings fail the command with exit code 6 (default)
+    /// Findings fail the command with exit code 4 (default)
     /// </summary>
     Strict,
 
@@ -30,6 +30,22 @@ public enum LexLocationMode
     /// A missing sourceLocation is a finding
     /// </summary>
     Required
+}
+
+/// <summary>
+/// LexCheck handling of entries without verification record
+/// </summary>
+public enum LexVerificationMode
+{
+    /// <summary>
+    /// An entry without verification record is counted in the report, not a finding (default)
+    /// </summary>
+    VerificationOptional,
+
+    /// <summary>
+    /// An entry without verification record (auto or manual) is a finding
+    /// </summary>
+    VerificationRequired
 }
 
 /// <summary>

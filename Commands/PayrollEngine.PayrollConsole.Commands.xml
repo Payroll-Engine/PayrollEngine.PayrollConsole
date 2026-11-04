@@ -2490,7 +2490,7 @@
         </member>
         <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckMode.Strict">
             <summary>
-            Findings fail the command with exit code 6 (default)
+            Findings fail the command with exit code 4 (default)
             </summary>
         </member>
         <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckMode.Lenient">
@@ -2511,6 +2511,21 @@
         <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexLocationMode.Required">
             <summary>
             A missing sourceLocation is a finding
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerificationMode">
+            <summary>
+            LexCheck handling of entries without verification record
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerificationMode.VerificationOptional">
+            <summary>
+            An entry without verification record is counted in the report, not a finding (default)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerificationMode.VerificationRequired">
+            <summary>
+            An entry without verification record (auto or manual) is a finding
             </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexUrlMode">
@@ -2536,12 +2551,22 @@
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.FileMask">
             <summary>
-            File name or file mask (e.g. lex.json or *.json)
+            File name or file mask (e.g. lex.json or *.json); with a root folder relative to each repository folder
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.Report">
             <summary>
             Optional path of the Markdown report; a CSV file with the same name is written next to it
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.Root">
+            <summary>
+            Optional root folder: the file mask is resolved in every repository folder below it
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.RepoMask">
+            <summary>
+            Mask of the repository folders below the root folder (default: *)
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.DirectoryMode">
@@ -2557,6 +2582,11 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.LocationMode">
             <summary>
             Handling of entries without sourceLocation: optional (default) or required
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.VerificationMode">
+            <summary>
+            Handling of entries without verification record: optional (default) or required
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.UrlMode">
