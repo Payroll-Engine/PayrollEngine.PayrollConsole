@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
-using PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex;
+using PayrollEngine.Lex;
 
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 
@@ -145,7 +145,14 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
             }
 
             var writer = new LexSnapshotWriter();
-            var snapshot = await writer.WriteAsync(manifest, manifestDir, targetDir, dryRun, context.Console);
+            var snapshot = await writer.WriteAsync(manifest, manifestDir, targetDir, dryRun,
+                (fileName, dryRunFile) =>
+                {
+                    if (!dryRunFile)
+                    {
+                        context.Console.DisplayInfoLine($"         Downloading {fileName} ...");
+                    }
+                });
 
             var label = dryRun ? "[DRY-RUN]" : "[OK]";
             context.Console.DisplaySuccessLine(

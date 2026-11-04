@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
-using PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex;
+using PayrollEngine.Lex;
 
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 
@@ -38,7 +38,7 @@ internal sealed class LexVerifyCommand : CommandBase<LexVerifyParameters>
 
         try
         {
-            var files = LexFileResolver.Resolve(parameters.FileMask, parameters.DirectoryMode);
+            var files = LexFileResolver.Resolve(parameters.FileMask, parameters.DirectoryMode == DirectoryMode.Recursive);
             if (files.Count == 0)
             {
                 context.Console.DisplayErrorLine($"No lex.json files found matching: {parameters.FileMask}");

@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
+using PayrollEngine.Lex;
 using PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex;
 
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
@@ -48,7 +49,7 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         context.Console.DisplayNewLine();
         try
         {
-            var files = LexFileResolver.Resolve(parameters.FileMask, parameters.DirectoryMode);
+            var files = LexFileResolver.Resolve(parameters.FileMask, parameters.DirectoryMode == DirectoryMode.Recursive);
             if (files.Count == 0)
             {
                 context.Console.DisplayErrorLine($"No lex.json files found matching: {parameters.FileMask}");
@@ -98,7 +99,7 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
             var cacheKey = localPath ?? entry.SourceUrl;
             if (!documents.TryGetValue(cacheKey, out var document))
             {
-                documents[cacheKey] = document = await LexSourceDocument.Load(entry.SourceUrl, localPath, client);
+                documents[cacheKey] = document = await LexSourceDocument.Load(entry.SourceUrl, localPath, client, LexWorkbookReader.Readers);
             }
             results.Add(LexSourceVerifier.Verify(entry, document));
         }
