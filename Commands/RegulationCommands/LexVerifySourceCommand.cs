@@ -42,15 +42,15 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         context.Console.DisplayNewLine();
         try
         {
-            var files = LexFileResolver.Resolve(parameters.FileMask, parameters.DirectoryMode == DirectoryMode.Recursive);
+            var files = FileResolver.Resolve(parameters.FileMask, parameters.DirectoryMode == DirectoryMode.Recursive);
             if (files.Count == 0)
             {
                 context.Console.DisplayErrorLine($"No lex.json files found matching: {parameters.FileMask}");
                 return (int)ProgramExitCode.InvalidInput;
             }
 
-            using var client = parameters.SourceMode == LexSourceMode.Live ? LexSourceDocument.CreateHttpClient() : null;
-            var documents = new Dictionary<string, LexSourceDocument>(StringComparer.Ordinal);
+            using var client = parameters.SourceMode == LexSourceMode.Live ? SourceDocument.CreateHttpClient() : null;
+            var documents = new Dictionary<string, SourceDocument>(StringComparer.Ordinal);
 
             var problems = 0;
             foreach (var lexFile in files)
@@ -72,14 +72,14 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
     }
 
     private static async Task<int> VerifyFile(CommandContext context, string lexFile, LexVerifySourceParameters parameters,
-        HttpClient client, Dictionary<string, LexSourceDocument> documents)
+        HttpClient client, Dictionary<string, SourceDocument> documents)
     {
         var json = await File.ReadAllTextAsync(lexFile);
-        var manifest = JsonSerializer.Deserialize<LexManifest>(json, ReadOptions) ?? new LexManifest();
+        var manifest = JsonSerializer.Deserialize<Manifest>(json, ReadOptions) ?? new Manifest();
         var lexDirectory = Path.GetDirectoryName(lexFile)!;
         var live = parameters.SourceMode == LexSourceMode.Live;
 
-        var results = new List<LexSourceResult>();
+        var results = new List<SourceResult>();
         var evidence = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var entry in manifest.Values)
         {
@@ -88,13 +88,13 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
             {
                 continue;
             }
-            LexSourceDocument document;
+            SourceDocument document;
             if (live)
             {
                 if (!documents.TryGetValue(entry.SourceUrl, out document))
                 {
                     documents[entry.SourceUrl] = document =
-                        await LexSourceDocument.LoadLive(entry.SourceUrl, client, LexWorkbookReader.Readers);
+                        await SourceDocument.LoadLive(entry.SourceUrl, client, LexWorkbookReader.Readers);
                 }
             }
             else
@@ -107,29 +107,29 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
                 var cacheKey = localPath ?? string.Empty;
                 if (!documents.TryGetValue(cacheKey, out document))
                 {
-                    documents[cacheKey] = document = await LexSourceDocument.LoadLocal(localPath, LexWorkbookReader.Readers);
+                    documents[cacheKey] = document = await SourceDocument.LoadLocal(localPath, LexWorkbookReader.Readers);
                 }
             }
-            results.Add(LexSourceVerifier.Verify(entry, document));
+            results.Add(SourceVerifier.Verify(entry, document));
         }
 
-        int Count(LexSourceMatch m) => results.Count(r => r.Match == m);
-        var problems = Count(LexSourceMatch.Partial) + Count(LexSourceMatch.NotFound);
-        var line = $"{lexFile} - found {Count(LexSourceMatch.Found)}, partial {Count(LexSourceMatch.Partial)}, " +
-                   $"not found {Count(LexSourceMatch.NotFound)}, unreadable {Count(LexSourceMatch.Unreadable)}, " +
-                   $"no local evidence {Count(LexSourceMatch.NoEvidence)}, no numbers {Count(LexSourceMatch.NoNumbers)}";
+        int Count(SourceMatch m) => results.Count(r => r.Match == m);
+        var problems = Count(SourceMatch.Partial) + Count(SourceMatch.NotFound);
+        var line = $"{lexFile} - found {Count(SourceMatch.Found)}, partial {Count(SourceMatch.Partial)}, " +
+                   $"not found {Count(SourceMatch.NotFound)}, unreadable {Count(SourceMatch.Unreadable)}, " +
+                   $"no local evidence {Count(SourceMatch.NoEvidence)}, no numbers {Count(SourceMatch.NoNumbers)}";
         if (problems > 0) context.Console.DisplayErrorLine("  " + line);
         else context.Console.DisplayTextLine("  " + line);
-        foreach (var result in results.Where(r => r.Match is LexSourceMatch.Partial or LexSourceMatch.NotFound))
+        foreach (var result in results.Where(r => r.Match is SourceMatch.Partial or SourceMatch.NotFound))
         {
             context.Console.DisplayErrorLine(
                 $"         {result.Match}: {result.Key} - {result.NumbersFound}/{result.NumbersTotal} numbers, missing {string.Join(", ", result.Missing.Take(8))}");
         }
-        foreach (var group in results.Where(r => r.Match == LexSourceMatch.Unreadable).GroupBy(r => r.Url))
+        foreach (var group in results.Where(r => r.Match == SourceMatch.Unreadable).GroupBy(r => r.Url))
         {
             context.Console.DisplayInfoLine($"         unreadable ({group.First().Reason}), verify manually: {group.Key} - {group.Count()} entr(ies)");
         }
-        var withoutEvidence = Count(LexSourceMatch.NoEvidence);
+        var withoutEvidence = Count(SourceMatch.NoEvidence);
         if (withoutEvidence > 0)
         {
             context.Console.DisplayInfoLine($"         {withoutEvidence} entr(ies) without local evidence: verify manually or use /live");
@@ -146,9 +146,9 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
     /// Write the found source locations and the automatic verification records of fully found entries
     /// </summary>
     private static async Task WriteResults(CommandContext context, string lexFile, string json,
-        List<LexSourceResult> results, Dictionary<string, string> evidence)
+        List<SourceResult> results, Dictionary<string, string> evidence)
     {
-        var editor = LexManifestEditor.Parse(json);
+        var editor = ManifestEditor.Parse(json);
         var today = DateOnly.FromDateTime(DateTime.Today);
         int locations = 0, verifications = 0;
         foreach (var result in results)
@@ -157,8 +157,8 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
             {
                 locations++;
             }
-            if (result.Match == LexSourceMatch.Found &&
-                editor.SetAutoVerification(result.Key, LexSourceVerifier.AutoVerification(today, evidence.GetValueOrDefault(result.Key))))
+            if (result.Match == SourceMatch.Found &&
+                editor.SetAutoVerification(result.Key, SourceVerifier.AutoVerification(today, evidence.GetValueOrDefault(result.Key))))
             {
                 verifications++;
             }
@@ -175,7 +175,7 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
     /// <summary>
     /// Local evidence file of the entry: documentRef, otherwise a declared file with the same source URL
     /// </summary>
-    private static string LocalEvidence(LexManifest manifest, LexValue entry, string lexDirectory)
+    private static string LocalEvidence(Manifest manifest, Entry entry, string lexDirectory)
     {
         var name = !string.IsNullOrWhiteSpace(entry.DocumentRef)
             ? entry.DocumentRef

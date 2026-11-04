@@ -2465,6 +2465,173 @@
             </summary>
             <param name="parser">Parameter parser</param>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddCommand">
+            <summary>
+            Adds a lex entry with the required fields; missing fields are written empty and reported by LexCheck
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters)">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters">
+            <summary>
+            LexAdd command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.Key">
+            <summary>
+            Entry key (Lookup.Key)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.Lex">
+            <summary>
+            Path of lex.json or of its folder (default: lex.json or .lex/lex.json in the current folder)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.Content">
+            <summary>
+            Value read from the source
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.Unit">
+            <summary>
+            Unit of the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.SourceUrl">
+            <summary>
+            Source URL, declared in sources[]
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.SourceLocation">
+            <summary>
+            Location of the value in the source (e.g. page, section, table)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.LegalReference">
+            <summary>
+            Legal reference of the value
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.DocumentRef">
+            <summary>
+            Evidence document, declared in files[]
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.Description">
+            <summary>
+            Description of the entry
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexArguments">
+            <summary>
+            Argument helpers of the lex commands
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexArguments.Positional(System.String)">
+            <summary>
+            A positional argument is missing when a named argument (Name:value) takes its place
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestCommand">
+            <summary>
+            Records the manual verification of lex entries (verifiedBy, verifiedOn, evidence)
+            or the second review of a manual verification (reviewedBy, reviewedOn)
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters)">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters">
+            <summary>
+            LexAttest command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.Key">
+            <summary>
+            Entry key or key pattern (Name matches all keys below it, trailing * matches a prefix)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.Lex">
+            <summary>
+            Path of lex.json or of its folder (default: lex.json or .lex/lex.json in the current folder)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.VerifiedBy">
+            <summary>
+            Person who verified the values against the evidence
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.VerifiedOn">
+            <summary>
+            Verification date yyyy-MM-dd (default: today)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.Evidence">
+            <summary>
+            Evidence document, declared in files[]
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.ReviewedBy">
+            <summary>
+            Second person who reviewed the manual verification (four-eyes)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.ReviewedOn">
+            <summary>
+            Review date yyyy-MM-dd (default: today)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.OverwriteMode">
+            <summary>
+            Handling of an existing manual record or review (default: skip)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.IsReview">
+            <summary>
+            Review mode: the second confirmation of an existing manual record
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckCommand">
             <summary>
             Checks lex manifests against the lookup values of their data regulation:
@@ -2605,19 +2772,78 @@
             Parse command parameters
             </summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchCommand">
+            <summary>
+            Downloads a source document unchanged into the .lex folder and declares it in files[]
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchParameters)">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchParameters">
+            <summary>
+            LexFetch command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchParameters.Url">
+            <summary>
+            Source URL of the document
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchParameters.FileName">
+            <summary>
+            Target file name in the .lex folder (default: from the URL)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchParameters.Lex">
+            <summary>
+            Path of lex.json or of its folder (default: lex.json or .lex/lex.json in the current folder)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchParameters.Description">
+            <summary>
+            Description of the file in files[]
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchParameters.OverwriteMode">
+            <summary>
+            Handling of an existing file with different content (default: skip)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexFetchParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexOverwriteMode">
             <summary>
-            LexSnapshot handling of an existing snapshot.json
+            Lex command handling of existing results: snapshot.json (LexSnapshot), evidence files (LexFetch)
+            and manual verification records (LexAttest)
             </summary>
         </member>
         <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexOverwriteMode.Skip">
             <summary>
-            Skip folders with an existing snapshot.json (default)
+            Keep the existing result (default)
             </summary>
         </member>
         <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexOverwriteMode.Overwrite">
             <summary>
-            Regenerate an existing snapshot.json
+            Replace the existing result
             </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSchemaMode">
@@ -2767,12 +2993,12 @@
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.WriteResults(PayrollEngine.Client.Command.CommandContext,System.String,System.String,System.Collections.Generic.List{PayrollEngine.Lex.LexSourceResult},System.Collections.Generic.Dictionary{System.String,System.String})">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.WriteResults(PayrollEngine.Client.Command.CommandContext,System.String,System.String,System.Collections.Generic.List{PayrollEngine.Lex.SourceResult},System.Collections.Generic.Dictionary{System.String,System.String})">
             <summary>
             Write the found source locations and the automatic verification records of fully found entries
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.LocalEvidence(PayrollEngine.Lex.LexManifest,PayrollEngine.Lex.LexValue,System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.LocalEvidence(PayrollEngine.Lex.Manifest,PayrollEngine.Lex.Entry,System.String)">
             <summary>
             Local evidence file of the entry: documentRef, otherwise a declared file with the same source URL
             </summary>
@@ -2865,7 +3091,7 @@
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexWorkbookReader.Readers">
             <summary>
-            Readers by file extension, as expected by <see cref="T:PayrollEngine.Lex.LexSourceDocument"/>
+            Readers by file extension, as expected by <see cref="T:PayrollEngine.Lex.SourceDocument"/>
             </summary>
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexWorkbookReader.Read(System.IO.Stream)">

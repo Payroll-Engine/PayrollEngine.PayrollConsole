@@ -1,17 +1,18 @@
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 
 /// <summary>
-/// LexSnapshot handling of an existing snapshot.json
+/// Lex command handling of existing results: snapshot.json (LexSnapshot), evidence files (LexFetch)
+/// and manual verification records (LexAttest)
 /// </summary>
 public enum LexOverwriteMode
 {
     /// <summary>
-    /// Skip folders with an existing snapshot.json (default)
+    /// Keep the existing result (default)
     /// </summary>
     Skip,
 
     /// <summary>
-    /// Regenerate an existing snapshot.json
+    /// Replace the existing result
     /// </summary>
     Overwrite
 }

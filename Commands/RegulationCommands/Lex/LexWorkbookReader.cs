@@ -14,7 +14,7 @@ namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex;
 internal static class LexWorkbookReader
 {
     /// <summary>
-    /// Readers by file extension, as expected by <see cref="PayrollEngine.Lex.LexSourceDocument"/>
+    /// Readers by file extension, as expected by <see cref="PayrollEngine.Lex.SourceDocument"/>
     /// </summary>
     internal static IReadOnlyDictionary<string, Func<Stream, List<(string Heading, string Text)>>> Readers { get; } =
         new Dictionary<string, Func<Stream, List<(string Heading, string Text)>>>

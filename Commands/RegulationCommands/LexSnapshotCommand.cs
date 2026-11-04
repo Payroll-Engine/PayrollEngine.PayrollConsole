@@ -32,7 +32,7 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
         // /schema — print JSON Schema and exit
         if (parameters.SchemaMode == LexSchemaMode.Schema)
         {
-            context.Console.DisplayTextLine(LexSchema.Json);
+            context.Console.DisplayTextLine(Schema.Json);
             return (int)ProgramExitCode.Ok;
         }
 
@@ -54,7 +54,7 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
 
         try
         {
-            var files = LexFileResolver.Resolve(parameters.FileMask, parameters.DirectoryMode == DirectoryMode.Recursive);
+            var files = FileResolver.Resolve(parameters.FileMask, parameters.DirectoryMode == DirectoryMode.Recursive);
             if (files.Count == 0)
             {
                 context.Console.DisplayErrorLine($"No lex.json files found matching: {parameters.FileMask}");
@@ -63,7 +63,7 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
 
             int processed = 0, skipped = 0, failed = 0;
 
-            using var client = LexSourceDocument.CreateHttpClient();
+            using var client = SourceDocument.CreateHttpClient();
             foreach (var lexFile in files)
             {
                 var result = await ProcessLexFile(context, lexFile, parameters, dryRun, client);
@@ -117,11 +117,11 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
         }
 
         // load manifest
-        LexManifest manifest;
+        Manifest manifest;
         try
         {
             var json = await File.ReadAllTextAsync(lexFilePath);
-            manifest = JsonSerializer.Deserialize<LexManifest>(json, ReadOptions);
+            manifest = JsonSerializer.Deserialize<Manifest>(json, ReadOptions);
         }
         catch (Exception ex)
         {
@@ -130,7 +130,7 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
         }
 
         // validate
-        var errors = LexValidator.Validate(manifest, manifestDir);
+        var errors = Validator.Validate(manifest, manifestDir);
         if (errors.Count > 0)
         {
             context.Console.DisplayErrorLine($"  [FAIL] {lexFilePath} — validation errors:");
@@ -149,7 +149,7 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
                 Directory.CreateDirectory(targetDir);
             }
 
-            var writer = new LexSnapshotWriter();
+            var writer = new SnapshotWriter();
             var snapshot = await writer.WriteAsync(manifest, manifestDir, targetDir, dryRun,
                 (fileName, dryRunFile) =>
                 {
@@ -159,7 +159,7 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
                     }
                 },
                 keepLocalFiles: parameters.OverwriteMode == LexOverwriteMode.Overwrite,
-                loadLiveSource: url => LexSourceDocument.LoadLive(url, client, LexWorkbookReader.Readers));
+                loadLiveSource: url => SourceDocument.LoadLive(url, client, LexWorkbookReader.Readers));
 
             var label = dryRun ? "[DRY-RUN]" : "[OK]";
             context.Console.DisplaySuccessLine(

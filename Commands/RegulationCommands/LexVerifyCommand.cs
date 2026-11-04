@@ -38,7 +38,7 @@ internal sealed class LexVerifyCommand : CommandBase<LexVerifyParameters>
 
         try
         {
-            var files = LexFileResolver.Resolve(parameters.FileMask, parameters.DirectoryMode == DirectoryMode.Recursive);
+            var files = FileResolver.Resolve(parameters.FileMask, parameters.DirectoryMode == DirectoryMode.Recursive);
             if (files.Count == 0)
             {
                 context.Console.DisplayErrorLine($"No lex.json files found matching: {parameters.FileMask}");
@@ -79,12 +79,12 @@ internal sealed class LexVerifyCommand : CommandBase<LexVerifyParameters>
             return false;
         }
 
-        LexManifest manifest;
-        LexSnapshot snapshot;
+        Manifest manifest;
+        Snapshot snapshot;
         try
         {
-            manifest = JsonSerializer.Deserialize<LexManifest>(await File.ReadAllTextAsync(lexFilePath), ReadOptions);
-            snapshot = JsonSerializer.Deserialize<LexSnapshot>(await File.ReadAllTextAsync(snapshotPath), ReadOptions);
+            manifest = JsonSerializer.Deserialize<Manifest>(await File.ReadAllTextAsync(lexFilePath), ReadOptions);
+            snapshot = JsonSerializer.Deserialize<Snapshot>(await File.ReadAllTextAsync(snapshotPath), ReadOptions);
         }
         catch (Exception exception)
         {
@@ -97,7 +97,7 @@ internal sealed class LexVerifyCommand : CommandBase<LexVerifyParameters>
             return false;
         }
 
-        var errors = LexVerifier.Verify(manifest, snapshot, directory);
+        var errors = Verifier.Verify(manifest, snapshot, directory);
         if (errors.Count == 0)
         {
             context.Console.DisplaySuccessLine($"  [OK] {lexFilePath} - snapshot {snapshot.Created} is intact and current");

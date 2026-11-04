@@ -56,7 +56,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
                 context.Console.DisplayErrorLine($"Root folder not found: {parameters.Root}");
                 return (int)ProgramExitCode.InvalidInput;
             }
-            var files = LexFileResolver.Resolve(parameters.Root, parameters.RepoMask, parameters.FileMask,
+            var files = FileResolver.Resolve(parameters.Root, parameters.RepoMask, parameters.FileMask,
                 parameters.DirectoryMode == DirectoryMode.Recursive);
             if (files.Count == 0)
             {
@@ -64,8 +64,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
                 return (int)ProgramExitCode.InvalidInput;
             }
 
-            var results = new List<LexCheckResult>();
-            using var urlChecker = parameters.UrlMode == LexUrlMode.CheckUrls ? new LexUrlChecker(LexWorkbookReader.Readers) : null;
+            var results = new List<CheckResult>();
+            using var urlChecker = parameters.UrlMode == LexUrlMode.CheckUrls ? new UrlChecker(LexWorkbookReader.Readers) : null;
             foreach (var lexFile in files)
             {
                 results.Add(await CheckFile(lexFile, parameters.LocationMode == LexLocationMode.Required,
@@ -79,7 +79,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
 
             if (!string.IsNullOrWhiteSpace(parameters.Report))
             {
-                LexCheckReport.Write(results, parameters.Report);
+                CheckReport.Write(results, parameters.Report);
                 context.Console.DisplayInfoLine($"Report written: {Path.GetFullPath(parameters.Report)}");
             }
 
@@ -99,25 +99,25 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         }
     }
 
-    private static async Task<LexCheckResult> CheckFile(string lexFilePath, bool requireLocation,
-        bool requireVerification, LexUrlChecker urlChecker)
+    private static async Task<CheckResult> CheckFile(string lexFilePath, bool requireLocation,
+        bool requireVerification, UrlChecker urlChecker)
     {
-        LexManifest manifest;
+        Manifest manifest;
         try
         {
-            manifest = JsonSerializer.Deserialize<LexManifest>(await File.ReadAllTextAsync(lexFilePath), ReadOptions);
+            manifest = JsonSerializer.Deserialize<Manifest>(await File.ReadAllTextAsync(lexFilePath), ReadOptions);
         }
         catch (Exception exception)
         {
-            return new LexCheckResult
+            return new CheckResult
             {
                 LexPath = lexFilePath,
                 Satellite = Path.GetFileName(Directory.GetParent(Path.GetDirectoryName(lexFilePath)!)?.FullName ?? string.Empty),
                 Error = "lex.json could not be parsed: " + exception.Message
             };
         }
-        manifest ??= new LexManifest();
-        var result = LexChecker.Check(manifest, lexFilePath, requireLocation, requireVerification);
+        manifest ??= new Manifest();
+        var result = Checker.Check(manifest, lexFilePath, requireLocation, requireVerification);
         if (urlChecker != null)
         {
             await urlChecker.Apply(manifest, result);
@@ -125,7 +125,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         return result;
     }
 
-    private static void Display(ICommandConsole console, LexCheckResult result)
+    private static void Display(ICommandConsole console, CheckResult result)
     {
         if (!result.HasFindings)
         {
