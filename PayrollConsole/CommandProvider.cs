@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using PayrollEngine.Client.Command;
 using PayrollEngine.PayrollConsole.Commands;
+using PayrollEngine.PayrollConsole.Commands.ExtensionCommands;
 
 namespace PayrollEngine.PayrollConsole;
 
@@ -28,27 +29,10 @@ internal static class CommandProvider
         {
             return;
         }
-        var extensionsPath = Path.Combine(info.DirectoryName, "extensions");
-        if (!Directory.Exists(extensionsPath))
-        {
-            return;
-        }
+        var extensionsPath = Path.Combine(info.DirectoryName, ExtensionLoader.ExtensionsFolderName);
 
-        // load extension assemblies
-        var assemblies = Directory.GetFiles(extensionsPath, "*.dll", SearchOption.AllDirectories);
-        foreach (var assembly in assemblies)
-        {
-            try
-            {
-                logger?.Debug($"Loading extension {assembly}");
-                var extensionAssembly = Assembly.LoadFrom(assembly);
-                commandManager.RegisterAssembly(extensionAssembly);
-                logger?.Debug($"Extension loaded: {extensionAssembly.GetName().Name} v{extensionAssembly.GetName().Version}");
-            }
-            catch (Exception exception)
-            {
-                logger?.Error($"Failed to load extension {assembly}: {exception.GetBaseException().Message}");
-            }
-        }
+        // extensions
+        var extensions = new ExtensionLoader(commandManager, logger).Load(extensionsPath);
+        ExtensionCatalog.Set(extensionsPath, extensions);
     }
 }

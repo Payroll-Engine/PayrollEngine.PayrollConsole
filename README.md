@@ -296,11 +296,107 @@ The Payroll Console provides a plug-in mechanism for integrating custom commands
 - Control output to console and logger
 - Program exit code definition
 
-To develop a Payroll Console extension, do the following
+The extension point is the command: an extension provides classes with the `[Command("Name")]` attribute, derived from `CommandBase<TParameters>` (`PayrollEngine.Client.Core`). Commands that do not access the backend override `BackendCommand => false`.
+
+> [!IMPORTANT]
+> **Breaking change in version 1.2.0:** assemblies placed directly into the `extensions` folder are no longer loaded. Each extension requires its own subfolder with an `extension.json` manifest. See [Migration from earlier versions](#migration-from-earlier-versions).
+
+### Extension Layout
+Each extension is a subfolder of the `extensions` folder next to the console executable. The folder contains the command assemblies, all dependencies and the manifest:
+```
+extensions/
+  MyExtension/
+    extension.json
+    MyExtension.dll
+    MyExtension.deps.json
+    SomeDependency.dll
+```
+
+### Extension Manifest
+The manifest `extension.json` is mandatory:
+```json
+{
+  "name": "MyExtension",
+  "version": "1.0.0",
+  "description": "My console commands",
+  "requiresConsole": "1.2",
+  "assemblies": [ "MyExtension.dll" ],
+  "files": [
+    { "path": "MyExtension.dll", "sha256": "3f2a..." },
+    { "path": "MyExtension.deps.json", "sha256": "9b41..." },
+    { "path": "SomeDependency.dll", "sha256": "c07e..." }
+  ]
+}
+```
+
+| Field             | Description                                                                                         | Required |
+|:--|:--|:--:|
+| `name`            | Extension name, must match the folder name                                                          | yes |
+| `version`         | Extension version                                                                                   | yes |
+| `description`     | Extension description                                                                               | no  |
+| `requiresConsole` | Required console extension API version (`major.minor`)                                              | yes |
+| `assemblies`      | Assemblies containing the commands; only these are scanned, all other assemblies are dependencies  | yes |
+| `files`           | Extension files with their SHA-256 hash (relative paths)                                            | yes |
+
+All assemblies (`*.dll`, `*.exe`), native libraries (`*.so`, `*.dylib`) and dependency files (`*.deps.json`) of the extension folder must be listed in `files`. Other files are verified if they are listed.
+
+The manifest is created or updated with the `ExtensionManifest` command, which computes the hashes of all files in the folder:
+```cmd
+PayrollConsole ExtensionManifest bin\Release\net10.0 Name:MyExtension
+```
+Values of an existing manifest (version, description, assemblies) are kept unless overridden. Run the command after each build, then copy the folder to `extensions/MyExtension/`.
+
+### Loading
+At startup, the console loads the extensions in alphabetical order of their folder names. Per extension:
+1. Read and validate the manifest.
+2. Check `requiresConsole` against the console extension API version: the major version must be equal and the minor version must not be higher than the console's. The `Extensions` command shows the current API version.
+3. Verify the hashes of all files listed in `files`, and reject undeclared files.
+4. Load the `assemblies` into a separate load context of the extension. Dependencies are resolved from the extension folder using the `.deps.json` file. The contract assemblies `PayrollEngine.Client.Core`, `PayrollEngine.Core` and `PayrollEngine.Lex` are always shared with the console. Other assemblies the extension does not provide are taken from the console.
+5. Register all commands of the extension.
+
+Rules:
+- Each extension uses its own versions of its dependencies, independent of the console and of other extensions.
+- Core commands take precedence and cannot be replaced.
+- Command names are case-insensitive. If a command name is already registered, the whole extension is rejected, and the message names both sources.
+- A rejected extension registers no commands. It does not affect the console or other extensions.
+- Loaded extensions are logged as information, rejected extensions as warnings, including the reason.
+
+> The hash verification detects modified or unintended files. It is not a signature: replacing an assembly together with its manifest is not detected. Extensions run with the permissions of the console, including its backend configuration; only install extensions from trusted sources.
+
+### Extension Commands
+| Command | Description |
+|:--|:--|
+| `Extensions` | List the extensions with version, path, status (loaded or rejected with reason) and commands |
+| `ExtensionManifest` | Create or update the manifest of an extension folder |
+| `Help` | Shows the source of extension commands; `Help MyCommand` shows the source of any command (core or extension) |
+
+Common rejection reasons:
+
+| Reason | Solution |
+|:--|:--|
+| `Missing manifest extension.json` | Create the manifest with `ExtensionManifest` |
+| `Hash mismatch of file ...` | The file has changed since the manifest was created; recreate the manifest |
+| `Undeclared file(s) ...` | Add the file to the manifest or remove it from the folder |
+| `Requires console extension API ...` | Update the console or build the extension for the installed console version |
+| `Duplicate command ...` | Rename the command; core commands and previously loaded extensions take precedence |
+| `Failed to load types of assembly ...` | A dependency is missing in the extension folder |
+| `Assembly without extension folder ...` | Move the assembly into its own extension folder (see migration) |
+
+### Developing an Extension
 1. Develop the extension library in C# (example [PayrollEngine.Client.Tutorials](https://github.com/Payroll-Engine/PayrollEngine.Client.Tutorials)).
-2. Copy the output DLL of the library into the `extensions` subfolder of the application.
-3. Display the command help `PayrollEngine Help MyCommandName`.
-4. Run the command with `PayrollEngine MyCommandName`.
+2. Build the library and run `ExtensionManifest` on the build output folder.
+3. Copy the folder to `extensions/MyExtension/` of the console.
+4. Check the status with `PayrollConsole Extensions`.
+5. Display the command help `PayrollConsole Help MyCommandName`.
+6. Run the command with `PayrollConsole MyCommandName`.
+
+### Migration from earlier versions
+Earlier versions loaded every assembly in the `extensions` folder, including subfolders. Since version 1.2.0:
+1. Create the folder `extensions/<Name>/` per extension, and move the extension assembly together with its dependencies into it.
+2. Create the manifest: `PayrollConsole ExtensionManifest extensions\<Name>`. If the command assembly is not named `<Name>.dll`, pass it with `Assemblies:MyCommands.dll`.
+3. Verify with `PayrollConsole Extensions`.
+
+Assemblies remaining directly in `extensions/` are reported as rejected.
 
 ---
 

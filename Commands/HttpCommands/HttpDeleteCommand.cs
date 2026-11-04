@@ -22,6 +22,11 @@ internal sealed class HttpDeleteCommand : HttpCommandBase<HttpDeleteParameters>
         {
             parameters.Url = await ResolveUrlAsync(context, parameters.Url);
             DisplayTitle(context.Console, $"HTTP DELETE - {parameters.Url}");
+            if (context.DisplayLevel == DisplayLevel.Full)
+            {
+                context.Console.DisplayTextLine($"Url              {parameters.Url}");
+                context.Console.DisplayNewLine();
+            }
 
             await context.HttpClient.DeleteAsync(parameters.Url);
 

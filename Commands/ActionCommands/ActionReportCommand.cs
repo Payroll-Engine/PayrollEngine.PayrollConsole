@@ -27,6 +27,14 @@ internal sealed class ActionReportCommand : CommandBase<ActionReportParameters>
     /// <returns>Program exit ok, 0 on success</returns>
     protected override Task<int> Execute(CommandContext context, ActionReportParameters parameters)
     {
+        DisplayTitle(context.Console, "Action report");
+        if (context.DisplayLevel == DisplayLevel.Full)
+        {
+            context.Console.DisplayTextLine($"File             {parameters.FileName}");
+            context.Console.DisplayTextLine($"Report target    {parameters.ReportTarget}");
+        }
+        context.Console.DisplayNewLine();
+
         try
         {
             // file

@@ -23,6 +23,12 @@ internal sealed class HttpGetCommand : HttpCommandBase<HttpGetParameters>
         {
             parameters.Url = await ResolveUrlAsync(context, parameters.Url);
             DisplayTitle(context.Console, $"HTTP GET - {parameters.Url}");
+            if (context.DisplayLevel == DisplayLevel.Full)
+            {
+                context.Console.DisplayTextLine($"Url              {parameters.Url}");
+                context.Console.DisplayTextLine($"File             {(string.IsNullOrWhiteSpace(parameters.FileName) ? "-" : parameters.FileName)}");
+                context.Console.DisplayNewLine();
+            }
 
             using var response = await context.HttpClient.GetAsync(parameters.Url);
 

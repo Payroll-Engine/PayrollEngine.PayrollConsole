@@ -109,6 +109,39 @@ Write "My logger warning" /wan
 
 ---
 
+## Extension Commands
+
+See [Application Extensions](../README.md#application-extensions) for the extension layout and the manifest.
+
+### Extensions
+List the console extensions with version, path, status (loaded or rejected with reason) and commands. Offline command.
+
+**Examples:**
+```cmd
+Extensions
+```
+
+### ExtensionManifest
+Create or update the extension manifest `extension.json` with the SHA-256 hashes of all files in the extension folder. Values of an existing manifest are kept unless overridden. Offline command.
+
+| # | Argument          | Description                                                        |
+|---|:------------------|:-------------------------------------------------------------------|
+| 1 | `Path`            | Extension folder                                                   |
+|   | `Name`            | Extension name (named, default: folder name)                       |
+|   | `Version`         | Extension version (named, default: version of the first assembly)  |
+|   | `Description`     | Extension description (named)                                      |
+|   | `RequiresConsole` | Required console extension API version (named, default: current)   |
+|   | `Assemblies`      | Comma separated command assemblies (named, default: `<Name>.dll`)  |
+
+**Examples:**
+```cmd
+ExtensionManifest extensions\MyExtension
+ExtensionManifest bin\Release\net10.0 Name:MyExtension Version:1.0.0
+ExtensionManifest MyExtension Assemblies:MyExtension.dll,MyExtension.Reports.dll
+```
+
+---
+
 ## HTTP Commands
 
 All HTTP commands support URL placeholders resolved against the backend at runtime.

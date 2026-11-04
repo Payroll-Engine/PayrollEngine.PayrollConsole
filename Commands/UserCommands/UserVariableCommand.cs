@@ -35,14 +35,17 @@ internal sealed class UserVariableCommand : CommandBase<UserVariableParameters>
             parameters.VariableMode = UserVariableMode.Set;
         }
 
-        context.Console.DisplayTextLine($"Variable name    {parameters.VariableName}");
-        if (!string.IsNullOrWhiteSpace(parameters.VariableValue))
+        if (context.DisplayLevel == DisplayLevel.Full)
         {
-            context.Console.DisplayTextLine($"Variable value   {parameters.VariableValue}");
+            context.Console.DisplayTextLine($"Variable name    {parameters.VariableName}");
+            if (!string.IsNullOrWhiteSpace(parameters.VariableValue))
+            {
+                context.Console.DisplayTextLine($"Variable value   {parameters.VariableValue}");
+            }
+            context.Console.DisplayTextLine(changedMode.HasValue
+                ? $"Variable mode    {parameters.VariableMode} <- {changedMode}"
+                : $"Variable mode    {parameters.VariableMode}");
         }
-        context.Console.DisplayTextLine(changedMode.HasValue
-            ? $"Variable mode    {parameters.VariableMode} <- {changedMode}"
-            : $"Variable mode    {parameters.VariableMode}");
         context.Console.DisplayNewLine();
 
         try

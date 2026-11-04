@@ -34,11 +34,17 @@ public sealed class LookupTextImportCommand : CommandBase<LookupTextImportParame
 
 
         // header
-        console.DisplayTitleLine("Convert text file to lookup");
-        console.DisplayTextLine($"Mapping file     {targetFolder}");
+        DisplayTitle(console, "Convert text file to lookup");
         if (context.DisplayLevel == DisplayLevel.Full)
         {
+            console.DisplayTextLine($"Tenant           {parameters.Tenant}");
+            console.DisplayTextLine($"Regulation       {parameters.Regulation}");
+            console.DisplayTextLine($"Source file      {parameters.SourceFileName}");
+            console.DisplayTextLine($"Mapping file     {parameters.MappingFileName}");
             console.DisplayTextLine($"Target folder    {targetFolder}");
+            console.DisplayTextLine($"Slice size       {parameters.SliceSize}");
+            console.DisplayTextLine($"Import mode      {parameters.ImportMode}");
+            console.DisplayTextLine($"Import target    {parameters.ImportTarget}");
         }
 
         console.DisplayNewLine();

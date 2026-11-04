@@ -24,6 +24,12 @@ internal sealed class HttpPutCommand : HttpCommandBase<HttpPutParameters>
         {
             parameters.Url = await ResolveUrlAsync(context, parameters.Url);
             DisplayTitle(context.Console, $"HTTP PUT - {parameters.Url}");
+            if (context.DisplayLevel == DisplayLevel.Full)
+            {
+                context.Console.DisplayTextLine($"Url              {parameters.Url}");
+                context.Console.DisplayTextLine($"File             {(string.IsNullOrWhiteSpace(parameters.FileName) ? "-" : parameters.FileName)}");
+                context.Console.DisplayNewLine();
+            }
 
             var content = await GetFileContent(parameters.FileName);
             var httpContent = new StringContent(content);

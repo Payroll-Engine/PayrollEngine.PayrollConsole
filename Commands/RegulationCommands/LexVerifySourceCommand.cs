@@ -38,6 +38,13 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
     protected override async Task<int> Execute(CommandContext context, LexVerifySourceParameters parameters)
     {
         DisplayTitle(context.Console, "Lex Verify Source");
+        if (context.DisplayLevel == DisplayLevel.Full)
+        {
+            context.Console.DisplayTextLine($"File mask        {parameters.FileMask}");
+            context.Console.DisplayTextLine($"Directory mode   {parameters.DirectoryMode}");
+            context.Console.DisplayTextLine($"Check mode       {parameters.CheckMode}");
+            context.Console.DisplayTextLine($"Write mode       {parameters.WriteMode}");
+        }
         context.Console.DisplayNewLine();
         try
         {

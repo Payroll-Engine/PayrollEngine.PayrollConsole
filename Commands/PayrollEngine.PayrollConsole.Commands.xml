@@ -704,6 +704,373 @@
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.WageTypeSheetColumns">
             <summary>Maps the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.WageType"/> Excel sheet columns to their indexes.</summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionCatalog">
+            <summary>
+            Extension load results of the running console
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionCatalog.ExtensionsPath">
+            <summary>
+            Extensions folder
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionCatalog.Extensions">
+            <summary>
+            Extension load results, ordered by load order
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionCatalog.Set(System.String,System.Collections.Generic.IReadOnlyList{PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionInfo})">
+            <summary>
+            Set the extension load results
+            </summary>
+            <param name="extensionsPath">Extensions folder</param>
+            <param name="extensions">Extension load results</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionFile">
+            <summary>
+            Extension file with its expected hash
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionFile.Path">
+            <summary>
+            File path, relative to the extension folder
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionFile.Sha256">
+            <summary>
+            SHA-256 hash of the file as hex string
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionInfo">
+            <summary>
+            Extension load result
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionInfo.Name">
+            <summary>
+            Extension name (manifest name, folder or file name without manifest)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionInfo.Version">
+            <summary>
+            Extension version
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionInfo.Description">
+            <summary>
+            Extension description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionInfo.Path">
+            <summary>
+            Extension folder or file path
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionInfo.Status">
+            <summary>
+            Load status
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionInfo.Reason">
+            <summary>
+            Rejection reason
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionInfo.Commands">
+            <summary>
+            Registered command names
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionLoadContext">
+            <summary>
+            Isolated load context of an extension. Dependencies are resolved from the extension folder,
+            the shared contract assemblies always from the default context of the console.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionLoadContext.SharedAssemblies">
+            <summary>
+            Contract assemblies shared between the console and all extensions.
+            Loading them into the extension context would break the type identity of the command contract.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionLoadContext.Load(System.Reflection.AssemblyName)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionLoadContext.LoadUnmanagedDll(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionLoader">
+            <summary>
+            Loads the console extensions from the extensions folder.
+            Each extension is a sub folder with an extension manifest, loaded into its own load context.
+            A failing extension is rejected without affecting the console or other extensions.
+            </summary>
+            <param name="commandManager">Command manager</param>
+            <param name="logger">Logger</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionLoader.#ctor(PayrollEngine.Client.Command.CommandManager,PayrollEngine.ILogger)">
+            <summary>
+            Loads the console extensions from the extensions folder.
+            Each extension is a sub folder with an extension manifest, loaded into its own load context.
+            A failing extension is rejected without affecting the console or other extensions.
+            </summary>
+            <param name="commandManager">Command manager</param>
+            <param name="logger">Logger</param>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionLoader.ExtensionsFolderName">
+            <summary>
+            Extensions folder name, located in the application folder
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionLoader.Load(System.String)">
+            <summary>
+            Load all extensions in alphabetical order of the folder names
+            </summary>
+            <param name="extensionsPath">Extensions folder</param>
+            <returns>Load result per extension</returns>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest">
+            <summary>
+            Extension manifest (extension.json)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.FileName">
+            <summary>
+            Manifest file name
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.ExecutableFileExtensions">
+            <summary>
+            File extensions of executable content, which must be declared in <see cref="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.Files"/>
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.Name">
+            <summary>
+            Extension name, must match the extension folder name
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.Version">
+            <summary>
+            Extension version
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.Description">
+            <summary>
+            Extension description
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.RequiresConsole">
+            <summary>
+            Required extension API version of the console (major.minor)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.Assemblies">
+            <summary>
+            Assemblies containing the extension commands, relative to the extension folder.
+            Other assemblies are dependencies and are not scanned for commands.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.Files">
+            <summary>
+            Extension files with hashes
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.Load(System.String)">
+            <summary>
+            Read the manifest from a file
+            </summary>
+            <param name="fileName">Manifest file name</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.Save(System.String)">
+            <summary>
+            Write the manifest to a file
+            </summary>
+            <param name="fileName">Manifest file name</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.GetRequiredConsoleVersion">
+            <summary>
+            Parse the required console extension API version
+            </summary>
+            <returns>The required version, null if missing or invalid</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.Validate(System.String)">
+            <summary>
+            Validate the manifest structure
+            </summary>
+            <param name="extensionPath">Extension folder</param>
+            <returns>Error message, null for a valid manifest</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.VerifyFiles(System.String)">
+            <summary>
+            Verify the extension files against the manifest hashes.
+            Executable files (assemblies, native libraries) and dependency files (*.deps.json)
+            must be declared in the manifest.
+            </summary>
+            <param name="extensionPath">Extension folder</param>
+            <returns>Error message, null if all files are valid</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.RequiresDeclaration(System.String)">
+            <summary>
+            Test if a file must be declared in the manifest files
+            </summary>
+            <param name="fileName">File name</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.FileHash(System.String)">
+            <summary>
+            SHA-256 of a file as lower-case hex string
+            </summary>
+            <param name="fileName">File name</param>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.GetFullPath(System.String,System.String)">
+            <summary>
+            Resolve a manifest path within the extension folder
+            </summary>
+            <param name="extensionPath">Extension folder</param>
+            <param name="relativePath">Relative manifest path</param>
+            <returns>The full path, null for rooted paths or paths not within the extension folder</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.FormatApiVersion(System.Version)">
+            <summary>
+            Format a version for the requiresConsole field (major.minor)
+            </summary>
+            <param name="version">Version</param>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifest.ConsoleApiVersion">
+            <summary>
+            Current console extension API version (major.minor)
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestBuilder">
+            <summary>
+            Builds the extension manifest of an extension folder, including the hashes of all files
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestBuilder.Build(PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestParameters)">
+            <summary>
+            Build the manifest. Values of an existing manifest are kept unless overridden by the parameters.
+            </summary>
+            <param name="parameters">Manifest parameters</param>
+            <returns>The manifest</returns>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestCommand">
+            <summary>
+            Extension manifest command
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestParameters)">
+            <summary>Create or update the extension manifest</summary>
+            <param name="context">Command execution context</param>
+            <param name="parameters">Command parameters</param>
+            <returns>Program exit ok, 0 on success</returns>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestParameters">
+            <summary>
+            Extension manifest command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestParameters.Path">
+            <summary>
+            Extension folder
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestParameters.Name">
+            <summary>
+            Extension name (default: existing manifest name or folder name)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestParameters.Version">
+            <summary>
+            Extension version (default: existing manifest version or version of the first assembly)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestParameters.Description">
+            <summary>
+            Extension description (default: existing manifest description)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestParameters.RequiresConsole">
+            <summary>
+            Required console extension API version (default: existing manifest value or current API version)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestParameters.Assemblies">
+            <summary>
+            Command assemblies (default: existing manifest assemblies or Name.dll)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionManifestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+            <param name="parser">Parameter parser</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionsCommand">
+            <summary>
+            Extensions command
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionsCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionsParameters)">
+            <summary>List the console extensions</summary>
+            <param name="context">Command execution context</param>
+            <param name="parameters">Command parameters</param>
+            <returns>Program exit ok, 0 on success</returns>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionsCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionsCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionsCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionsParameters">
+            <summary>
+            Extensions command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionsParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionsParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionsParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+            <param name="_">Parameter parser</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionStatus">
+            <summary>
+            Extension load status
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionStatus.Loaded">
+            <summary>
+            Extension loaded, commands registered
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.ExtensionCommands.ExtensionStatus.Rejected">
+            <summary>
+            Extension rejected, no command registered
+            </summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.HelpCommand">
             <summary>
             Help command

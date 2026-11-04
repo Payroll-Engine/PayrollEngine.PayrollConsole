@@ -44,11 +44,24 @@ public sealed class HelpCommand : CommandBase<HelpParameters>
         // registered commands
         if (command != null)
         {
-            commandManager.GetCommand(command)?.ShowHelp(console);
+            var registeredCommand = commandManager.GetCommand(command);
+            if (registeredCommand != null)
+            {
+                registeredCommand.ShowHelp(console);
+                ShowOrigin(console, commandManager.GetCommandOrigin(registeredCommand));
+            }
         }
         else
         {
-            commandManager.GetCommands().ForEach(x => x.ShowHelp(console));
+            foreach (var registeredCommand in commandManager.GetCommands())
+            {
+                registeredCommand.ShowHelp(console);
+                var origin = commandManager.GetCommandOrigin(registeredCommand);
+                if (origin is { IsExtension: true })
+                {
+                    ShowOrigin(console, origin);
+                }
+            }
         }
 
         // help command
@@ -98,6 +111,14 @@ public sealed class HelpCommand : CommandBase<HelpParameters>
         foreach (var value in Enum.GetValues<ProgramExitCode>())
         {
             console.DisplayTextLine($"      {(int)value}    {Enum.GetName(typeof(ProgramExitCode), value)}");
+        }
+    }
+
+    private static void ShowOrigin(ICommandConsole console, CommandOrigin origin)
+    {
+        if (origin != null)
+        {
+            console.DisplayInfoLine($"      Source: {origin}");
         }
     }
 
