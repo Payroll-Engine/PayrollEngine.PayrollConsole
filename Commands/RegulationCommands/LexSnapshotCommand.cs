@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -52,7 +51,7 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
 
         try
         {
-            var files = ResolveFiles(parameters);
+            var files = LexFileResolver.Resolve(parameters.FileMask, parameters.DirectoryMode == DirectoryMode.Recursive);
             if (files.Count == 0)
             {
                 context.Console.DisplayErrorLine($"No lex.json files found matching: {parameters.FileMask}");
@@ -153,7 +152,8 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
                     {
                         context.Console.DisplayInfoLine($"         Downloading {fileName} ...");
                     }
-                });
+                },
+                keepLocalFiles: parameters.OverwriteMode == LexOverwriteMode.Overwrite);
 
             var label = dryRun ? "[DRY-RUN]" : "[OK]";
             context.Console.DisplaySuccessLine(
@@ -166,30 +166,6 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
             context.Console.DisplayErrorLine($"  [FAIL] {lexFilePath} — {ex.Message}");
             return ProcessResult.Failed;
         }
-    }
-
-    private static List<string> ResolveFiles(LexSnapshotParameters parameters)
-    {
-        var fileMask = parameters.FileMask ?? "lex.json";
-        var searchOption = parameters.DirectoryMode == DirectoryMode.Recursive
-            ? SearchOption.AllDirectories
-            : SearchOption.TopDirectoryOnly;
-
-        // exact file
-        if (File.Exists(fileMask))
-        {
-            return [Path.GetFullPath(fileMask)];
-        }
-
-        // file mask
-        var fileInfo = new FileInfo(fileMask);
-        var dir = string.IsNullOrEmpty(fileInfo.DirectoryName)
-            ? Directory.GetCurrentDirectory()
-            : fileInfo.DirectoryName;
-        var pattern = fileInfo.Name;
-
-        var found = Directory.GetFiles(dir, pattern, searchOption);
-        return [.. found];
     }
 
     /// <inheritdoc />
@@ -213,7 +189,8 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          snapshot mode: /execute (default) or /dryrun");
         console.DisplayTextLine("          directory mode: /top (default) or /recursive");
-        console.DisplayTextLine("          overwrite mode: /skip (default) or /overwrite (regenerate an existing snapshot.json)");
+        console.DisplayTextLine("          overwrite mode: /skip (default) or /overwrite (regenerate an existing snapshot.json;");
+        console.DisplayTextLine("                          files with a sourceUrl and an existing local copy are not downloaded again)");
         console.DisplayTextLine("      Special:");
         console.DisplayTextLine("          /schema  — print the JSON Schema for lex.json and exit");
         console.DisplayTextLine("      Examples:");
