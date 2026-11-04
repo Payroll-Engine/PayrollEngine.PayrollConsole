@@ -2910,6 +2910,101 @@
             Replace the existing result
             </summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverCommand">
+            <summary>
+            Prepares the data regulation satellite of the next cycle. The cycle is determined by the payroll
+            calendar of the backend; its start is the new validFrom and its year the new year tag.
+            All lex entries of the new satellite are open until verified again.
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverParameters)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverCycle">
+            <summary>
+            Cycle of the payroll calendar that contains the rollover date
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverCycle.GetAsync(System.String,System.DateTime,System.Func{System.String,System.Threading.Tasks.Task{System.Nullable{System.Int32}}},System.Func{System.Int32,System.DateTime,System.Threading.Tasks.Task{PayrollEngine.DatePeriod}})">
+            <summary>
+            Query the cycle from the backend
+            </summary>
+            <param name="tenant">Tenant identifier</param>
+            <param name="date">Date within the new cycle</param>
+            <param name="getTenantId">Returns the id of a tenant identifier, null when unknown</param>
+            <param name="getCycle">Returns the calendar cycle of the tenant id that contains the date</param>
+            <exception cref="T:PayrollEngine.PayrollException">Unknown tenant or no cycle</exception>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverMode">
+            <summary>
+            LexRollover execution mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverMode.Write">
+            <summary>
+            Create the satellite of the next cycle (default)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverMode.DryRun">
+            <summary>
+            Show the planned satellite only — no files written
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverParameters">
+            <summary>
+            LexRollover command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverParameters.Satellite">
+            <summary>
+            Satellite directory of the previous cycle (contains .lex/lex.json)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverParameters.Date">
+            <summary>
+            Date within the new cycle (yyyy-MM-dd)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverParameters.Tenant">
+            <summary>
+            Tenant identifier of the payroll calendar
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverParameters.Calendar">
+            <summary>
+            Calendar name (default: tenant calendar)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverParameters.Culture">
+            <summary>
+            Culture name (default: tenant culture)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverParameters.RolloverMode">
+            <summary>
+            Execution mode: write or dry run (default: Write)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSchemaMode">
             <summary>
             LexSnapshot schema output mode

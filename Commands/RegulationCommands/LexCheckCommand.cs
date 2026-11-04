@@ -86,7 +86,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             var withFindings = results.Count(r => r.HasFindings);
             context.Console.DisplayNewLine();
             context.Console.DisplayTextLine($"Verification: auto {results.Sum(r => r.VerifiedAuto)}, " +
-                                            $"manual {results.Sum(r => r.VerifiedManual)}, without {results.Sum(r => r.Unverified)}");
+                                            $"manual {results.Sum(r => r.VerifiedManual)}, without {results.Sum(r => r.Unverified)}, " +
+                                            $"open {results.Sum(r => r.Open)}");
             context.Console.DisplayTextLine($"Summary: {results.Count - withFindings} without findings, {withFindings} with findings");
             return withFindings > 0 && parameters.CheckMode == LexCheckMode.Strict
                 ? (int)ProgramExitCode.FailedTest
@@ -149,6 +150,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             console.DisplayErrorLine($"         missing fields: sourceUrl {result.MissingSourceUrl}, sourceLocation {result.MissingSourceLocation}, legalReference {result.MissingLegalReference}");
         if (result.RequireVerification && result.Unverified > 0)
             console.DisplayErrorLine($"         {result.Unverified} entr(ies) without verification: {string.Join(", ", result.UnverifiedSamples)}");
+        if (result.Open > 0)
+            console.DisplayErrorLine($"         {result.Open} open entr(ies), verify again: {string.Join(", ", result.OpenSamples)}");
         if (result.MissingReview > 0)
             console.DisplayErrorLine($"         {result.MissingReview} manual verification(s) without second review: {string.Join(", ", result.MissingReviewSamples)}");
         foreach (var problem in result.FileProblems) console.DisplayErrorLine($"         evidence: {problem}");
