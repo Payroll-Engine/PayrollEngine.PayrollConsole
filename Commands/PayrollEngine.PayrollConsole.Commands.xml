@@ -2543,6 +2543,70 @@
             Parse command parameters
             </summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyCommand">
+            <summary>
+            Writes the lex values into the lookup values of the data regulation.
+            The mapping is the one of LexCheck (Lookup.Key); only differing values are replaced.
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyParameters)">
+            <inheritdoc />
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyCommand.BackendCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyCommand.GetParameters(PayrollEngine.Client.Command.CommandLineParser)">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyCommand.ShowHelp(PayrollEngine.Client.Command.ICommandConsole)">
+            <inheritdoc />
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyMode">
+            <summary>
+            LexApply execution mode
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyMode.Write">
+            <summary>
+            Write the lex values into the regulation files (default)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyMode.DryRun">
+            <summary>
+            Show the differences only — no files written
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyParameters">
+            <summary>
+            LexApply command parameters
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyParameters.FileMask">
+            <summary>
+            File name or file mask (e.g. lex.json or *.json)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyParameters.DirectoryMode">
+            <summary>
+            Directory scan mode: top-level only or recursive (default: Top)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyParameters.ApplyMode">
+            <summary>
+            Execution mode: write or dry run (default: Write)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyParameters.Toggles">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyParameters.Test">
+            <inheritdoc />
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexApplyParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
+            <summary>
+            Parse command parameters
+            </summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexArguments">
             <summary>
             Argument helpers of the lex commands
