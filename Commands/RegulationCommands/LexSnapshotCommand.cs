@@ -41,6 +41,7 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
             context.Console.DisplayTextLine($"Target path      {(string.IsNullOrWhiteSpace(parameters.TargetPath) ? "-" : parameters.TargetPath)}");
             context.Console.DisplayTextLine($"Snapshot mode    {parameters.SnapshotMode}");
             context.Console.DisplayTextLine($"Directory mode   {parameters.DirectoryMode}");
+            context.Console.DisplayTextLine($"Overwrite mode   {parameters.OverwriteMode}");
         }
         var dryRun = parameters.SnapshotMode == LexSnapshotMode.DryRun;
         if (dryRun)
@@ -105,7 +106,7 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
 
         // check for existing snapshot
         var snapshotPath = Path.Combine(targetDir, "snapshot.json");
-        if (File.Exists(snapshotPath))
+        if (File.Exists(snapshotPath) && parameters.OverwriteMode == LexOverwriteMode.Skip)
         {
             context.Console.DisplayInfoLine($"  [SKIP] {lexFilePath} — snapshot.json already exists");
             return ProcessResult.Skipped;
@@ -204,7 +205,7 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
         console.DisplayTitleLine("- LexSnapshot");
         console.DisplayTextLine("      Create a compliance snapshot from a lex.json source manifest.");
         console.DisplayTextLine("      The snapshot is self-contained: all referenced files are copied into the .lex folder.");
-        console.DisplayTextLine("      If snapshot.json already exists, the folder is skipped (info message only).");
+        console.DisplayTextLine("      If snapshot.json already exists, the folder is skipped (info message only), unless /overwrite is set.");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. file name or file mask [FileMask] (e.g. lex.json or **/lex.json)");
         console.DisplayTextLine("      Named:");
@@ -212,12 +213,14 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          snapshot mode: /execute (default) or /dryrun");
         console.DisplayTextLine("          directory mode: /top (default) or /recursive");
+        console.DisplayTextLine("          overwrite mode: /skip (default) or /overwrite (regenerate an existing snapshot.json)");
         console.DisplayTextLine("      Special:");
         console.DisplayTextLine("          /schema  — print the JSON Schema for lex.json and exit");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          LexSnapshot .lex/lex.json");
         console.DisplayTextLine("          LexSnapshot lex.json /recursive");
         console.DisplayTextLine("          LexSnapshot .lex/lex.json /dryrun");
+        console.DisplayTextLine("          LexSnapshot .lex/lex.json /overwrite");
         console.DisplayTextLine("          LexSnapshot .lex/lex.json /TargetPath:C:\\Output");
         console.DisplayTextLine("          LexSnapshot /schema");
     }

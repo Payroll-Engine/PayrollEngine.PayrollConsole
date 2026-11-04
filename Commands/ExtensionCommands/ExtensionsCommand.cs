@@ -9,6 +9,7 @@ namespace PayrollEngine.PayrollConsole.Commands.ExtensionCommands;
 /// </summary>
 [Command("Extensions")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class ExtensionsCommand : CommandBase<ExtensionsParameters>
 {
     /// <summary>List the console extensions</summary>

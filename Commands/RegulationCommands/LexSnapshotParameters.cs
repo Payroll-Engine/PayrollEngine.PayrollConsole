@@ -29,6 +29,11 @@ public class LexSnapshotParameters : ICommandParameters
     public DirectoryMode DirectoryMode { get; private init; } = DirectoryMode.Top;
 
     /// <summary>
+    /// Existing snapshot.json: skip or regenerate (default: Skip)
+    /// </summary>
+    public LexOverwriteMode OverwriteMode { get; private init; } = LexOverwriteMode.Skip;
+
+    /// <summary>
     /// Print JSON Schema for lex.json and exit
     /// </summary>
     public LexSchemaMode SchemaMode { get; private init; } = LexSchemaMode.NoSchema;
@@ -38,6 +43,7 @@ public class LexSnapshotParameters : ICommandParameters
     [
         typeof(LexSnapshotMode),
         typeof(DirectoryMode),
+        typeof(LexOverwriteMode),
         typeof(LexSchemaMode)
     ];
 
@@ -61,6 +67,7 @@ public class LexSnapshotParameters : ICommandParameters
             TargetPath = parser.GetByName(nameof(TargetPath)),
             SnapshotMode = parser.GetEnumToggle(LexSnapshotMode.Execute),
             DirectoryMode = parser.GetEnumToggle(DirectoryMode.Top),
+            OverwriteMode = parser.GetEnumToggle(LexOverwriteMode.Skip),
             SchemaMode = parser.GetEnumToggle(LexSchemaMode.NoSchema)
         };
 }

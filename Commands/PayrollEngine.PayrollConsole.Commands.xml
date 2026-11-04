@@ -2575,6 +2575,21 @@
             Parse command parameters
             </summary>
         </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexOverwriteMode">
+            <summary>
+            LexSnapshot handling of an existing snapshot.json
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexOverwriteMode.Skip">
+            <summary>
+            Skip folders with an existing snapshot.json (default)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexOverwriteMode.Overwrite">
+            <summary>
+            Regenerate an existing snapshot.json
+            </summary>
+        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSchemaMode">
             <summary>
             LexSnapshot schema output mode
@@ -2646,6 +2661,11 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotParameters.DirectoryMode">
             <summary>
             Directory scan mode: top-level only or recursive (default: Top)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotParameters.OverwriteMode">
+            <summary>
+            Existing snapshot.json: skip or regenerate (default: Skip)
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSnapshotParameters.SchemaMode">

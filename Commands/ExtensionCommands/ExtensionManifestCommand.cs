@@ -10,6 +10,7 @@ namespace PayrollEngine.PayrollConsole.Commands.ExtensionCommands;
 /// </summary>
 [Command("ExtensionManifest")]
 // ReSharper disable once UnusedType.Global
+// ReSharper disable once UnusedMember.Global
 internal sealed class ExtensionManifestCommand : CommandBase<ExtensionManifestParameters>
 {
     /// <summary>Create or update the extension manifest</summary>
