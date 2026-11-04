@@ -122,6 +122,7 @@ internal sealed class LexRolloverCommand : CommandBase<LexRolloverParameters>
         console.DisplayTextLine("      Prepare the data regulation satellite of the next cycle (backend command).");
         console.DisplayTextLine("      The cycle containing the date is read from the payroll calendar of the tenant:");
         console.DisplayTextLine("      cycle start = new validFrom, its year = new year tag of folder, file and version.");
+        console.DisplayTextLine("      A mid-year edition (e.g. Data.Tax.2026b) rolls to the year without suffix (Data.Tax.2027).");
         console.DisplayTextLine("      The satellite folder is copied without bin, obj, nupkgs and snapshot.json; names with");
         console.DisplayTextLine("      the year tag are renamed and their references updated, validFrom and a year-based");
         console.DisplayTextLine("      version are set. All lex entries are open (no verification) until verified again;");
