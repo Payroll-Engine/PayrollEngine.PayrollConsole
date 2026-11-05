@@ -192,7 +192,7 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
         console.DisplayTextLine("      Create a compliance snapshot from a lex.json source manifest.");
         console.DisplayTextLine("      The snapshot is self-contained: all referenced files are copied into the .lex folder.");
         console.DisplayTextLine("      The snapshot records a hash of the normalized text of every source URL (LexCheck /checkurls");
-        console.DisplayTextLine("      reports changed sources); unreadable sources (blocked host, PDF) get no hash. Not in dry-run mode.");
+        console.DisplayTextLine("      reports changed sources); unreadable sources (blocked host, scanned PDF) get no hash. Not in dry-run mode.");
         console.DisplayTextLine("      If snapshot.json already exists, the folder is skipped (info message only), unless /overwrite is set.");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. file name or file mask [FileMask] (e.g. lex.json or **/lex.json)");

@@ -207,9 +207,11 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         console.DisplayTitleLine("- LexVerifySource");
         console.DisplayTextLine("      Look up the numbers of every lex entry in its sources: per source URL the local evidence file");
         console.DisplayTextLine("      (documentRef for the first URL, otherwise the declared file with the same URL in sourceUrls) or,");
-        console.DisplayTextLine("      with /live, the source URL (web page, xlsx). A number counts as found when any source holds it.");
+        console.DisplayTextLine("      with /live, the source URL. A number counts as found when any source holds it.");
+        console.DisplayTextLine("      Readable: HTML, text, csv, xls/xlsx/xlsb/ods, PDF with text layer, docx/odt.");
         console.DisplayTextLine("      found: all numbers are in the sources; partial / not found: numbers are missing (review the value);");
-        console.DisplayTextLine("      unreadable (blocked host, PDF, script-only page) and no local evidence: verify the value manually.");
+        console.DisplayTextLine("      unreadable (blocked host, script-only page, scanned or encrypted PDF, other binary format)");
+        console.DisplayTextLine("      and no local evidence: verify the value manually.");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. file name or file mask [FileMask] (e.g. lex.json or **/lex.json)");
         console.DisplayTextLine("      Toggles:");

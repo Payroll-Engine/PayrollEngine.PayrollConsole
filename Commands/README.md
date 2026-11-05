@@ -502,7 +502,7 @@ LexAdd Rates.Reduced Lex:Data.Tax.2026 "LegalReference:Tax Act s. 12"
 
 ### LexSnapshot
 
-Create an immutable compliance snapshot from a `lex.json` source manifest. All referenced files are copied into the `.lex` folder — after creation, no external access is needed. A file with `sourceUrls` and without `sourcePath` is downloaded from the first URL that answers. The snapshot records a hash of the normalized text of every source URL (`LexCheck /checkurls` reports changed sources); unreadable sources (blocked host, PDF) get no hash. Source hashes are not recorded in dry-run mode.
+Create an immutable compliance snapshot from a `lex.json` source manifest. All referenced files are copied into the `.lex` folder — after creation, no external access is needed. A file with `sourceUrls` and without `sourcePath` is downloaded from the first URL that answers. The snapshot records a hash of the normalized text of every source URL (`LexCheck /checkurls` reports changed sources); unreadable sources (blocked host, scanned PDF) get no hash. Source hashes are not recorded in dry-run mode.
 
 If `snapshot.json` already exists in the target directory, the folder is **skipped with an info message** (not an error), unless `/overwrite` is set. This enables safe re-runs in recursive mode across an entire regulation repo tree.
 
@@ -596,13 +596,15 @@ LexCheck lex.json /recursive Root:C:\Repos RepoMask:Payroll.*
 ```
 
 ### LexVerifySource
-Look up the numbers of every lex entry in its sources: per source URL the local evidence file (`documentRef` for the first URL, otherwise the declared file with the same URL in `sourceUrls`) or, with `/live`, the source URL (web page, xlsx). A number counts as found when any source of the entry holds it; with several sources the found location names the host per source.
+Look up the numbers of every lex entry in its sources: per source URL the local evidence file (`documentRef` for the first URL, otherwise the declared file with the same URL in `sourceUrls`) or, with `/live`, the source URL. A number counts as found when any source of the entry holds it; with several sources the found location names the host per source.
+
+The format is detected from the content: HTML, text and CSV, spreadsheets (`xls`, `xlsx`, `xlsb`, `ods`; one section per sheet), PDF with a text layer (one section per page, plus the form field values) and text documents (`docx`, `odt`; one section per heading).
 
 | Result | Meaning |
 |:-------|:--------|
 | Found | All numbers of the entry are in the source |
 | Partial / not found | Numbers are missing in the source — review the value |
-| Unreadable / no local evidence | Blocked host, PDF or script-only page, or no local file — verify the value manually (`LexAttest`) |
+| Unreadable / no local evidence | Blocked host, script-only page, scanned or encrypted PDF, other binary format, or no local file — verify the value manually (`LexAttest`) |
 
 With `/writelocations` the command sets the `sourceLocation` of found entries without one and writes an `auto` verification record for entries whose numbers were all found. A manual record is never replaced. Afterwards regenerate the snapshot with `LexSnapshot /overwrite`.
 
@@ -737,7 +739,7 @@ The `lex.json` file documents the provenance of compliance values in a data regu
 |:---------|:-----|:--------:|:------------|
 | `$schema` | string | No | JSON Schema URI for IDE validation |
 | `authority` | string | **Yes** | Country/jurisdiction code (`DE`, `CH`, `SG`, `UK`, ...) |
-| `regulation` | string | **Yes** | Regulation identifier (`Data.LSt`, `Data.QST`, `Data.CPF`, ...) |
+| `regulation` | string | **Yes** | Regulation identifier (`Data.Tax`, `Data.Social`, ...) |
 | `validFrom` | string | **Yes** | Effective date in `YYYY-MM-DD` format |
 | `provider` | string | No | Issuing authority or data provider (`Tax authority`, `Social security agency`, ...) |
 | `sources` | array | No | Document-level source references (general provenance) |
