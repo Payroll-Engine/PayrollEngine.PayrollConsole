@@ -446,7 +446,7 @@ Lifecycle of a satellite:
 Except `LexRollover` (payroll calendar), the Lex commands work on files only and require no backend connection.
 
 ### LexFetch
-Download a source document unchanged into the `.lex` folder and declare it in `files[]` (`fileName`, `sourceUrl`). Hash and size are shown; `LexSnapshot` records them in the snapshot. An existing file with the same content is kept, a different one is only replaced with `/overwrite`.
+Download a source document unchanged into the `.lex` folder and declare it in `files[]` (`fileName`, `sourceUrls`). Hash and size are shown; `LexSnapshot` records them in the snapshot. An existing file with the same content is kept, a different one is only replaced with `/overwrite`.
 
 | # | Argument | Description |
 |---|:---------|:------------|
@@ -472,7 +472,7 @@ LexFetch https://example.org/rates rates-2026.html Lex:Data.Tax.2026 "Descriptio
 ```
 
 ### LexAdd
-Add a lex entry. The value is read from the source by a person; the command checks the format. The key must be new and have the format `Lookup.Key`, structured content must be valid JSON, the source URL must be declared in `sources[]` and the document in `files[]`. Missing `content`, `sourceUrl`, `sourceLocation` and `legalReference` are written empty, `LexCheck` reports them.
+Add a lex entry. The value is read from the source by a person; the command checks the format. The key must be new and have the format `Lookup.Key`, structured content must be valid JSON, every source URL must be declared in `sources[]` and the document in `files[]`. Missing `content`, `sourceUrls`, `sourceLocation` and `legalReference` are written empty, `LexCheck` reports them.
 
 | # | Argument | Description |
 |---|:---------|:------------|
@@ -485,7 +485,7 @@ Add a lex entry. The value is read from the source by a person; the command chec
 | `Lex` | Path of `lex.json` or of its folder (default: `lex.json` or `.lex/lex.json` in the current folder) |
 | `Content` | Value read from the source |
 | `Unit` | Unit of the value |
-| `SourceUrl` | Source URL (declared in `sources[]`) |
+| `SourceUrls` | Source URLs separated by spaces, first the main source (declared in `sources[]`) |
 | `SourceLocation` | Location in the source (e.g. page, section, table) |
 | `LegalReference` | Legal reference |
 | `DocumentRef` | Evidence document (declared in `files[]`) |
@@ -495,13 +495,14 @@ Exit codes: `0` ok, `6` `lex.json` missing, key exists or source/document not de
 
 **Examples:**
 ```cmd
-LexAdd Rates.Standard Content:0.081 Unit:rate SourceUrl:https://example.org/rates
+LexAdd Rates.Standard Content:0.081 Unit:rate SourceUrls:https://example.org/rates
+LexAdd Limits.Ceiling Content:42000 "SourceUrls:https://example.org/rates https://example.org/limits"
 LexAdd Rates.Reduced Lex:Data.Tax.2026 "LegalReference:Tax Act s. 12"
 ```
 
 ### LexSnapshot
 
-Create an immutable compliance snapshot from a `lex.json` source manifest. All referenced files are copied into the `.lex` folder — after creation, no external access is needed. A file with a `sourceUrl` and without `sourcePath` is downloaded. The snapshot records a hash of the normalized text of every source URL (`LexCheck /checkurls` reports changed sources); unreadable sources (blocked host, PDF) get no hash. Source hashes are not recorded in dry-run mode.
+Create an immutable compliance snapshot from a `lex.json` source manifest. All referenced files are copied into the `.lex` folder — after creation, no external access is needed. A file with `sourceUrls` and without `sourcePath` is downloaded from the first URL that answers. The snapshot records a hash of the normalized text of every source URL (`LexCheck /checkurls` reports changed sources); unreadable sources (blocked host, PDF) get no hash. Source hashes are not recorded in dry-run mode.
 
 If `snapshot.json` already exists in the target directory, the folder is **skipped with an info message** (not an error), unless `/overwrite` is set. This enables safe re-runs in recursive mode across an entire regulation repo tree.
 
@@ -518,7 +519,7 @@ If `snapshot.json` already exists in the target directory, the folder is **skipp
 **Toggles:**
 - snapshot mode: `/execute` (default) or `/dryrun` — dryrun validates and reports without writing
 - directory mode: `/top` (default) or `/recursive` — recursive scans all subdirectories
-- overwrite mode: `/skip` (default) or `/overwrite` — regenerate an existing `snapshot.json`; files with a `sourceUrl` and an existing local copy are not downloaded again
+- overwrite mode: `/skip` (default) or `/overwrite` — regenerate an existing `snapshot.json`; files with `sourceUrls` and an existing local copy are not downloaded again
 - schema output: `/schema` — print the JSON Schema for `lex.json` and exit
 
 **Examples:**
@@ -557,7 +558,7 @@ Check `lex.json` manifests against the lookup values of their data regulation (t
 | Without lex entry | A regulation lookup value is covered by no lex entry |
 | Orphan | A lex entry (inline content) matches no regulation value |
 | Value difference | Entry content differs from the regulation value (numbers compared numerically, text ignoring case); a candidate to review against the source |
-| Missing fields | `sourceUrl` or `legalReference` is empty; `sourceLocation` with `/required` (otherwise information) |
+| Missing fields | `sourceUrls` or `legalReference` is empty; `sourceLocation` with `/required` (otherwise information) |
 | Evidence | A declared or referenced file is missing in `.lex`, untracked or ignored in git, or a verification evidence is not in the snapshot |
 | Snapshot / validFrom | `snapshot.json` is missing, or `validFrom` of lex and regulation differ |
 | Verification | A manual verification of a `FourEyes` source without `reviewedBy`/`reviewedOn`; with `/verificationrequired` an entry without verification record |
@@ -595,7 +596,7 @@ LexCheck lex.json /recursive Root:C:\Repos RepoMask:Payroll.*
 ```
 
 ### LexVerifySource
-Look up the numbers of every lex entry in its source: the local evidence file (`documentRef` or declared file with the same `sourceUrl`) or, with `/live`, the `sourceUrl` (web page, xlsx).
+Look up the numbers of every lex entry in its sources: per source URL the local evidence file (`documentRef` for the first URL, otherwise the declared file with the same URL in `sourceUrls`) or, with `/live`, the source URL (web page, xlsx). A number counts as found when any source of the entry holds it; with several sources the found location names the host per source.
 
 | Result | Meaning |
 |:-------|:--------|
@@ -751,7 +752,7 @@ The `lex.json` file documents the provenance of compliance values in a data regu
 | `url` | **Yes** | URL to the source document or page |
 | `description` | No | Human-readable description |
 | `legalBasis` | No | Legal basis (e.g. `Income Tax Act §12`, `Act 123/2025 Art. 4`) |
-| `review` | No | Review rule for the values with this `sourceUrl`: `SingleAuthor` (default) or `FourEyes` (a manual verification requires `reviewedBy` and `reviewedOn`) |
+| `review` | No | Review rule for the values that list this URL in `sourceUrls`: `SingleAuthor` (default) or `FourEyes` (a manual verification requires `reviewedBy` and `reviewedOn`) |
 
 **`values[]` — compliance values:**
 
@@ -763,7 +764,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 | `content` | Conditional | Inline value — scalar, JSON object, or JSON array |
 | `contentFile` | Conditional | Relative path to a source file (copied into `.lex`) |
 | `unit` | No | Unit of measure (`EUR`, `%`, `CHF`, `SGD`, ...) |
-| `sourceUrl` | No | URL where this specific value can be found |
+| `sourceUrls` | No | URLs where this specific value can be found; a value combined from several authorities lists one URL per authority, the first one is the main source |
 | `sourceLocation` | No | Precise location within the source document (free text) |
 | `legalReference` | No | Legal norm reference (e.g. `Income Tax Act §12(1)`) |
 | `documentRef` | No | Local evidence document, declared in `files[]` |
@@ -817,7 +818,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 |:---------|:--------:|:------------|
 | `fileName` | **Yes** | Target file name in the `.lex` folder |
 | `sourcePath` | No | Local path to the source file (copied by `LexSnapshot`) |
-| `sourceUrl` | No | Original download URL; downloaded by `LexSnapshot` when `sourcePath` is empty (`LexFetch` downloads and declares the file) |
+| `sourceUrls` | No | Original download URLs; when `sourcePath` is empty, `LexSnapshot` downloads the file from the first URL that answers (`LexFetch` downloads and declares the file) |
 | `description` | No | Human-readable description |
 
 ---
@@ -867,7 +868,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
       "key": "TaxParameter.AllowanceBasic",
       "content": "12000",
       "unit": "EUR",
-      "sourceUrl": "https://example.org/tax/calculation-guide-2026.pdf",
+      "sourceUrls": ["https://example.org/tax/calculation-guide-2026.pdf"],
       "sourceLocation": "Calculation guide 2026, Section 3.2.1",
       "legalReference": "Income Tax Act §12(1) sentence 2 no. 1",
       "description": "Basic tax-free allowance"
@@ -877,7 +878,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
     {
       "fileName": "calculation-guide-2026.pdf",
       "sourcePath": "C:/Sources/calculation-guide-2026.pdf",
-      "sourceUrl": "https://example.org/tax/calculation-guide-2026.pdf",
+      "sourceUrls": ["https://example.org/tax/calculation-guide-2026.pdf"],
       "description": "Calculation guide 2026"
     }
   ]
@@ -904,7 +905,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
     {
       "key": "RegionParameter.A",
       "content": "{\"name\":\"A\",\"Median\":0,\"CalculationCycle\":\"M\"}",
-      "sourceUrl": "https://example.org/tax/tariffs",
+      "sourceUrls": ["https://example.org/tax/tariffs"],
       "sourceLocation": "File tariff-a.txt",
       "legalReference": "Income Tax Act §20(2)",
       "description": "Region A — metadata (monthly model)"
@@ -912,7 +913,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
     {
       "key": "RegionTariff.A",
       "contentFile": "../Lookups/Lookups.RegionA.json",
-      "sourceUrl": "https://example.org/tax/tariffs",
+      "sourceUrls": ["https://example.org/tax/tariffs"],
       "sourceLocation": "File tariff-a.txt — converted via pecmd LookupTextImport",
       "legalReference": "Income Tax Act §20",
       "description": "Region A — full tariff bracket table"

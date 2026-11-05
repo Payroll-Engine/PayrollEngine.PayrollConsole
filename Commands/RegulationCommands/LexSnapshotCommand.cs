@@ -202,7 +202,7 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
         console.DisplayTextLine("          snapshot mode: /execute (default) or /dryrun");
         console.DisplayTextLine("          directory mode: /top (default) or /recursive");
         console.DisplayTextLine("          overwrite mode: /skip (default) or /overwrite (regenerate an existing snapshot.json;");
-        console.DisplayTextLine("                          files with a sourceUrl and an existing local copy are not downloaded again)");
+        console.DisplayTextLine("                          files with sourceUrls and an existing local copy are not downloaded again)");
         console.DisplayTextLine("      Special:");
         console.DisplayTextLine("          /schema  — print the JSON Schema for lex.json and exit");
         console.DisplayTextLine("      Examples:");

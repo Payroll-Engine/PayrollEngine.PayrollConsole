@@ -69,7 +69,7 @@ internal sealed class LexFetchCommand : CommandBase<LexFetchParameters>
             var declared = editor.AddFile(new EvidenceFile
             {
                 FileName = result.FileName,
-                SourceUrl = parameters.Url,
+                SourceUrls = [parameters.Url],
                 Description = parameters.Description
             });
             if (declared)
@@ -106,7 +106,7 @@ internal sealed class LexFetchCommand : CommandBase<LexFetchParameters>
     {
         console.DisplayTitleLine("- LexFetch");
         console.DisplayTextLine("      Download a source document unchanged into the .lex folder and declare it in files[]");
-        console.DisplayTextLine("      (fileName, sourceUrl). Hash and size are shown; LexSnapshot records them in the snapshot.");
+        console.DisplayTextLine("      (fileName, sourceUrls). Hash and size are shown; LexSnapshot records them in the snapshot.");
         console.DisplayTextLine("      An existing file with the same content is kept, a different one only replaced with /overwrite.");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. source URL [Url]");

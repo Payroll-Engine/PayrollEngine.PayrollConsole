@@ -144,8 +144,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             console.DisplayErrorLine($"         {result.Drift} value difference(s): {string.Join("; ", result.DriftSamples)}");
         foreach (var url in result.DeadUrls) console.DisplayErrorLine($"         source URL not found: {url}");
         foreach (var url in result.ChangedSources) console.DisplayErrorLine($"         source changed, check value: {url}");
-        if (result.MissingSourceUrl + (result.RequireLocation ? result.MissingSourceLocation : 0) + result.MissingLegalReference > 0)
-            console.DisplayErrorLine($"         missing fields: sourceUrl {result.MissingSourceUrl}, sourceLocation {result.MissingSourceLocation}, legalReference {result.MissingLegalReference}");
+        if (result.MissingSourceUrls + (result.RequireLocation ? result.MissingSourceLocation : 0) + result.MissingLegalReference > 0)
+            console.DisplayErrorLine($"         missing fields: sourceUrls {result.MissingSourceUrls}, sourceLocation {result.MissingSourceLocation}, legalReference {result.MissingLegalReference}");
         if (result.RequireVerification && result.Unverified > 0)
             console.DisplayErrorLine($"         {result.Unverified} entr(ies) without verification: {string.Join(", ", result.UnverifiedSamples)}");
         if (result.Open > 0)
@@ -171,7 +171,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTitleLine("- LexCheck");
         console.DisplayTextLine("      Check lex manifests against the lookup values of their data regulation (folder Regulation next to .lex).");
         console.DisplayTextLine("      Reports: regulation values without lex entry, lex entries without regulation value,");
-        console.DisplayTextLine("      value differences, missing sourceUrl/sourceLocation/legalReference, evidence files");
+        console.DisplayTextLine("      value differences, missing sourceUrls/sourceLocation/legalReference, evidence files");
         console.DisplayTextLine("      (missing, untracked or ignored in git, verification evidence not in the snapshot), missing snapshot");
         console.DisplayTextLine("      and validFrom differences. Verification records are counted (auto, manual, without); a manual");
         console.DisplayTextLine("      verification of a source with review FourEyes needs reviewedBy and reviewedOn.");

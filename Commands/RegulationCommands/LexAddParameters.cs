@@ -1,6 +1,8 @@
 using PayrollEngine.Client.Command;
 using PayrollEngine.Lex;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 
@@ -30,9 +32,9 @@ public class LexAddParameters : ICommandParameters
     public string Unit { get; init; }
 
     /// <summary>
-    /// Source URL, declared in sources[]
+    /// Source URLs, declared in sources[] (separated by spaces)
     /// </summary>
-    public string SourceUrl { get; init; }
+    public List<string> SourceUrls { get; init; } = [];
 
     /// <summary>
     /// Location of the value in the source (e.g. page, section, table)
@@ -71,7 +73,8 @@ public class LexAddParameters : ICommandParameters
             Lex = parser.GetByName(nameof(Lex)),
             Content = parser.GetByName(nameof(Content)),
             Unit = parser.GetByName(nameof(Unit)),
-            SourceUrl = parser.GetByName(nameof(SourceUrl)),
+            SourceUrls = (parser.GetByName(nameof(SourceUrls)) ?? string.Empty)
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList(),
             SourceLocation = parser.GetByName(nameof(SourceLocation)),
             LegalReference = parser.GetByName(nameof(LegalReference)),
             DocumentRef = parser.GetByName(nameof(DocumentRef)),

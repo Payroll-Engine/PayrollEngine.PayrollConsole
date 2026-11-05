@@ -2617,9 +2617,9 @@
             Unit of the value
             </summary>
         </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.SourceUrl">
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.SourceUrls">
             <summary>
-            Source URL, declared in sources[]
+            Source URLs, declared in sources[] (separated by spaces)
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.SourceLocation">
@@ -3267,9 +3267,10 @@
             Write the found source locations and the automatic verification records of fully found entries
             </summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.LocalEvidence(PayrollEngine.Lex.Manifest,PayrollEngine.Lex.Entry,System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.LocalEvidence(PayrollEngine.Lex.Manifest,PayrollEngine.Lex.Entry,System.String,System.Boolean,System.String)">
             <summary>
-            Local evidence file of the entry: documentRef, otherwise a declared file with the same source URL
+            Local evidence file of a source URL: the documentRef for the main source, otherwise a declared file
+            with the same source URL
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.BackendCommand">

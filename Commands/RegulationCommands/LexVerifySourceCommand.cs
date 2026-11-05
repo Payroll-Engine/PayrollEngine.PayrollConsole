@@ -81,34 +81,40 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         var evidence = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var entry in manifest.Values)
         {
-            if (string.IsNullOrWhiteSpace(entry.SourceUrl) || !entry.HasInlineContent ||
+            var urls = entry.Urls.ToList();
+            if (urls.Count == 0 || !entry.HasInlineContent ||
                 entry.Key.StartsWith("OfficialCalculator.", StringComparison.Ordinal))
             {
                 continue;
             }
-            SourceDocument document;
-            if (live)
+            var sources = new List<(string Url, SourceDocument Document)>();
+            for (var i = 0; i < urls.Count; i++)
             {
-                if (!documents.TryGetValue(entry.SourceUrl, out document))
+                var url = urls[i];
+                SourceDocument document;
+                if (live)
                 {
-                    documents[entry.SourceUrl] = document =
-                        await SourceDocument.LoadLive(entry.SourceUrl, client);
+                    if (!documents.TryGetValue(url, out document))
+                    {
+                        documents[url] = document = await SourceDocument.LoadLive(url, client);
+                    }
                 }
+                else
+                {
+                    var localPath = LocalEvidence(manifest, entry, url, i == 0, lexDirectory);
+                    if (localPath != null)
+                    {
+                        evidence.TryAdd(entry.Key, Path.GetFileName(localPath));
+                    }
+                    var cacheKey = localPath ?? string.Empty;
+                    if (!documents.TryGetValue(cacheKey, out document))
+                    {
+                        documents[cacheKey] = document = await SourceDocument.LoadLocal(localPath);
+                    }
+                }
+                sources.Add((url, document));
             }
-            else
-            {
-                var localPath = LocalEvidence(manifest, entry, lexDirectory);
-                if (localPath != null)
-                {
-                    evidence[entry.Key] = Path.GetFileName(localPath);
-                }
-                var cacheKey = localPath ?? string.Empty;
-                if (!documents.TryGetValue(cacheKey, out document))
-                {
-                    documents[cacheKey] = document = await SourceDocument.LoadLocal(localPath);
-                }
-            }
-            results.Add(SourceVerifier.Verify(entry, document));
+            results.Add(SourceVerifier.Verify(entry, sources));
         }
 
         int Count(SourceMatch m) => results.Count(r => r.Match == m);
@@ -120,10 +126,11 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         else context.Console.DisplayTextLine("  " + line);
         foreach (var result in results.Where(r => r.Match is SourceMatch.Partial or SourceMatch.NotFound))
         {
+            var unreadable = result.Reason != null ? $" (unreadable: {result.Reason})" : string.Empty;
             context.Console.DisplayErrorLine(
-                $"         {result.Match}: {result.Key} - {result.NumbersFound}/{result.NumbersTotal} numbers, missing {string.Join(", ", result.Missing.Take(8))}");
+                $"         {result.Match}: {result.Key} - {result.NumbersFound}/{result.NumbersTotal} numbers, missing {string.Join(", ", result.Missing.Take(8))}{unreadable}");
         }
-        foreach (var group in results.Where(r => r.Match == SourceMatch.Unreadable).GroupBy(r => r.Url))
+        foreach (var group in results.Where(r => r.Match == SourceMatch.Unreadable).GroupBy(r => string.Join(" ", r.Urls)))
         {
             context.Console.DisplayInfoLine($"         unreadable ({group.First().Reason}), verify manually: {group.Key} - {group.Count()} entr(ies)");
         }
@@ -171,13 +178,14 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
     }
 
     /// <summary>
-    /// Local evidence file of the entry: documentRef, otherwise a declared file with the same source URL
+    /// Local evidence file of a source URL: the documentRef for the main source, otherwise a declared file
+    /// with the same source URL
     /// </summary>
-    private static string LocalEvidence(Manifest manifest, Entry entry, string lexDirectory)
+    private static string LocalEvidence(Manifest manifest, Entry entry, string url, bool mainSource, string lexDirectory)
     {
-        var name = !string.IsNullOrWhiteSpace(entry.DocumentRef)
+        var name = mainSource && !string.IsNullOrWhiteSpace(entry.DocumentRef)
             ? entry.DocumentRef
-            : manifest.Files.FirstOrDefault(f => string.Equals(f.SourceUrl, entry.SourceUrl, StringComparison.Ordinal))?.FileName;
+            : manifest.Files.FirstOrDefault(f => f.Urls.Contains(url, StringComparer.Ordinal))?.FileName;
         if (string.IsNullOrWhiteSpace(name))
         {
             return null;
@@ -197,9 +205,10 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- LexVerifySource");
-        console.DisplayTextLine("      Look up the numbers of every lex entry in its source: the local evidence file (documentRef or declared");
-        console.DisplayTextLine("      file with the same sourceUrl) or, with /live, the sourceUrl (web page, xlsx).");
-        console.DisplayTextLine("      found: all numbers are in the source; partial / not found: numbers are missing (review the value);");
+        console.DisplayTextLine("      Look up the numbers of every lex entry in its sources: per source URL the local evidence file");
+        console.DisplayTextLine("      (documentRef for the first URL, otherwise the declared file with the same URL in sourceUrls) or,");
+        console.DisplayTextLine("      with /live, the source URL (web page, xlsx). A number counts as found when any source holds it.");
+        console.DisplayTextLine("      found: all numbers are in the sources; partial / not found: numbers are missing (review the value);");
         console.DisplayTextLine("      unreadable (blocked host, PDF, script-only page) and no local evidence: verify the value manually.");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. file name or file mask [FileMask] (e.g. lex.json or **/lex.json)");

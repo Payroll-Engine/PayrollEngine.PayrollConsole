@@ -56,18 +56,27 @@ public class LexEntryParametersTests
     [Fact]
     public void Add_ParsesNamedFields()
     {
-        var parameters = Add("Rates.Standard", "Content:8.5", "Unit:rate", "SourceUrl:https://example.org/doc",
+        var parameters = Add("Rates.Standard", "Content:8.5", "Unit:rate", "SourceUrls:https://example.org/doc",
             "SourceLocation:Table 1", "LegalReference:Art. 5", "DocumentRef:doc.pdf", "Description:Standard rate");
         Assert.Equal("Rates.Standard", parameters.Key);
         Assert.Equal("8.5", parameters.Content);
         Assert.Equal("rate", parameters.Unit);
-        Assert.Equal("https://example.org/doc", parameters.SourceUrl);
+        Assert.Equal(["https://example.org/doc"], parameters.SourceUrls);
         Assert.Equal("Table 1", parameters.SourceLocation);
         Assert.Equal("Art. 5", parameters.LegalReference);
         Assert.Equal("doc.pdf", parameters.DocumentRef);
         Assert.Equal("Standard rate", parameters.Description);
         Assert.Null(parameters.Test());
     }
+
+    [Fact]
+    public void Add_ParsesSeveralSourceUrls() =>
+        Assert.Equal(["https://example.org/rates", "https://example.org/limits"],
+            Add("Limits.Ceiling", "SourceUrls: https://example.org/rates  https://example.org/limits ").SourceUrls);
+
+    [Fact]
+    public void Add_WithoutSourceUrls_HasEmptyList() =>
+        Assert.Empty(Add("Rates.Standard", "Content:8.5").SourceUrls);
 
     [Fact]
     public void Add_MissingKey_IsInvalid() =>
