@@ -44,6 +44,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             context.Console.DisplayTextLine($"Location mode    {parameters.LocationMode}");
             context.Console.DisplayTextLine($"Verification     {parameters.VerificationMode}");
             context.Console.DisplayTextLine($"URL mode         {parameters.UrlMode}");
+            context.Console.DisplayTextLine($"Release mode     {parameters.ReleaseMode}");
         }
         context.Console.DisplayNewLine();
 
@@ -66,8 +67,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             using var urlChecker = parameters.UrlMode == LexUrlMode.CheckUrls ? new UrlChecker() : null;
             foreach (var lexFile in files)
             {
-                results.Add(await CheckFile(lexFile, parameters.LocationMode == LexLocationMode.Required,
-                    parameters.VerificationMode == LexVerificationMode.VerificationRequired, urlChecker));
+                results.Add(await CheckFile(lexFile, parameters.RequireLocation, parameters.RequireVerification,
+                    parameters.ReleaseMode == LexReleaseMode.Release, urlChecker));
             }
 
             foreach (var result in results)
@@ -99,7 +100,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
     }
 
     private static async Task<CheckResult> CheckFile(string lexFilePath, bool requireLocation,
-        bool requireVerification, UrlChecker urlChecker)
+        bool requireVerification, bool release, UrlChecker urlChecker)
     {
         Manifest manifest;
         try
@@ -116,7 +117,11 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             };
         }
         manifest ??= new Manifest();
-        var result = Checker.Check(manifest, lexFilePath, requireLocation, requireVerification);
+        var result = Checker.Check(manifest, lexFilePath, requireLocation, requireVerification, release);
+        if (release)
+        {
+            await Checker.CheckSources(manifest, result);
+        }
         if (urlChecker != null)
         {
             await urlChecker.Apply(manifest, result);
@@ -129,6 +134,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         if (!result.HasFindings)
         {
             console.DisplaySuccessLine($"  [OK] {result.LexPath} - {result.LexEntries} entries, {result.RegulationValues} regulation values");
+            DisplayInformation(console, result);
             return;
         }
 
@@ -152,10 +158,29 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             console.DisplayErrorLine($"         {result.Open} open entr(ies), verify again: {string.Join(", ", result.OpenSamples)}");
         if (result.MissingReview > 0)
             console.DisplayErrorLine($"         {result.MissingReview} manual verification(s) without second review: {string.Join(", ", result.MissingReviewSamples)}");
+        if (result.RequireLocation && result.UnspecificLocations > 0)
+            console.DisplayErrorLine($"         {result.UnspecificLocations} location(s) not entry-specific: {string.Join(", ", result.UnspecificLocationSamples)}");
+        if (result.Release && result.SecondaryMainSource > 0)
+            console.DisplayErrorLine($"         {result.SecondaryMainSource} secondary main source(s): {string.Join(", ", result.SecondaryMainSourceSamples)}");
+        if (result.Release && result.ManualVerificationRequired > 0)
+            console.DisplayErrorLine($"         {result.ManualVerificationRequired} entr(ies) need a manual verification (LexAttest): " +
+                                     string.Join(", ", result.ManualVerificationSamples));
         foreach (var problem in result.FileProblems) console.DisplayErrorLine($"         evidence: {problem}");
         if (!result.ValidFromMatch)
             console.DisplayErrorLine($"         validFrom: lex {result.LexValidFrom}, regulation {result.RegulationValidFrom}");
         if (result.Note != null) console.DisplayInfoLine($"         note: {result.Note}");
+        DisplayInformation(console, result);
+    }
+
+    /// <summary>
+    /// Information that is a finding only with /required or /release
+    /// </summary>
+    private static void DisplayInformation(ICommandConsole console, CheckResult result)
+    {
+        if (!result.RequireLocation && result.UnspecificLocations > 0)
+            console.DisplayInfoLine($"         info: {result.UnspecificLocations} location(s) not entry-specific: {string.Join(", ", result.UnspecificLocationSamples)}");
+        if (!result.Release && result.SecondaryMainSource > 0)
+            console.DisplayInfoLine($"         info: {result.SecondaryMainSource} secondary main source(s): {string.Join(", ", result.SecondaryMainSourceSamples)}");
     }
 
     /// <inheritdoc />
@@ -175,6 +200,10 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("      (missing, untracked or ignored in git, verification evidence not in the snapshot), missing snapshot");
         console.DisplayTextLine("      and validFrom differences. Verification records are counted (auto, manual, without); a manual");
         console.DisplayTextLine("      verification of a source with review FourEyes needs reviewedBy and reviewedOn.");
+        console.DisplayTextLine("      Information (a finding with /required): a location that is not entry-specific (the same location");
+        console.DisplayTextLine("      longer than 200 characters on 5 or more entries, or a location longer than 500 characters).");
+        console.DisplayTextLine("      Information (a finding with /release): a secondary main source (first source URL with official: false).");
+        console.DisplayTextLine("      Exclusions of all kinds (coverage, sourceLocation, orphan, autoVerification) are listed in the report.");
         console.DisplayTextLine("      Freshness of snapshot.json is checked by LexVerify.");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. file name or file mask [FileMask] (e.g. lex.json or **/lex.json)");
@@ -190,6 +219,10 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("                        or /verificationrequired (an entry without verification is a finding)");
         console.DisplayTextLine("          source URLs: /skipurls (default) or /checkurls (404/410 or unknown host is a finding, a blocking host a note;");
         console.DisplayTextLine("                       a source whose normalized text differs from the snapshot hash is a finding: check the value)");
+        console.DisplayTextLine("          release gate: /development (default) or /release (/required and /verificationrequired; a secondary");
+        console.DisplayTextLine("                        main source is a finding; the entries are verified against their local evidence and");
+        console.DisplayTextLine("                        an entry without manual verification is a finding when it is ambiguous, its quote is");
+        console.DisplayTextLine("                        not found or it is excluded from auto verification but has an automatic record)");
         console.DisplayTextLine("      Exit codes:");
         console.DisplayTextLine("          0 no findings (or /lenient), 4 findings (/strict), 6 no lex.json found or root folder missing,");
         console.DisplayTextLine("          -1 invalid parameters or unexpected error");
@@ -197,5 +230,6 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("          LexCheck .lex/lex.json");
         console.DisplayTextLine("          LexCheck lex.json /recursive /lenient Report:C:\\Reports\\LexCheck.md");
         console.DisplayTextLine("          LexCheck lex.json /recursive Root:C:\\Repos RepoMask:Payroll.*");
+        console.DisplayTextLine("          LexCheck lex.json /recursive /release Report:C:\\Reports\\LexRelease.md");
     }
 }

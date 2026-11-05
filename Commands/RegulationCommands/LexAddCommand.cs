@@ -70,6 +70,7 @@ internal sealed class LexAddCommand : CommandBase<LexAddParameters>
                 SourceUrls = parameters.SourceUrls,
                 SourceLocation = parameters.SourceLocation,
                 LegalReference = parameters.LegalReference,
+                SourceQuote = parameters.SourceQuote,
                 DocumentRef = parameters.DocumentRef,
                 Description = parameters.Description
             });
@@ -119,6 +120,8 @@ internal sealed class LexAddCommand : CommandBase<LexAddParameters>
         console.DisplayTextLine("          SourceUrls: source URLs separated by spaces, first the main source (declared in sources[])");
         console.DisplayTextLine("          SourceLocation: location in the source (e.g. page, section, table)");
         console.DisplayTextLine("          LegalReference: legal reference");
+        console.DisplayTextLine("          SourceQuote: text passage of the source with the value; LexVerifySource looks up the numbers");
+        console.DisplayTextLine("                       in the section of the quote (anchors short numbers and numbers in words)");
         console.DisplayTextLine("          DocumentRef: evidence document (declared in files[])");
         console.DisplayTextLine("          Description: description of the entry");
         console.DisplayTextLine("      Exit codes:");
@@ -127,5 +130,6 @@ internal sealed class LexAddCommand : CommandBase<LexAddParameters>
         console.DisplayTextLine("          LexAdd Rates.Standard Content:0.081 Unit:rate SourceUrls:https://example.org/rates");
         console.DisplayTextLine("          LexAdd Limits.Ceiling Content:42000 \"SourceUrls:https://example.org/rates https://example.org/limits\"");
         console.DisplayTextLine("          LexAdd Rates.Reduced Lex:Data.Tax.2026 \"LegalReference:Tax Act s. 12\"");
+        console.DisplayTextLine("          LexAdd Overtime.Factor Content:1.5 Unit:factor \"SourceQuote:one and one-half times the regular rate\"");
     }
 }

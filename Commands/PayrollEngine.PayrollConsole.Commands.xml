@@ -2632,6 +2632,11 @@
             Legal reference of the value
             </summary>
         </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.SourceQuote">
+            <summary>
+            Text passage of the source that contains the value (anchors short numbers and numbers in words)
+            </summary>
+        </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAddParameters.DocumentRef">
             <summary>
             Evidence document, declared in files[]
@@ -2815,6 +2820,11 @@
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters)">
             <inheritdoc />
         </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckCommand.DisplayInformation(PayrollEngine.Client.Command.ICommandConsole,PayrollEngine.Lex.CheckResult)">
+            <summary>
+            Information that is a finding only with /required or /release
+            </summary>
+        </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckCommand.BackendCommand">
             <inheritdoc />
         </member>
@@ -2867,6 +2877,23 @@
         <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerificationMode.VerificationRequired">
             <summary>
             An entry without verification record (auto or manual) is a finding
+            </summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexReleaseMode">
+            <summary>
+            LexCheck release gate
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexReleaseMode.Development">
+            <summary>
+            The checks of the selected toggles (default)
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexReleaseMode.Release">
+            <summary>
+            Release gate: /required and /verificationrequired, a secondary main source is a finding, and entries without
+            manual verification that are ambiguous, whose quote is not found or that are excluded from auto verification
+            but have an automatic record are findings (the entries are verified against their local evidence)
             </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexUrlMode">
@@ -2933,6 +2960,21 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.UrlMode">
             <summary>
             Request the source URLs (default: skip)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.ReleaseMode">
+            <summary>
+            Release gate (default: development)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.RequireLocation">
+            <summary>
+            A missing or not entry-specific sourceLocation is a finding (mode Required or release gate)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.RequireVerification">
+            <summary>
+            An entry without verification record is a finding (mode VerificationRequired or release gate)
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters.Toggles">
@@ -3262,15 +3304,10 @@
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters)">
             <inheritdoc />
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.WriteResults(PayrollEngine.Client.Command.CommandContext,System.String,System.String,System.Collections.Generic.List{PayrollEngine.Lex.SourceResult},System.Collections.Generic.Dictionary{System.String,System.String})">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.WriteResults(PayrollEngine.Client.Command.CommandContext,System.String,System.String,System.Collections.Generic.List{PayrollEngine.Lex.SourceResult},System.Boolean)">
             <summary>
-            Write the found source locations and the automatic verification records of fully found entries
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.LocalEvidence(PayrollEngine.Lex.Manifest,PayrollEngine.Lex.Entry,System.String,System.Boolean,System.String)">
-            <summary>
-            Local evidence file of a source URL: the documentRef for the main source, otherwise a declared file
-            with the same source URL
+            Write the found source locations and the automatic verification records of fully found entries;
+            ambiguous entries and entries excluded from auto verification are not written
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.BackendCommand">
@@ -3296,6 +3333,12 @@
             <summary>
             Write the found source location into entries without sourceLocation
             and the automatic verification record into entries whose numbers were all found
+            </summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSourceWriteMode.RefreshLocations">
+            <summary>
+            Like <see cref="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSourceWriteMode.WriteLocations"/>, and also replace source locations written by LexVerifySource
+            (<c>Section "…"</c>, <c>Sections "…"</c>); locations written by a person are kept
             </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexSourceMode">
@@ -3330,7 +3373,8 @@
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.CheckMode">
             <summary>
-            Result handling: lenient only reports (default), strict fails when a value is missing in its source
+            Result handling: lenient only reports (default), strict fails when a value is missing in its source,
+            its quote is not found or its evidence is ambiguous
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.WriteMode">

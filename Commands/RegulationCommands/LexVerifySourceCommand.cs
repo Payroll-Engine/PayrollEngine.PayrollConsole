@@ -18,6 +18,8 @@ namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 // ReSharper disable once UnusedMember.Global
 internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParameters>
 {
+    private const int MaxQuoteLength = 120;
+
     private static readonly JsonSerializerOptions ReadOptions = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -50,15 +52,18 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
             using var client = parameters.SourceMode == LexSourceMode.Live ? SourceDocument.CreateHttpClient() : null;
             var documents = new Dictionary<string, SourceDocument>(StringComparer.Ordinal);
 
-            var problems = 0;
+            int problems = 0, ambiguous = 0;
             foreach (var lexFile in files)
             {
-                problems += await VerifyFile(context, lexFile, parameters, client, documents);
+                var results = await VerifyFile(context, lexFile, parameters, client, documents);
+                problems += results.Count(r => r.Match is SourceMatch.Partial or SourceMatch.NotFound or SourceMatch.QuoteNotFound);
+                ambiguous += results.Count(r => r.Match == SourceMatch.Ambiguous);
             }
 
             context.Console.DisplayNewLine();
-            context.Console.DisplayTextLine($"Summary: {problems} entr(ies) with numbers missing in the source");
-            return problems > 0 && parameters.CheckMode == LexCheckMode.Strict
+            context.Console.DisplayTextLine(
+                $"Summary: {problems} entr(ies) with numbers or quote missing in the source, {ambiguous} ambiguous entr(ies)");
+            return problems + ambiguous > 0 && parameters.CheckMode == LexCheckMode.Strict
                 ? (int)ProgramExitCode.InvalidInput
                 : (int)ProgramExitCode.Ok;
         }
@@ -69,66 +74,50 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         }
     }
 
-    private static async Task<int> VerifyFile(CommandContext context, string lexFile, LexVerifySourceParameters parameters,
+    private static async Task<List<SourceResult>> VerifyFile(CommandContext context, string lexFile, LexVerifySourceParameters parameters,
         HttpClient client, Dictionary<string, SourceDocument> documents)
     {
         var json = await File.ReadAllTextAsync(lexFile);
         var manifest = JsonSerializer.Deserialize<Manifest>(json, ReadOptions) ?? new Manifest();
-        var lexDirectory = Path.GetDirectoryName(lexFile)!;
-        var live = parameters.SourceMode == LexSourceMode.Live;
-
-        var results = new List<SourceResult>();
-        var evidence = new Dictionary<string, string>(StringComparer.Ordinal);
-        foreach (var entry in manifest.Values)
-        {
-            var urls = entry.Urls.ToList();
-            if (urls.Count == 0 || !entry.HasInlineContent ||
-                entry.Key.StartsWith("OfficialCalculator.", StringComparison.Ordinal))
-            {
-                continue;
-            }
-            var sources = new List<(string Url, SourceDocument Document)>();
-            for (var i = 0; i < urls.Count; i++)
-            {
-                var url = urls[i];
-                SourceDocument document;
-                if (live)
-                {
-                    if (!documents.TryGetValue(url, out document))
-                    {
-                        documents[url] = document = await SourceDocument.LoadLive(url, client);
-                    }
-                }
-                else
-                {
-                    var localPath = LocalEvidence(manifest, entry, url, i == 0, lexDirectory);
-                    if (localPath != null)
-                    {
-                        evidence.TryAdd(entry.Key, Path.GetFileName(localPath));
-                    }
-                    var cacheKey = localPath ?? string.Empty;
-                    if (!documents.TryGetValue(cacheKey, out document))
-                    {
-                        documents[cacheKey] = document = await SourceDocument.LoadLocal(localPath);
-                    }
-                }
-                sources.Add((url, document));
-            }
-            results.Add(SourceVerifier.Verify(entry, sources));
-        }
+        var results = await SourceVerifier.VerifyManifest(manifest, Path.GetDirectoryName(lexFile)!,
+            client != null ? url => SourceDocument.LoadLive(url, client) : null, documents);
 
         int Count(SourceMatch m) => results.Count(r => r.Match == m);
-        var problems = Count(SourceMatch.Partial) + Count(SourceMatch.NotFound);
-        var line = $"{lexFile} - found {Count(SourceMatch.Found)}, partial {Count(SourceMatch.Partial)}, " +
-                   $"not found {Count(SourceMatch.NotFound)}, unreadable {Count(SourceMatch.Unreadable)}, " +
-                   $"no local evidence {Count(SourceMatch.NoEvidence)}, no numbers {Count(SourceMatch.NoNumbers)}";
+        var problems = Count(SourceMatch.Partial) + Count(SourceMatch.NotFound) + Count(SourceMatch.QuoteNotFound);
+        var line = $"{lexFile} - found {Count(SourceMatch.Found)}, ambiguous {Count(SourceMatch.Ambiguous)}, " +
+                   $"partial {Count(SourceMatch.Partial)}, not found {Count(SourceMatch.NotFound)}, " +
+                   $"quote not found {Count(SourceMatch.QuoteNotFound)}, unreadable {Count(SourceMatch.Unreadable)}, " +
+                   $"no local evidence {Count(SourceMatch.NoEvidence)}, no numbers {Count(SourceMatch.NoNumbers)}, " +
+                   $"no content {Count(SourceMatch.NoContent)}";
         if (problems > 0) context.Console.DisplayErrorLine("  " + line);
         else context.Console.DisplayTextLine("  " + line);
         foreach (var result in results.Where(r => r.Match is SourceMatch.Partial or SourceMatch.NotFound))
         {
             var unreadable = result.Reason != null ? $" (unreadable: {result.Reason})" : string.Empty;
             context.Console.DisplayErrorLine(
-                $"         {result.Match}: {result.Key} - {result.NumbersFound}/{result.NumbersTotal} numbers, missing {string.Join(", ", result.Missing.Take(8))}{unreadable}");
+                $"         {result.Match}: {result.Key} - {result.NumbersFound}/{result.NumbersTotal} numbers{Sampled(result)}, " +
+                $"missing {string.Join(", ", result.Missing.Take(8))}{unreadable}");
+        }
+        foreach (var result in results.Where(r => r.Match == SourceMatch.QuoteNotFound))
+        {
+            context.Console.DisplayErrorLine($"         QuoteNotFound: {result.Key} - \"{Shorten(result.Quote)}\"");
+        }
+        foreach (var result in results.Where(r => r.Match == SourceMatch.Ambiguous))
+        {
+            context.Console.DisplayInfoLine(
+                $"         Ambiguous: {result.Key} - {result.Ambiguity}: confirm with LexAttest or add sourceQuote");
+        }
+        foreach (var result in results.Where(r => r.Match == SourceMatch.Found && r.Sampled))
+        {
+            context.Console.DisplayTextLine($"         Found: {result.Key} -{Sampled(result)}");
+        }
+        foreach (var result in results.Where(r => r.Match == SourceMatch.NoContent))
+        {
+            context.Console.DisplayInfoLine($"         no content: {result.Key} - {result.Reason}");
+        }
+        foreach (var result in results.Where(r => r.ExcludedReason != null))
+        {
+            context.Console.DisplayInfoLine($"         excluded from auto verification: {result.Key} - {result.ExcludedReason}");
         }
         foreach (var group in results.Where(r => r.Match == SourceMatch.Unreadable).GroupBy(r => string.Join(" ", r.Urls)))
         {
@@ -140,30 +129,36 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
             context.Console.DisplayInfoLine($"         {withoutEvidence} entr(ies) without local evidence: verify manually or use /live");
         }
 
-        if (parameters.WriteMode == LexSourceWriteMode.WriteLocations)
+        if (parameters.WriteMode != LexSourceWriteMode.ReportOnly)
         {
-            await WriteResults(context, lexFile, json, results, evidence);
+            await WriteResults(context, lexFile, json, results, parameters.WriteMode == LexSourceWriteMode.RefreshLocations);
         }
-        return problems;
+        return results;
     }
 
+    private static string Sampled(SourceResult result) =>
+        result.Sampled ? $" sampled {result.NumbersTotal} of {result.ContentNumbers} numbers" : string.Empty;
+
+    private static string Shorten(string text) =>
+        text is { Length: > MaxQuoteLength } ? text[..MaxQuoteLength] + "..." : text;
+
     /// <summary>
-    /// Write the found source locations and the automatic verification records of fully found entries
+    /// Write the found source locations and the automatic verification records of fully found entries;
+    /// ambiguous entries and entries excluded from auto verification are not written
     /// </summary>
     private static async Task WriteResults(CommandContext context, string lexFile, string json,
-        List<SourceResult> results, Dictionary<string, string> evidence)
+        List<SourceResult> results, bool refresh)
     {
         var editor = ManifestEditor.Parse(json);
         var today = DateOnly.FromDateTime(DateTime.Today);
         int locations = 0, verifications = 0;
-        foreach (var result in results)
+        foreach (var result in results.Where(r => r.CanWrite))
         {
-            if (result.Location != null && editor.SetSourceLocation(result.Key, result.Location))
+            if (result.Location != null && editor.SetSourceLocation(result.Key, result.Location, refresh))
             {
                 locations++;
             }
-            if (result.Match == SourceMatch.Found &&
-                editor.SetAutoVerification(result.Key, SourceVerifier.AutoVerification(today, evidence.GetValueOrDefault(result.Key))))
+            if (editor.SetAutoVerification(result.Key, SourceVerifier.AutoVerification(today, result.Evidence)))
             {
                 verifications++;
             }
@@ -177,23 +172,6 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
             $"         wrote {locations} source location(s) and {verifications} verification record(s): update the snapshot (LexSnapshot /overwrite)");
     }
 
-    /// <summary>
-    /// Local evidence file of a source URL: the documentRef for the main source, otherwise a declared file
-    /// with the same source URL
-    /// </summary>
-    private static string LocalEvidence(Manifest manifest, Entry entry, string url, bool mainSource, string lexDirectory)
-    {
-        var name = mainSource && !string.IsNullOrWhiteSpace(entry.DocumentRef)
-            ? entry.DocumentRef
-            : manifest.Files.FirstOrDefault(f => f.Urls.Contains(url, StringComparer.Ordinal))?.FileName;
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            return null;
-        }
-        var path = Path.Combine(lexDirectory, name);
-        return File.Exists(path) ? path : null;
-    }
-
     /// <inheritdoc />
     public override bool BackendCommand => false;
 
@@ -205,24 +183,39 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- LexVerifySource");
-        console.DisplayTextLine("      Look up the numbers of every lex entry in its sources: per source URL the local evidence file");
-        console.DisplayTextLine("      (documentRef for the first URL, otherwise the declared file with the same URL in sourceUrls) or,");
-        console.DisplayTextLine("      with /live, the source URL. A number counts as found when any source holds it.");
+        console.DisplayTextLine("      Look up the numbers of every lex entry (inline content or JSON contentFile) in its sources: per source");
+        console.DisplayTextLine("      URL the local evidence file (documentRef for the first URL, otherwise the declared file with the same URL");
+        console.DisplayTextLine("      in sourceUrls) or, with /live, the source URL. A number counts as found when any source holds it.");
+        console.DisplayTextLine("      A value below 1 is also looked up as percentage when the unit names a rate (%, percent, rate, fraction)");
+        console.DisplayTextLine("      and the source writes a percent sign. Numbers in words count ($1 million, 2.5 lakh, one and one-half).");
+        console.DisplayTextLine("      A table with more than 40 numbers is checked with 40 numbers evenly distributed over the table.");
+        console.DisplayTextLine("      With sourceQuote, the quote must be in the source and the numbers in the section of the quote.");
         console.DisplayTextLine("      Readable: HTML, text, csv, xls/xlsx/xlsb/ods, PDF with text layer, docx/odt.");
-        console.DisplayTextLine("      found: all numbers are in the sources; partial / not found: numbers are missing (review the value);");
-        console.DisplayTextLine("      unreadable (blocked host, script-only page, scanned or encrypted PDF, other binary format)");
-        console.DisplayTextLine("      and no local evidence: verify the value manually.");
+        console.DisplayTextLine("      Results:");
+        console.DisplayTextLine("          found: all numbers are in the sources");
+        console.DisplayTextLine("          ambiguous: a single short number (two significant digits at most), a number in more than three");
+        console.DisplayTextLine("                     sections or a number in words only: confirm with LexAttest or add sourceQuote");
+        console.DisplayTextLine("          partial / not found: numbers are missing (review the value)");
+        console.DisplayTextLine("          quote not found: the sourceQuote is not in any readable source");
+        console.DisplayTextLine("          unreadable (blocked host, script-only page, scanned or encrypted PDF, other binary format),");
+        console.DisplayTextLine("          no local evidence, no numbers, no content (contentFile missing or not JSON): verify manually");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. file name or file mask [FileMask] (e.g. lex.json or **/lex.json)");
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          directory mode: /top (default) or /recursive");
-        console.DisplayTextLine("          result mode: /lenient (default, report only) or /strict (exit code 6 when numbers are missing in the source)");
+        console.DisplayTextLine("          result mode: /lenient (default, report only) or /strict (exit code 6 for partial, not found,");
+        console.DisplayTextLine("                       quote not found and ambiguous entries)");
         console.DisplayTextLine("          source mode: /local (default, local evidence file, offline) or /live (source URL)");
-        console.DisplayTextLine("          write mode: /reportonly (default) or /writelocations (set sourceLocation of found entries without one");
-        console.DisplayTextLine("                      and the verification record (mode auto) of entries whose numbers were all found)");
+        console.DisplayTextLine("          write mode: /reportonly (default), /writelocations (set sourceLocation of found entries without one");
+        console.DisplayTextLine("                      and the verification record (mode auto) of found entries) or /refreshlocations");
+        console.DisplayTextLine("                      (as /writelocations, and replace the locations written by LexVerifySource);");
+        console.DisplayTextLine("                      ambiguous entries and entries with an autoVerification exclusion are never written");
+        console.DisplayTextLine("      Exit codes:");
+        console.DisplayTextLine("          0 ok (or /lenient), 6 no lex.json found or problems (/strict), -1 invalid parameters or error");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          LexVerifySource lex.json /recursive");
         console.DisplayTextLine("          LexVerifySource .lex/lex.json /writelocations");
+        console.DisplayTextLine("          LexVerifySource lex.json /recursive /refreshlocations");
         console.DisplayTextLine("          LexVerifySource .lex/lex.json /live");
     }
 }

@@ -27,6 +27,18 @@ public class LexVerifySourceParametersTests
     }
 
     [Fact]
+    public void RefreshLocationsToggle_SetsWriteMode()
+    {
+        var parameters = Parse("lex.json", "/recursive", "/refreshlocations");
+        Assert.Equal(LexSourceWriteMode.RefreshLocations, parameters.WriteMode);
+        Assert.Equal(LexSourceMode.Local, parameters.SourceMode);
+    }
+
+    [Fact]
+    public void StrictToggle_SetsCheckMode() =>
+        Assert.Equal(LexCheckMode.Strict, Parse("lex.json", "/strict").CheckMode);
+
+    [Fact]
     public void SourceMode_IsDeclaredToggle() =>
         Assert.Contains(typeof(LexSourceMode), Parse("lex.json").Toggles);
 }

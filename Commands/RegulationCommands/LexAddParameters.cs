@@ -47,6 +47,11 @@ public class LexAddParameters : ICommandParameters
     public string LegalReference { get; init; }
 
     /// <summary>
+    /// Text passage of the source that contains the value (anchors short numbers and numbers in words)
+    /// </summary>
+    public string SourceQuote { get; init; }
+
+    /// <summary>
     /// Evidence document, declared in files[]
     /// </summary>
     public string DocumentRef { get; init; }
@@ -77,6 +82,7 @@ public class LexAddParameters : ICommandParameters
                 .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList(),
             SourceLocation = parser.GetByName(nameof(SourceLocation)),
             LegalReference = parser.GetByName(nameof(LegalReference)),
+            SourceQuote = string.IsNullOrWhiteSpace(parser.GetByName(nameof(SourceQuote))) ? null : parser.GetByName(nameof(SourceQuote)),
             DocumentRef = parser.GetByName(nameof(DocumentRef)),
             Description = parser.GetByName(nameof(Description))
         };

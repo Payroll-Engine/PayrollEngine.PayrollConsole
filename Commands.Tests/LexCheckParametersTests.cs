@@ -50,4 +50,37 @@ public class LexCheckParametersTests
     [Fact]
     public void VerificationMode_IsDeclaredToggle() =>
         Assert.Contains(typeof(LexVerificationMode), Parse("lex.json").Toggles);
+
+    [Fact]
+    public void ReleaseMode_DefaultsToDevelopment()
+    {
+        var parameters = Parse("lex.json");
+        Assert.Equal(LexReleaseMode.Development, parameters.ReleaseMode);
+        Assert.False(parameters.RequireLocation);
+        Assert.False(parameters.RequireVerification);
+    }
+
+    [Fact]
+    public void ReleaseToggle_RequiresLocationAndVerification()
+    {
+        var parameters = Parse("lex.json", "/recursive", "/release");
+        Assert.Equal(LexReleaseMode.Release, parameters.ReleaseMode);
+        Assert.Equal(LexLocationMode.Optional, parameters.LocationMode);
+        Assert.Equal(LexVerificationMode.VerificationOptional, parameters.VerificationMode);
+        Assert.True(parameters.RequireLocation);
+        Assert.True(parameters.RequireVerification);
+        Assert.Null(parameters.Test());
+    }
+
+    [Fact]
+    public void RequiredToggle_RequiresLocationOnly()
+    {
+        var parameters = Parse("lex.json", "/required");
+        Assert.True(parameters.RequireLocation);
+        Assert.False(parameters.RequireVerification);
+    }
+
+    [Fact]
+    public void ReleaseMode_IsDeclaredToggle() =>
+        Assert.Contains(typeof(LexReleaseMode), Parse("lex.json").Toggles);
 }

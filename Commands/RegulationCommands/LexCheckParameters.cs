@@ -54,9 +54,27 @@ public class LexCheckParameters : ICommandParameters
     /// </summary>
     public LexUrlMode UrlMode { get; private init; } = LexUrlMode.SkipUrls;
 
+    /// <summary>
+    /// Release gate (default: development)
+    /// </summary>
+    public LexReleaseMode ReleaseMode { get; private init; } = LexReleaseMode.Development;
+
+    /// <summary>
+    /// A missing or not entry-specific sourceLocation is a finding (mode Required or release gate)
+    /// </summary>
+    public bool RequireLocation =>
+        LocationMode == LexLocationMode.Required || ReleaseMode == LexReleaseMode.Release;
+
+    /// <summary>
+    /// An entry without verification record is a finding (mode VerificationRequired or release gate)
+    /// </summary>
+    public bool RequireVerification =>
+        VerificationMode == LexVerificationMode.VerificationRequired || ReleaseMode == LexReleaseMode.Release;
+
     /// <inheritdoc />
     public Type[] Toggles =>
-        [typeof(DirectoryMode), typeof(LexCheckMode), typeof(LexLocationMode), typeof(LexVerificationMode), typeof(LexUrlMode)];
+        [typeof(DirectoryMode), typeof(LexCheckMode), typeof(LexLocationMode), typeof(LexVerificationMode), typeof(LexUrlMode),
+            typeof(LexReleaseMode)];
 
     /// <inheritdoc />
     public string Test()
@@ -90,6 +108,7 @@ public class LexCheckParameters : ICommandParameters
             CheckMode = parser.GetEnumToggle(LexCheckMode.Strict),
             LocationMode = parser.GetEnumToggle(LexLocationMode.Optional),
             VerificationMode = parser.GetEnumToggle(LexVerificationMode.VerificationOptional),
-            UrlMode = parser.GetEnumToggle(LexUrlMode.SkipUrls)
+            UrlMode = parser.GetEnumToggle(LexUrlMode.SkipUrls),
+            ReleaseMode = parser.GetEnumToggle(LexReleaseMode.Development)
         };
 }

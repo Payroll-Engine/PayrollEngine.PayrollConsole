@@ -488,6 +488,7 @@ Add a lex entry. The value is read from the source by a person; the command chec
 | `SourceUrls` | Source URLs separated by spaces, first the main source (declared in `sources[]`) |
 | `SourceLocation` | Location in the source (e.g. page, section, table) |
 | `LegalReference` | Legal reference |
+| `SourceQuote` | Text passage of the source that contains the value; `LexVerifySource` looks up the numbers in the section of the quote (anchors short numbers and numbers in words) |
 | `DocumentRef` | Evidence document (declared in `files[]`) |
 | `Description` | Description of the entry |
 
@@ -498,6 +499,7 @@ Exit codes: `0` ok, `6` `lex.json` missing, key exists or source/document not de
 LexAdd Rates.Standard Content:0.081 Unit:rate SourceUrls:https://example.org/rates
 LexAdd Limits.Ceiling Content:42000 "SourceUrls:https://example.org/rates https://example.org/limits"
 LexAdd Rates.Reduced Lex:Data.Tax.2026 "LegalReference:Tax Act s. 12"
+LexAdd Overtime.Factor Content:1.5 Unit:factor "SourceQuote:one and one-half times the regular rate"
 ```
 
 ### LexSnapshot
@@ -559,13 +561,16 @@ Check `lex.json` manifests against the lookup values of their data regulation (t
 | Orphan | A lex entry (inline content) matches no regulation value |
 | Value difference | Entry content differs from the regulation value (numbers compared numerically, text ignoring case); a candidate to review against the source |
 | Missing fields | `sourceUrls` or `legalReference` is empty; `sourceLocation` with `/required` (otherwise information) |
+| Location not entry-specific | With `/required` (otherwise information): the same `sourceLocation` longer than 200 characters on 5 or more entries, or a `sourceLocation` longer than 500 characters |
+| Secondary main source | With `/release` (otherwise information): the first source URL of an entry is declared with `official: false` |
+| Manual verification required | With `/release`: an entry without manual verification is ambiguous or its `sourceQuote` is not found in the local evidence (see `LexVerifySource`), or it has an `autoVerification` exclusion and an `auto` record |
 | Evidence | A declared or referenced file is missing in `.lex`, untracked or ignored in git, or a verification evidence is not in the snapshot |
 | Snapshot / validFrom | `snapshot.json` is missing, or `validFrom` of lex and regulation differ |
 | Verification | A manual verification of a `FourEyes` source without `reviewedBy`/`reviewedOn`; with `/verificationrequired` an entry without verification record |
 | Open entry | An entry taken from the previous cycle by `LexRollover`, to be verified again |
 | Source URL | With `/checkurls`: 404/410 or unknown host, or a source text changed since the snapshot (check the value); a blocking host is a note |
 
-An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored as file). Satellites whose lookup values are not stored in the `Regulation` folder are reported with a note for manual review. Documented `exclusions` are listed in the report instead of the findings. The verification records are counted per satellite (auto, manual, without, open). The freshness of `snapshot.json` is checked by `LexVerify`.
+An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored as file). Satellites whose lookup values are not stored in the `Regulation` folder are reported with a note for manual review. Documented `exclusions` (`coverage`, `sourceLocation`, `orphan`, `autoVerification`) are listed in the report instead of the findings; an `autoVerification` exclusion that matches no entry is a manifest finding. The verification records are counted per satellite (auto, manual, without, open). The freshness of `snapshot.json` is checked by `LexVerify`.
 
 | # | Argument | Description |
 |---|:---------|:------------|
@@ -585,6 +590,9 @@ An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored 
 - source location: `/optional` (default, a missing `sourceLocation` is information) or `/required` (finding)
 - verification: `/verificationoptional` (default, entries without verification are counted) or `/verificationrequired` (finding)
 - source URLs: `/skipurls` (default) or `/checkurls` (load every source URL)
+- release gate: `/development` (default) or `/release` — `/required` and `/verificationrequired`, a secondary main source is a finding, and the entries are verified against their local evidence: an entry without manual verification that is ambiguous, whose quote is not found or that is excluded from auto verification but has an `auto` record is a finding
+
+The report (Markdown and CSV) shows the new counts per satellite: `UnspecificLocations`, `SecondaryMainSource`, `Release`, `Ambiguous`, `QuoteNotFound` and `ExcludedAutoVerified` (CSV columns appended at the end).
 
 Exit codes: `0` no findings (or `/lenient`), `4` findings (`/strict`), `6` no `lex.json` found or root folder missing, `-1` invalid parameters or error.
 
@@ -593,20 +601,31 @@ Exit codes: `0` no findings (or `/lenient`), `4` findings (`/strict`), `6` no `l
 LexCheck .lex/lex.json
 LexCheck lex.json /recursive /lenient Report:C:\Reports\LexCheck.md
 LexCheck lex.json /recursive Root:C:\Repos RepoMask:Payroll.*
+LexCheck lex.json /recursive /release Report:C:\Reports\LexRelease.md
 ```
 
 ### LexVerifySource
-Look up the numbers of every lex entry in its sources: per source URL the local evidence file (`documentRef` for the first URL, otherwise the declared file with the same URL in `sourceUrls`) or, with `/live`, the source URL. A number counts as found when any source of the entry holds it; with several sources the found location names the host per source.
+Look up the numbers of every lex entry — inline `content` or a JSON `contentFile` — in its sources: per source URL the local evidence file (`documentRef` for the first URL, otherwise the declared file with the same URL in `sourceUrls`) or, with `/live`, the source URL. A number counts as found when any source of the entry holds it. The found location names the evidence file with a single local source (`rates.pdf: Section "Page 24"`) and the host per source with several sources.
 
 The format is detected from the content: HTML, text and CSV, spreadsheets (`xls`, `xlsx`, `xlsb`, `ods`; one section per sheet), PDF with a text layer (one section per page, plus the form field values) and text documents (`docx`, `odt`; one section per heading).
+
+Number search:
+- A value below 1 is also looked up as percentage (`0.085` as `8.5%`) only when the unit names a rate — a token `%`, `percent`, `rate` or `fraction` (e.g. `rate`, `% of salary`, `USD / rate`) — and the source writes `%`, `percent` or `per cent` directly after the number. Without unit and for `mixed`, `factor`, `coefficient` or a currency the value is looked up as written.
+- Numbers in words are recognized: `$1 million`, `2.5 billion`, `2.5 lakh`, `1 crore`, `one-half`, `½`, `1½`, `one and one-half`, `time and a half`, `double time`, and the Indian grouping `1,50,000`. A scale word needs a numeral (`a million` holds no number).
+- A table with more than 40 numbers is checked with 40 numbers evenly distributed over the sorted list (`sampled 40 of 2200 numbers`).
 
 | Result | Meaning |
 |:-------|:--------|
 | Found | All numbers of the entry are in the source |
+| Ambiguous | Weak evidence: a single number with at most two significant digits, a single number in more than three sections, or a number found in words only — confirm with `LexAttest` or add `sourceQuote` |
 | Partial / not found | Numbers are missing in the source — review the value |
+| Quote not found | The `sourceQuote` of the entry is in no readable source — correct the quote |
 | Unreadable / no local evidence | Blocked host, script-only page, scanned or encrypted PDF, other binary format, or no local file — verify the value manually (`LexAttest`) |
+| No numbers / no content | The entry holds no number, or its `contentFile` is missing or not JSON |
 
-With `/writelocations` the command sets the `sourceLocation` of found entries without one and writes an `auto` verification record for entries whose numbers were all found. A manual record is never replaced. Afterwards regenerate the snapshot with `LexSnapshot /overwrite`.
+With `sourceQuote` the quote must be in a section of a source (whitespace, line-end hyphenation and typographic quotes are normalized) and the numbers of the entry in that section or in the quote; the result is found with this section as location, never ambiguous. An entry with an `autoVerification` exclusion is reported as `excluded from auto verification: <reason>` and is never written.
+
+With `/writelocations` the command sets the `sourceLocation` of found entries without one and writes an `auto` verification record for entries whose numbers were all found. `/refreshlocations` does the same and also replaces locations written by the command (`Section "…"`, `Sections "…"`, optionally with a `<file or host>: ` prefix); a location written by a person is kept. Ambiguous entries are never written, a manual record is never replaced. Afterwards regenerate the snapshot with `LexSnapshot /overwrite`.
 
 | # | Argument | Description |
 |---|:---------|:------------|
@@ -614,14 +633,17 @@ With `/writelocations` the command sets the `sourceLocation` of found entries wi
 
 **Toggles:**
 - directory mode: `/top` (default) or `/recursive`
-- result mode: `/lenient` (default, report only) or `/strict` (exit code `6` when numbers are missing in the source)
+- result mode: `/lenient` (default, report only) or `/strict` (exit code `6` for partial, not found, quote not found and ambiguous entries)
 - source mode: `/local` (default, local evidence file, offline) or `/live` (source URL)
-- write mode: `/reportonly` (default) or `/writelocations`
+- write mode: `/reportonly` (default), `/writelocations` or `/refreshlocations`
+
+Exit codes: `0` ok (or `/lenient`), `6` no `lex.json` found or problems (`/strict`), `-1` invalid parameters or error.
 
 **Examples:**
 ```cmd
 LexVerifySource lex.json /recursive
 LexVerifySource .lex/lex.json /writelocations
+LexVerifySource lex.json /recursive /refreshlocations
 LexVerifySource .lex/lex.json /live
 ```
 
@@ -745,7 +767,7 @@ The `lex.json` file documents the provenance of compliance values in a data regu
 | `sources` | array | No | Document-level source references (general provenance) |
 | `values` | array | No | Compliance values with content and precise provenance |
 | `files` | array | No | Source documents to copy into the `.lex` folder |
-| `exclusions` | array | No | Documented exclusions from the coverage, orphan and `sourceLocation` checks |
+| `exclusions` | array | No | Documented exclusions from the coverage, orphan and `sourceLocation` checks and from the automatic verification |
 
 **`sources[]` — document-level provenance:**
 
@@ -755,6 +777,7 @@ The `lex.json` file documents the provenance of compliance values in a data regu
 | `description` | No | Human-readable description |
 | `legalBasis` | No | Legal basis (e.g. `Income Tax Act §12`, `Act 123/2025 Art. 4`) |
 | `review` | No | Review rule for the values that list this URL in `sourceUrls`: `SingleAuthor` (default) or `FourEyes` (a manual verification requires `reviewedBy` and `reviewedOn`) |
+| `official` | No | `true` (default): publication of the authority; `false`: secondary source (commercial summary, tax calculator, association page). A secondary main source is information for `LexCheck` and a finding with `/release`: replace it with the official publication |
 
 **`values[]` — compliance values:**
 
@@ -768,6 +791,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 | `unit` | No | Unit of measure (`EUR`, `%`, `CHF`, `SGD`, ...) |
 | `sourceUrls` | No | URLs where this specific value can be found; a value combined from several authorities lists one URL per authority, the first one is the main source |
 | `sourceLocation` | No | Precise location within the source document (free text) |
+| `sourceQuote` | No | Text passage of the source that contains the value; `LexVerifySource` looks up the numbers in the section of the quote. Anchors short numbers and numbers in words (`one and one-half`). Part of the snapshot hash |
 | `legalReference` | No | Legal norm reference (e.g. `Income Tax Act §12(1)`) |
 | `documentRef` | No | Local evidence document, declared in `files[]` |
 | `description` | No | Human-readable description |
@@ -789,7 +813,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 
 | Property | Required | Description |
 |:---------|:--------:|:------------|
-| `kind` | **Yes** | `coverage` (regulation values without lex entry), `orphan` (lex entries without regulation value, e.g. a rule implemented in code) or `sourceLocation` (entries without `sourceLocation`) |
+| `kind` | **Yes** | `coverage` (regulation values without lex entry), `orphan` (lex entries without regulation value, e.g. a rule implemented in code), `sourceLocation` (entries without `sourceLocation`) or `autoVerification` (entries that `LexVerifySource` never verifies automatically, e.g. a value whose number is in the source but means something else; verify with `LexAttest`) |
 | `pattern` | **Yes** | `Lookup`, `Lookup.Key` or a prefix with trailing `*`; a name also matches all keys below it |
 | `reason` | **Yes** | Justification, shown in the check report |
 

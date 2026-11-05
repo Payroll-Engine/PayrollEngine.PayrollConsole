@@ -79,6 +79,18 @@ public class LexEntryParametersTests
         Assert.Empty(Add("Rates.Standard", "Content:8.5").SourceUrls);
 
     [Fact]
+    public void Add_ParsesSourceQuote() =>
+        Assert.Equal("one and one-half times the regular rate",
+            Add("Overtime.Factor", "Content:1.5", "SourceQuote:one and one-half times the regular rate").SourceQuote);
+
+    [Fact]
+    public void Add_EmptySourceQuote_IsNull()
+    {
+        Assert.Null(Add("Overtime.Factor", "Content:1.5").SourceQuote);
+        Assert.Null(Add("Overtime.Factor", "Content:1.5", "SourceQuote: ").SourceQuote);
+    }
+
+    [Fact]
     public void Add_MissingKey_IsInvalid() =>
         Assert.NotNull(Add("Content:8.5").Test());
 

@@ -17,7 +17,13 @@ public enum LexSourceWriteMode
     /// Write the found source location into entries without sourceLocation
     /// and the automatic verification record into entries whose numbers were all found
     /// </summary>
-    WriteLocations
+    WriteLocations,
+
+    /// <summary>
+    /// Like <see cref="WriteLocations"/>, and also replace source locations written by LexVerifySource
+    /// (<c>Section "…"</c>, <c>Sections "…"</c>); locations written by a person are kept
+    /// </summary>
+    RefreshLocations
 }
 
 /// <summary>
@@ -52,7 +58,8 @@ public class LexVerifySourceParameters : ICommandParameters
     public DirectoryMode DirectoryMode { get; private init; } = DirectoryMode.Top;
 
     /// <summary>
-    /// Result handling: lenient only reports (default), strict fails when a value is missing in its source
+    /// Result handling: lenient only reports (default), strict fails when a value is missing in its source,
+    /// its quote is not found or its evidence is ambiguous
     /// </summary>
     public LexCheckMode CheckMode { get; private init; } = LexCheckMode.Lenient;
 

@@ -49,6 +49,24 @@ public enum LexVerificationMode
 }
 
 /// <summary>
+/// LexCheck release gate
+/// </summary>
+public enum LexReleaseMode
+{
+    /// <summary>
+    /// The checks of the selected toggles (default)
+    /// </summary>
+    Development,
+
+    /// <summary>
+    /// Release gate: /required and /verificationrequired, a secondary main source is a finding, and entries without
+    /// manual verification that are ambiguous, whose quote is not found or that are excluded from auto verification
+    /// but have an automatic record are findings (the entries are verified against their local evidence)
+    /// </summary>
+    Release
+}
+
+/// <summary>
 /// LexCheck handling of source URLs
 /// </summary>
 public enum LexUrlMode
