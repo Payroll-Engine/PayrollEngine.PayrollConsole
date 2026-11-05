@@ -540,7 +540,7 @@ Environment variable used during build:
 ---
 
 ## Third Party Components
-- Excel conversion with [NPOI](https://github.com/dotnetcore/NPOI/) — license `Apache 2.0`
+- Excel conversion with [ClosedXML](https://github.com/ClosedXML/ClosedXML/) — license `MIT`
 - Logging with [Serilog](https://github.com/serilog/serilog/) — license `Apache 2.0`
 
 ---
