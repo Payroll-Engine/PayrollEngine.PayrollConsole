@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -13,7 +12,7 @@ internal static class ReportImport
     /// <param name="workbook">The source workbook.</param>
     /// <returns>The imported reports, or <c>null</c> if the sheet is missing or empty.</returns>
     /// <exception cref="PayrollException">Thrown when required columns are missing, names are empty, or duplicates are found.</exception>
-    internal static List<ReportSet> Import(IWorkbook workbook)
+    internal static List<ReportSet> Import(ExcelWorkbook workbook)
     {
         // worksheet
         if (!workbook.HasSheet(SheetSpecification.Report))
@@ -24,7 +23,7 @@ internal static class ReportImport
         var worksheet = workbook.GetSheet(SheetSpecification.Report);
 
         // no data rows
-        if (worksheet.PhysicalNumberOfRows < 2)
+        if (worksheet.RowCount < 2)
         {
             return null;
         }
@@ -38,7 +37,7 @@ internal static class ReportImport
 
         // reports
         var reports = new List<ReportSet>();
-        for (var i = 1; i < worksheet.PhysicalNumberOfRows; i++)
+        for (var i = 1; i < worksheet.RowCount; i++)
         {
             var row = worksheet.GetRow(i);
             if (row.IsBlank())

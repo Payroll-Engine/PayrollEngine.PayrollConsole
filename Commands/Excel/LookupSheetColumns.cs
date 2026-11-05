@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -17,7 +16,7 @@ internal sealed class LookupSheetColumns
     internal int? OverrideTypeColumn { get; }
     internal int? AttributesColumn { get; }
 
-    internal LookupSheetColumns(ISheet sheet)
+    internal LookupSheetColumns(ExcelSheet sheet)
     {
         ArgumentNullException.ThrowIfNull(sheet);
         CreatedColumn = sheet.GetHeaderColumn(nameof(Lookup.Created));

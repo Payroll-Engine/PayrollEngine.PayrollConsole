@@ -1,5 +1,4 @@
 using System;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -12,7 +11,7 @@ internal sealed class ScriptSheetColumns
     internal int? ValueColumn { get; }
     internal int? OverrideTypeColumn { get; }
 
-    internal ScriptSheetColumns(ISheet sheet)
+    internal ScriptSheetColumns(ExcelSheet sheet)
     {
         ArgumentNullException.ThrowIfNull(sheet);
         CreatedColumn = sheet.GetHeaderColumn(nameof(Client.Model.Script.Created));

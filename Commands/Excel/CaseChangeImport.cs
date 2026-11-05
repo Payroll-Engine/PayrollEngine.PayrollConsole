@@ -3,8 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IO;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 using PayrollEngine.Client;
 using PayrollEngine.Client.Model;
 using PayrollEngine.Client.Service;
@@ -43,7 +41,7 @@ internal sealed class CaseChangeImport
 
         // workbook (file share to load open/locked Excel document)
         await using var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        IWorkbook workbook = new XSSFWorkbook(stream);
+        using var workbook = ExcelWorkbook.Open(stream);
 
         // import tenant
         var tenant = await GetTenantAsync(workbook);
@@ -62,7 +60,7 @@ internal sealed class CaseChangeImport
         };
     }
 
-    private async Task<ExchangeTenant> GetTenantAsync(IWorkbook workbook)
+    private async Task<ExchangeTenant> GetTenantAsync(ExcelWorkbook workbook)
     {
         var tenantName = workbook.GetNamedValue<string>(RegionNames.TenantRegionName);
         if (string.IsNullOrWhiteSpace(tenantName))
@@ -87,7 +85,7 @@ internal sealed class CaseChangeImport
     /// <param name="workbook">Excel workbook</param>
     /// <param name="fileName">Excel file name</param>
     private static async Task ReadAsync(PayrollHttpClient httpClient,
-        ExchangeTenant tenant, IWorkbook workbook, string fileName)
+        ExchangeTenant tenant, ExcelWorkbook workbook, string fileName)
     {
         var user = await GetUserAsync(httpClient, workbook, tenant.Id);
         var division = await GetDivisionAsync(httpClient, workbook, tenant.Id);
@@ -118,7 +116,7 @@ internal sealed class CaseChangeImport
     /// <param name="payroll">The payroll</param>
     /// <param name="reason">The reason</param>
     /// <param name="namespace">The case and case field namespace</param>
-    private static void GetCaseData(IWorkbook workbook, Division division, User user,
+    private static void GetCaseData(ExcelWorkbook workbook, Division division, User user,
         PayrollSet payroll, string reason, string @namespace)
     {
         foreach (var sheet in workbook.GetSheetsOf(CaseDataSheetSpecification.DataSheetPrefix))
@@ -134,7 +132,7 @@ internal sealed class CaseChangeImport
     /// <param name="user">The user</param>
     /// <param name="reason">The reason</param>
     /// <param name="namespace">The case and case field namespace</param>
-    private static void AddCaseData(ISheet worksheet, PayrollSet payroll,
+    private static void AddCaseData(ExcelSheet worksheet, PayrollSet payroll,
         Division division, User user, string reason, string @namespace)
     {
         // columns
@@ -159,7 +157,7 @@ internal sealed class CaseChangeImport
         var caseName = @namespace + worksheet.SheetName.RemoveFromStart(CaseDataSheetSpecification.DataSheetPrefix);
 
         // collect case values from the rows (skip header row)
-        for (var i = 1; i < worksheet.PhysicalNumberOfRows; i++)
+        for (var i = 1; i < worksheet.RowCount; i++)
         {
             var row = worksheet.GetRow(i);
             if (row.IsBlank())
@@ -224,7 +222,7 @@ internal sealed class CaseChangeImport
     /// </summary>
     /// <param name="worksheet">The worksheet</param>
     /// <param name="firstColumnIndex">The first column index</param>
-    private static IDictionary<string, int> GetCaseColumns(ISheet worksheet, int firstColumnIndex)
+    private static IDictionary<string, int> GetCaseColumns(ExcelSheet worksheet, int firstColumnIndex)
     {
         var columns = new Dictionary<string, int>();
         var headerCells = worksheet.HeaderCells();
@@ -235,7 +233,7 @@ internal sealed class CaseChangeImport
             {
                 continue;
             }
-            var columnName = cell.StringCellValue.Trim();
+            var columnName = cell.StringValue.Trim();
             columns.Add(columnName.RemoveFromStart(CaseDataSheetSpecification.DataSheetPrefix), i);
 
         }
@@ -258,7 +256,7 @@ internal sealed class CaseChangeImport
     /// <param name="payroll"></param>
     /// <returns></returns>
     private static async Task GetCaseChangesAsync(PayrollHttpClient httpClient, ExchangeTenant tenant,
-        IWorkbook workbook, Division division, User user, string caseValueReason, PayrollSet payroll)
+        ExcelWorkbook workbook, Division division, User user, string caseValueReason, PayrollSet payroll)
     {
         // global case value changes
         if (workbook.HasSheet(SheetSpecification.GlobalCaseValues))
@@ -311,7 +309,7 @@ internal sealed class CaseChangeImport
     /// <param name="user">The user</param>
     /// <param name="reason">The reason</param>
     /// <returns>Case change setup</returns>
-    private static CaseChangeSetup GetCaseChange(ISheet worksheet, Division division, User user, string reason)
+    private static CaseChangeSetup GetCaseChange(ExcelSheet worksheet, Division division, User user, string reason)
     {
         // columns
         var titles = new[]
@@ -330,7 +328,7 @@ internal sealed class CaseChangeImport
 
         // collect case values from the rows (skip header row)
         var caseValues = new List<CaseValueSetup>();
-        for (var i = 1; i < worksheet.PhysicalNumberOfRows; i++)
+        for (var i = 1; i < worksheet.RowCount; i++)
         {
             var row = worksheet.GetRow(i);
             if (row.IsBlank())
@@ -427,7 +425,7 @@ internal sealed class CaseChangeImport
     /// <returns>Case changes by employee</returns>
     private static async Task<IDictionary<Tuple<string, string>, CaseChangeSetup>> GetEmployeeCaseChangesAsync(
         PayrollHttpClient httpClient, ExchangeTenant tenant,
-        ISheet worksheet, Division division, User user, string reason)
+        ExcelSheet worksheet, Division division, User user, string reason)
     {
         // columns
         var titles = new[]
@@ -447,7 +445,7 @@ internal sealed class CaseChangeImport
 
         // collect case values from the rows (skip header row), by employee identifier and case change
         var caseValuesByChanges = new Dictionary<Tuple<string, string>, List<CaseValueSetup>>();
-        for (var i = 1; i < worksheet.PhysicalNumberOfRows; i++)
+        for (var i = 1; i < worksheet.RowCount; i++)
         {
             var row = worksheet.GetRow(i);
             if (row.IsBlank())
@@ -565,7 +563,7 @@ internal sealed class CaseChangeImport
 
     #endregion
 
-    private static string GetCaseValueReason(IWorkbook workbook, string fileName)
+    private static string GetCaseValueReason(ExcelWorkbook workbook, string fileName)
     {
         var caseValueReason = workbook.GetNamedValue<string>(RegionNames.CaseValueReasonRegionName);
         return string.IsNullOrWhiteSpace(caseValueReason) ?
@@ -573,10 +571,10 @@ internal sealed class CaseChangeImport
             caseValueReason;
     }
 
-    private static string GetNamespace(IWorkbook workbook) =>
+    private static string GetNamespace(ExcelWorkbook workbook) =>
         workbook.GetNamedValue<string>(RegionNames.NamespaceRegionName);
 
-    private static async Task<User> GetUserAsync(PayrollHttpClient httpClient, IWorkbook workbook, int tenantId)
+    private static async Task<User> GetUserAsync(PayrollHttpClient httpClient, ExcelWorkbook workbook, int tenantId)
     {
         var userIdentifier = workbook.GetNamedValue<string>(RegionNames.UserRegionName);
         if (string.IsNullOrWhiteSpace(userIdentifier))
@@ -593,7 +591,7 @@ internal sealed class CaseChangeImport
         return user;
     }
 
-    private static async Task<Division> GetDivisionAsync(PayrollHttpClient httpClient, IWorkbook workbook, int tenantId)
+    private static async Task<Division> GetDivisionAsync(PayrollHttpClient httpClient, ExcelWorkbook workbook, int tenantId)
     {
         var divisionName = workbook.GetNamedValue<string>(RegionNames.DivisionRegionName);
         if (string.IsNullOrWhiteSpace(divisionName))
@@ -610,7 +608,7 @@ internal sealed class CaseChangeImport
         return division;
     }
 
-    private static async Task<PayrollSet> GetPayrollAsync(PayrollHttpClient httpClient, IWorkbook workbook, int tenantId)
+    private static async Task<PayrollSet> GetPayrollAsync(PayrollHttpClient httpClient, ExcelWorkbook workbook, int tenantId)
     {
         var payrollName = workbook.GetNamedValue<string>(RegionNames.PayrollRegionName);
         if (string.IsNullOrWhiteSpace(payrollName))

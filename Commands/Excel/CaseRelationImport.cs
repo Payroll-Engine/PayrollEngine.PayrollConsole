@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -12,7 +11,7 @@ internal static class CaseRelationImport
     /// <param name="workbook">The source workbook.</param>
     /// <returns>The imported case relations, or <c>null</c> if the sheet is missing or empty.</returns>
     /// <exception cref="PayrollException">Thrown when required columns are missing or case names are empty.</exception>
-    internal static List<CaseRelation> Import(IWorkbook workbook)
+    internal static List<CaseRelation> Import(ExcelWorkbook workbook)
     {
         // worksheet
         if (!workbook.HasSheet(SheetSpecification.CaseRelation))
@@ -22,7 +21,7 @@ internal static class CaseRelationImport
         var worksheet = workbook.GetSheet(SheetSpecification.CaseRelation);
 
         // no data rows
-        if (worksheet.PhysicalNumberOfRows < 2)
+        if (worksheet.RowCount < 2)
         {
             return null;
         }
@@ -40,7 +39,7 @@ internal static class CaseRelationImport
 
         // case relations
         var caseRelations = new List<CaseRelation>();
-        for (var i = 1; i < worksheet.PhysicalNumberOfRows; i++)
+        for (var i = 1; i < worksheet.RowCount; i++)
         {
             var row = worksheet.GetRow(i);
             if (row.IsBlank())

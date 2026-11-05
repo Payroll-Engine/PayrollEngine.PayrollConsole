@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -14,7 +13,7 @@ internal static class CaseFieldConvert
     /// <param name="workbook">The source workbook.</param>
     /// <param name="cases">The previously imported cases to populate with fields.</param>
     /// <exception cref="PayrollException">Thrown when required columns are missing, referenced cases are unknown, names are empty, or duplicates are found.</exception>
-    internal static void ReadCaseFields(IWorkbook workbook, IList<CaseSet> cases)
+    internal static void ReadCaseFields(ExcelWorkbook workbook, IList<CaseSet> cases)
     {
         // worksheet
         if (!workbook.HasSheet(SheetSpecification.CaseField))
@@ -24,7 +23,7 @@ internal static class CaseFieldConvert
         var worksheet = workbook.GetSheet(SheetSpecification.CaseField);
 
         // no data rows
-        if (worksheet.PhysicalNumberOfRows < 2)
+        if (worksheet.RowCount < 2)
         {
             return;
         }
@@ -42,7 +41,7 @@ internal static class CaseFieldConvert
 
         // case fields
         var caseFields = new List<CaseFieldSet>();
-        for (var i = 1; i < worksheet.PhysicalNumberOfRows; i++)
+        for (var i = 1; i < worksheet.RowCount; i++)
         {
             var row = worksheet.GetRow(i);
             if (row.IsBlank())

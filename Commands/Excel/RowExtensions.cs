@@ -1,32 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using NPOI.SS.UserModel;
 using PayrollEngine.Serialization;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
 internal static class RowExtensions
 {
-    extension(IRow row)
+    extension(ExcelRow row)
     {
-        internal bool IsBlank()
-        {
-            if (row == null || !row.Cells.Any())
-            {
-                return true;
-            }
-
-            foreach (var cell in row.Cells)
-            {
-                if (cell.CellType is CellType.Blank or CellType._None)
-                {
-                    continue;
-                }
-                return false;
-            }
-            return true;
-        }
+        internal bool IsBlank() =>
+            row == null || row.IsEmpty;
 
         internal T GetCellValue<T>(int? column, T defaultValue = default)
         {
@@ -113,7 +97,7 @@ internal static class RowExtensions
         internal Dictionary<string, string> GetLocalizations(Dictionary<int, string> columns)
         {
             var localizations = new Dictionary<string, string>();
-            if (row == null || !row.Cells.Any())
+            if (row.IsBlank())
             {
                 return null;
             }

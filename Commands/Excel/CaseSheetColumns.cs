@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -33,7 +32,7 @@ internal sealed class CaseSheetColumns
     internal int? SlotsColumn { get; }
     internal int? AttributesColumn { get; }
 
-    internal CaseSheetColumns(ISheet sheet)
+    internal CaseSheetColumns(ExcelSheet sheet)
     {
         ArgumentNullException.ThrowIfNull(sheet);
         CreatedColumn = sheet.GetHeaderColumn(nameof(Case.Created));

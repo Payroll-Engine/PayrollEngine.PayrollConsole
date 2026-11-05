@@ -1,15 +1,13 @@
 using System;
 using System.Globalization;
 using System.Collections.Generic;
-using NPOI.SS.Util;
-using NPOI.SS.UserModel;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
 
 internal static class SheetExtensions
 {
     /// <param name="worksheet">The worksheet</param>
-    extension(ISheet worksheet)
+    extension(ExcelSheet worksheet)
     {
         internal int? GetHeaderColumn(string name)
         {
@@ -19,7 +17,7 @@ internal static class SheetExtensions
                 {
                     continue;
                 }
-                if (cell.StringCellValue.Trim().Equals(name, StringComparison.InvariantCultureIgnoreCase))
+                if (cell.StringValue.Trim().Equals(name, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return cell.ColumnIndex;
                 }
@@ -40,7 +38,7 @@ internal static class SheetExtensions
                 {
                     continue;
                 }
-                var value = cell.StringCellValue.Trim();
+                var value = cell.StringValue.Trim();
                 if (value.StartsWith(name, StringComparison.InvariantCultureIgnoreCase))
                 {
                     columns.Add(cell.ColumnIndex, value.RemoveFromStart(name));
@@ -62,7 +60,7 @@ internal static class SheetExtensions
                 {
                     continue;
                 }
-                var columnName = cell.StringCellValue.Trim();
+                var columnName = cell.StringValue.Trim();
                 if (titles.Contains(columnName))
                 {
                     columns.Add(columnName, cell.ColumnIndex);
@@ -81,70 +79,34 @@ internal static class SheetExtensions
             return columns;
         }
 
-        private int GetMaxPhysicalNumberOfCells()
-        {
-            var maxColumnCount = 0;
-            for (var i = 0; i < worksheet.PhysicalNumberOfRows; i++)
-            {
-                var row = worksheet.GetRow(i);
-                if (row.PhysicalNumberOfCells > maxColumnCount)
-                {
-                    maxColumnCount = row.PhysicalNumberOfCells;
-                }
-            }
-            return maxColumnCount;
-        }
-
-        internal ICell HeaderCell(int column) =>
+        internal ExcelCell HeaderCell(int column) =>
             worksheet.GetRow(0).GetCell(column);
 
-        internal List<ICell> HeaderCells() =>
-            worksheet.RowCells(0);
-
-        private List<ICell> RowCells(int row)
+        /// <summary>Header cells up to the last used column, null for empty cells</summary>
+        internal List<ExcelCell> HeaderCells()
         {
-            var cells = new List<ICell>();
-            for (var i = 0; i < worksheet.GetMaxPhysicalNumberOfCells(); i++)
+            var cells = new List<ExcelCell>();
+            var header = worksheet.GetRow(0);
+            for (var i = 0; i < worksheet.ColumnCount; i++)
             {
-                cells.Add(worksheet.GetRow(row).GetCell(i));
+                var cell = header.GetCell(i);
+                cells.Add(cell.CellType == ExcelCellType.Blank ? null : cell);
             }
             return cells;
-        }
-
-        internal T GetCellValue<T>(string address)
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(address);
-            return worksheet.GetCellValue<T>(CellRangeAddress.ValueOf(address));
-        }
-
-        private T GetCellValue<T>(CellRangeAddress address)
-        {
-            ArgumentNullException.ThrowIfNull(address);
-            if (address.NumberOfCells != 1)
-            {
-                throw new PayrollException($"Excel region {address} must be a single cell.");
-            }
-
-            var cell = worksheet.GetRow(address.FirstRow).GetCell(address.FirstColumn);
-            return cell.GetCellValue<T>();
         }
     }
 
     /// <param name="cell">The source cell</param>
-    extension(ICell cell)
+    extension(ExcelCell cell)
     {
-        private bool IsDateCell() =>
-            // ReSharper disable once MergeIntoPattern
-            cell.DateCellValue.HasValue && cell.DateCellValue.Value.Year > 1950;
-
         internal ValueType GetValueType()
         {
             switch (cell.CellType)
             {
-                case CellType.Boolean:
+                case ExcelCellType.Boolean:
                     return ValueType.Boolean;
-                case CellType.Numeric:
-                    if (cell.IsDateCell())
+                case ExcelCellType.Numeric:
+                    if (cell.IsDate)
                     {
                         return ValueType.DateTime;
                     }
@@ -158,20 +120,20 @@ internal static class SheetExtensions
         {
             switch (cell.CellType)
             {
-                case CellType.Boolean:
-                    return cell.BooleanCellValue;
-                case CellType.Numeric:
-                    if (cell.IsDateCell())
+                case ExcelCellType.Boolean:
+                    return cell.BooleanValue;
+                case ExcelCellType.Numeric:
+                    if (cell.IsDate)
                     {
-                        return cell.DateCellValue;
+                        return cell.DateValue;
                     }
-                    return cell.NumericCellValue;
-                case CellType.String:
-                    return cell.StringCellValue;
-                case CellType.Formula:
-                    return cell.CellFormula;
-                case CellType.Error:
-                    return cell.ErrorCellValue;
+                    return cell.NumericValue;
+                case ExcelCellType.String:
+                    return cell.StringValue;
+                case ExcelCellType.Formula:
+                    return cell.Formula;
+                case ExcelCellType.Error:
+                    return cell.ErrorValue;
                 default:
                     return null;
             }
@@ -184,7 +146,7 @@ internal static class SheetExtensions
         /// <returns>The cell value</returns>
         internal T GetCellValue<T>(IFormatProvider provider = null)
         {
-            if (cell == null || cell.CellType == CellType.Blank)
+            if (cell == null || cell.CellType == ExcelCellType.Blank)
             {
                 return default;
             }
@@ -192,99 +154,71 @@ internal static class SheetExtensions
             // string
             if (typeof(T) == typeof(string))
             {
-                TestCellType(cell, CellType.String);
-                return (T)Convert.ChangeType(cell.StringCellValue, typeof(T));
+                TestCellType(cell, ExcelCellType.String);
+                return (T)Convert.ChangeType(cell.StringValue, typeof(T));
             }
 
             // boolean
-            if (typeof(T) == typeof(bool))
+            if (typeof(T) == typeof(bool) || typeof(T) == typeof(bool?))
             {
-                TestCellType(cell, CellType.Boolean);
-                return (T)Convert.ChangeType(cell.BooleanCellValue, typeof(T));
-            }
-            if (typeof(T) == typeof(bool?))
-            {
-                TestCellType(cell, CellType.Boolean);
-                return !string.IsNullOrWhiteSpace(cell.StringCellValue) ?
-                    (T)Convert.ChangeType(cell.BooleanCellValue, typeof(T)) :
-                    default;
+                TestCellType(cell, ExcelCellType.Boolean);
+                return (T)(object)cell.BooleanValue;
             }
 
             // date time
-            if (typeof(T) == typeof(DateTime))
+            if (typeof(T) == typeof(DateTime) || typeof(T) == typeof(DateTime?))
             {
-                if (cell.CellType == CellType.Numeric)
+                if (cell.CellType == ExcelCellType.Numeric)
                 {
-                    return (T)(object)cell.DateCellValue;
+                    return (T)(object)cell.DateValue;
                 }
-                TestCellType(cell, CellType.String);
-                var date = DateTime.Parse(cell.StringCellValue, provider);
-                return (T)(object)date;
-            }
-            if (typeof(T) == typeof(DateTime?))
-            {
-                if (cell.CellType == CellType.Numeric)
-                {
-                    return (T)(object)cell.DateCellValue;
-                }
-                if (cell.CellType == CellType.Blank)
+                TestCellType(cell, ExcelCellType.String);
+                if (typeof(T) == typeof(DateTime?) && string.IsNullOrWhiteSpace(cell.StringValue))
                 {
                     return default;
                 }
-                TestCellType(cell, CellType.String);
-                if (string.IsNullOrWhiteSpace(cell.StringCellValue))
-                {
-                    return default;
-                }
-                var date = DateTime.Parse(cell.StringCellValue, provider);
+                var date = DateTime.Parse(cell.StringValue, provider);
                 return (T)(object)date;
             }
 
             // int
             if (typeof(T) == typeof(int))
             {
-                TestCellType(cell, CellType.Numeric);
-                return (T)Convert.ChangeType((int)cell.NumericCellValue, typeof(T));
+                TestCellType(cell, ExcelCellType.Numeric);
+                return (T)Convert.ChangeType((int)cell.NumericValue, typeof(T));
             }
             if (typeof(T) == typeof(int?))
             {
-                TestCellType(cell, CellType.Numeric);
-                var value = int.Parse(cell.NumericCellValue.ToString(CultureInfo.InvariantCulture));
+                TestCellType(cell, ExcelCellType.Numeric);
+                var value = int.Parse(cell.NumericValue.ToString(CultureInfo.InvariantCulture));
                 return (T)(object)value;
             }
 
             // decimal
             if (typeof(T) == typeof(decimal))
             {
-                TestCellType(cell, CellType.Numeric);
-                return (T)Convert.ChangeType((decimal)cell.NumericCellValue, typeof(T));
+                TestCellType(cell, ExcelCellType.Numeric);
+                return (T)Convert.ChangeType((decimal)cell.NumericValue, typeof(T));
             }
             if (typeof(T) == typeof(decimal?))
             {
-                TestCellType(cell, CellType.Numeric);
-                var value = decimal.Parse(cell.NumericCellValue.ToString(CultureInfo.InvariantCulture), provider: CultureInfo.InvariantCulture);
+                TestCellType(cell, ExcelCellType.Numeric);
+                var value = decimal.Parse(cell.NumericValue.ToString(CultureInfo.InvariantCulture), provider: CultureInfo.InvariantCulture);
                 return (T)(object)value;
             }
 
             // double
-            if (typeof(T) == typeof(double))
+            if (typeof(T) == typeof(double) || typeof(T) == typeof(double?))
             {
-                TestCellType(cell, CellType.Numeric);
-                return (T)Convert.ChangeType(cell.NumericCellValue, typeof(T));
-            }
-            if (typeof(T) == typeof(double?))
-            {
-                TestCellType(cell, CellType.Numeric);
-                return !string.IsNullOrWhiteSpace(cell.StringCellValue) ?
-                    (T)Convert.ChangeType(cell.NumericCellValue, typeof(T)) :
-                    default;
+                TestCellType(cell, ExcelCellType.Numeric);
+                return (T)(object)cell.NumericValue;
             }
 
             return default;
         }
     }
 
-    private static void TestCellType(ICell cell, CellType cellType)
+    private static void TestCellType(ExcelCell cell, ExcelCellType cellType)
     {
         if (cell.CellType != cellType)
         {

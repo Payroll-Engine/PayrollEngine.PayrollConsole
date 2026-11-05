@@ -4,9 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using NPOI.SS.UserModel;
-using NPOI.SS.Util;
-using NPOI.XSSF.UserModel;
+using ClosedXML.Excel;
 
 namespace PayrollEngine.PayrollConsole.Commands.LoadTestCommands;
 
@@ -17,16 +15,25 @@ internal sealed class PayrunLoadTestExcelWriter
     private readonly PayrunLoadTestParameters parameters;
     private readonly List<PayrunLoadTestResult> results;
 
-    // styles
-    private ICellStyle headerStyle;
-    private ICellStyle metaLabelStyle;
-    private ICellStyle metaValueStyle;
-    private ICellStyle dataStyle;
-    private ICellStyle dataNumberStyle;
-    private ICellStyle dataDecimalStyle;
-    private ICellStyle dataPeriodStyle;
-    private ICellStyle dataTimestampStyle;
-    private ICellStyle highlightStyle;
+    // colors (Excel indexed palette)
+    private static readonly XLColor HeaderFillColor = XLColor.FromIndex(18);      // dark blue
+    private static readonly XLColor HeaderFontColor = XLColor.FromIndex(9);       // white
+    private static readonly XLColor HighlightFillColor = XLColor.FromIndex(43);   // light yellow
+    private static readonly XLColor HighlightFontColor = XLColor.FromIndex(16);   // dark red
+
+    private const string DecimalFormat = "0.0";
+
+    private enum CellStyle
+    {
+        Header,
+        MetaLabel,
+        MetaValue,
+        Number,
+        Decimal,
+        Period,
+        Timestamp,
+        Highlight
+    }
 
     internal PayrunLoadTestExcelWriter(
         string path,
@@ -41,8 +48,7 @@ internal sealed class PayrunLoadTestExcelWriter
     /// <summary>Write the Excel report</summary>
     internal void Write()
     {
-        var workbook = new XSSFWorkbook();
-        CreateStyles(workbook);
+        using var workbook = new XLWorkbook();
 
         WriteSetupSheet(workbook);
         WriteResultsSheet(workbook);
@@ -55,15 +61,15 @@ internal sealed class PayrunLoadTestExcelWriter
         }
 
         using var stream = new FileStream(path, FileMode.Create, FileAccess.Write);
-        workbook.Write(stream);
+        workbook.SaveAs(stream);
     }
 
     // setup sheet: machine, timing config, test parameters
-    private void WriteSetupSheet(IWorkbook workbook)
+    private void WriteSetupSheet(XLWorkbook workbook)
     {
-        var sheet = workbook.CreateSheet("Setup");
-        sheet.SetColumnWidth(0, 32 * 256);
-        sheet.SetColumnWidth(1, 40 * 256);
+        var sheet = workbook.Worksheets.Add("Setup");
+        sheet.Column(1).Width = 32;
+        sheet.Column(2).Width = 40;
 
         var row = 0;
 
@@ -114,67 +120,65 @@ internal sealed class PayrunLoadTestExcelWriter
     }
 
     // results sheet: one row per period/run, same structure as CSV
-    private void WriteResultsSheet(IWorkbook workbook)
+    private void WriteResultsSheet(XLWorkbook workbook)
     {
-        var sheet = workbook.CreateSheet("Results");
-        sheet.SetColumnWidth(0, 22 * 256);  // Timestamp
-        sheet.SetColumnWidth(1, 8 * 256);   // Run
-        sheet.SetColumnWidth(2, 12 * 256);  // Period
-        sheet.SetColumnWidth(3, 16 * 256);  // EmployeeCount
-        sheet.SetColumnWidth(4, 20 * 256);  // ClientDuration_ms
-        sheet.SetColumnWidth(5, 24 * 256);  // ServerJobDuration_ms
-        sheet.SetColumnWidth(6, 24 * 256);  // ServerAvgMs_PerEmployee
+        var sheet = workbook.Worksheets.Add("Results");
+        sheet.Column(1).Width = 22;  // Timestamp
+        sheet.Column(2).Width = 8;   // Run
+        sheet.Column(3).Width = 12;  // Period
+        sheet.Column(4).Width = 16;  // EmployeeCount
+        sheet.Column(5).Width = 20;  // ClientDuration_ms
+        sheet.Column(6).Width = 24;  // ServerJobDuration_ms
+        sheet.Column(7).Width = 24;  // ServerAvgMs_PerEmployee
 
         // header row
-        var header = sheet.CreateRow(0);
-        WriteCell(header, 0, "Timestamp", headerStyle);
-        WriteCell(header, 1, "Run", headerStyle);
-        WriteCell(header, 2, "Period", headerStyle);
-        WriteCell(header, 3, "EmployeeCount", headerStyle);
-        WriteCell(header, 4, "ClientDuration_ms", headerStyle);
-        WriteCell(header, 5, "ServerJobDuration_ms", headerStyle);
-        WriteCell(header, 6, "ServerAvgMs_PerEmployee", headerStyle);
+        WriteCell(sheet, 0, 0, "Timestamp", CellStyle.Header);
+        WriteCell(sheet, 0, 1, "Run", CellStyle.Header);
+        WriteCell(sheet, 0, 2, "Period", CellStyle.Header);
+        WriteCell(sheet, 0, 3, "EmployeeCount", CellStyle.Header);
+        WriteCell(sheet, 0, 4, "ClientDuration_ms", CellStyle.Header);
+        WriteCell(sheet, 0, 5, "ServerJobDuration_ms", CellStyle.Header);
+        WriteCell(sheet, 0, 6, "ServerAvgMs_PerEmployee", CellStyle.Header);
 
         // data rows
         var rowIndex = 1;
         foreach (var r in results)
         {
-            var row = sheet.CreateRow(rowIndex++);
-            WriteCell(row, 0, r.Timestamp.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), dataTimestampStyle);
-            WriteCell(row, 1, r.RunNumber, dataNumberStyle);
-            WriteCell(row, 2, r.Period.ToString("yyyy-MM", CultureInfo.InvariantCulture), dataPeriodStyle);
-            WriteCell(row, 3, r.EmployeeCount, dataNumberStyle);
-            WriteCell(row, 4, r.ClientDurationMs, dataNumberStyle);
-            WriteCell(row, 5, r.ServerJobDurationMs, dataNumberStyle);
-            WriteCell(row, 6, r.ServerAvgMsPerEmployee, dataDecimalStyle);
+            WriteCell(sheet, rowIndex, 0, r.Timestamp.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), CellStyle.Timestamp);
+            WriteCell(sheet, rowIndex, 1, r.RunNumber, CellStyle.Number);
+            WriteCell(sheet, rowIndex, 2, r.Period.ToString("yyyy-MM", CultureInfo.InvariantCulture), CellStyle.Period);
+            WriteCell(sheet, rowIndex, 3, r.EmployeeCount, CellStyle.Number);
+            WriteCell(sheet, rowIndex, 4, r.ClientDurationMs, CellStyle.Number);
+            WriteCell(sheet, rowIndex, 5, r.ServerJobDurationMs, CellStyle.Number);
+            WriteCell(sheet, rowIndex, 6, r.ServerAvgMsPerEmployee, CellStyle.Decimal);
+            rowIndex++;
         }
 
         // auto-filter on header row
-        sheet.SetAutoFilter(new CellRangeAddress(0, rowIndex - 1, 0, 6));
-        sheet.CreateFreezePane(0, 1);
+        sheet.Range(1, 1, rowIndex, 7).SetAutoFilter();
+        sheet.SheetView.FreezeRows(1);
     }
 
     // summary sheet: pivot — period × run, ServerAvgMs/Employee
-    private void WriteSummarySheet(IWorkbook workbook)
+    private void WriteSummarySheet(XLWorkbook workbook)
     {
-        var sheet = workbook.CreateSheet("Avg ms per Employee");
+        var sheet = workbook.Worksheets.Add("Avg ms per Employee");
 
         var runs = results.Select(r => r.RunNumber).Distinct().OrderBy(x => x).ToList();
         var periods = results.Select(r => r.Period).Distinct().OrderBy(x => x).ToList();
 
         // column widths
-        sheet.SetColumnWidth(0, 16 * 256);
+        sheet.Column(1).Width = 16;
         for (var i = 0; i < runs.Count; i++)
         {
-            sheet.SetColumnWidth(i + 1, 14 * 256);
+            sheet.Column(i + 2).Width = 14;
         }
 
         // header row: Period | Run 1 | Run 2 | ...
-        var header = sheet.CreateRow(0);
-        WriteCell(header, 0, "Period", headerStyle);
+        WriteCell(sheet, 0, 0, "Period", CellStyle.Header);
         for (var i = 0; i < runs.Count; i++)
         {
-            WriteCell(header, i + 1, $"Run {runs[i]}", headerStyle);
+            WriteCell(sheet, 0, i + 1, $"Run {runs[i]}", CellStyle.Header);
         }
 
         // data rows
@@ -185,105 +189,74 @@ internal sealed class PayrunLoadTestExcelWriter
         var rowIndex = 1;
         foreach (var period in periods)
         {
-            var row = sheet.CreateRow(rowIndex++);
-            WriteCell(row, 0, period.ToString("yyyy-MM", CultureInfo.InvariantCulture), dataPeriodStyle);
+            WriteCell(sheet, rowIndex, 0, period.ToString("yyyy-MM", CultureInfo.InvariantCulture), CellStyle.Period);
             for (var i = 0; i < runs.Count; i++)
             {
                 var value = lookup.GetValueOrDefault((period, runs[i]), 0);
                 // highlight outliers: >2× median avg
                 var allValues = lookup.Values.Where(x => x > 0).OrderBy(x => x).ToList();
                 var medianVal = allValues.Count > 0 ? allValues[allValues.Count / 2] : 0;
-                var style = value > medianVal * 2 ? highlightStyle : dataDecimalStyle;
-                WriteCell(row, i + 1, value, style);
+                var style = value > medianVal * 2 ? CellStyle.Highlight : CellStyle.Decimal;
+                WriteCell(sheet, rowIndex, i + 1, value, style);
             }
+            rowIndex++;
         }
 
-        sheet.CreateFreezePane(0, 1);
+        sheet.SheetView.FreezeRows(1);
     }
 
     // style helpers
-    private void CreateStyles(IWorkbook workbook)
+    private static void ApplyStyle(IXLCell cell, CellStyle style)
     {
-        var boldFont = workbook.CreateFont();
-        boldFont.IsBold = true;
-
-        var headerFont = workbook.CreateFont();
-        headerFont.IsBold = true;
-        headerFont.Color = IndexedColors.White.Index;
-
-        var highlightFont = workbook.CreateFont();
-        highlightFont.IsBold = true;
-        highlightFont.Color = IndexedColors.DarkRed.Index;
-
-        headerStyle = workbook.CreateCellStyle();
-        headerStyle.SetFont(headerFont);
-        headerStyle.FillForegroundColor = IndexedColors.DarkBlue.Index;
-        headerStyle.FillPattern = FillPattern.SolidForeground;
-        headerStyle.Alignment = HorizontalAlignment.Left;
-
-        metaLabelStyle = workbook.CreateCellStyle();
-        metaLabelStyle.SetFont(boldFont);
-
-        metaValueStyle = workbook.CreateCellStyle();
-
-        dataStyle = workbook.CreateCellStyle();
-        dataStyle.Alignment = HorizontalAlignment.Left;
-
-        dataNumberStyle = workbook.CreateCellStyle();
-        dataNumberStyle.Alignment = HorizontalAlignment.Right;
-
-        var decimalFormat = workbook.CreateDataFormat();
-        dataDecimalStyle = workbook.CreateCellStyle();
-        dataDecimalStyle.DataFormat = decimalFormat.GetFormat("0.0");
-        dataDecimalStyle.Alignment = HorizontalAlignment.Right;
-
-        dataPeriodStyle = workbook.CreateCellStyle();
-        dataPeriodStyle.Alignment = HorizontalAlignment.Center;
-
-        dataTimestampStyle = workbook.CreateCellStyle();
-
-        highlightStyle = workbook.CreateCellStyle();
-        highlightStyle.DataFormat = decimalFormat.GetFormat("0.0");
-        highlightStyle.Alignment = HorizontalAlignment.Right;
-        highlightStyle.SetFont(highlightFont);
-        highlightStyle.FillForegroundColor = IndexedColors.LightYellow.Index;
-        highlightStyle.FillPattern = FillPattern.SolidForeground;
+        var cellStyle = cell.Style;
+        switch (style)
+        {
+            case CellStyle.Header:
+                cellStyle.Font.Bold = true;
+                cellStyle.Font.FontColor = HeaderFontColor;
+                cellStyle.Fill.BackgroundColor = HeaderFillColor;
+                cellStyle.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                break;
+            case CellStyle.MetaLabel:
+                cellStyle.Font.Bold = true;
+                break;
+            case CellStyle.Number:
+                cellStyle.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                break;
+            case CellStyle.Decimal:
+                cellStyle.NumberFormat.Format = DecimalFormat;
+                cellStyle.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                break;
+            case CellStyle.Period:
+                cellStyle.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                break;
+            case CellStyle.Highlight:
+                cellStyle.NumberFormat.Format = DecimalFormat;
+                cellStyle.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                cellStyle.Font.Bold = true;
+                cellStyle.Font.FontColor = HighlightFontColor;
+                cellStyle.Fill.BackgroundColor = HighlightFillColor;
+                break;
+        }
     }
 
-    private void WriteHeader(ISheet sheet, int rowIndex, string text)
+    private static void WriteHeader(IXLWorksheet sheet, int rowIndex, string text)
     {
-        var row = sheet.CreateRow(rowIndex);
-        WriteCell(row, 0, text, headerStyle);
+        WriteCell(sheet, rowIndex, 0, text, CellStyle.Header);
         // extend header across both columns
-        var cell1 = row.CreateCell(1);
-        cell1.CellStyle = headerStyle;
+        ApplyStyle(sheet.Cell(rowIndex + 1, 2), CellStyle.Header);
     }
 
-    private void WriteMeta(ISheet sheet, int rowIndex, string label, string value)
+    private static void WriteMeta(IXLWorksheet sheet, int rowIndex, string label, string value)
     {
-        var row = sheet.CreateRow(rowIndex);
-        WriteCell(row, 0, label, metaLabelStyle);
-        WriteCell(row, 1, value, metaValueStyle);
+        WriteCell(sheet, rowIndex, 0, label, CellStyle.MetaLabel);
+        WriteCell(sheet, rowIndex, 1, value == null ? Blank.Value : value, CellStyle.MetaValue);
     }
 
-    private static void WriteCell(IRow row, int col, string value, ICellStyle style)
+    private static void WriteCell(IXLWorksheet sheet, int rowIndex, int col, XLCellValue value, CellStyle style)
     {
-        var cell = row.CreateCell(col);
-        cell.SetCellValue(value);
-        cell.CellStyle = style;
-    }
-
-    private static void WriteCell(IRow row, int col, long value, ICellStyle style)
-    {
-        var cell = row.CreateCell(col);
-        cell.SetCellValue(value);
-        cell.CellStyle = style;
-    }
-
-    private static void WriteCell(IRow row, int col, double value, ICellStyle style)
-    {
-        var cell = row.CreateCell(col);
-        cell.SetCellValue(value);
-        cell.CellStyle = style;
+        var cell = sheet.Cell(rowIndex + 1, col + 1);
+        cell.Value = value;
+        ApplyStyle(cell, style);
     }
 }

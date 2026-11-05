@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -13,7 +12,7 @@ internal static class LookupImport
     /// <param name="workbook">The source workbook.</param>
     /// <returns>The imported lookups, or <c>null</c> if the sheet is missing or empty.</returns>
     /// <exception cref="PayrollException">Thrown when required columns are missing, names are empty, or duplicates are found.</exception>
-    internal static List<LookupSet> Import(IWorkbook workbook)
+    internal static List<LookupSet> Import(ExcelWorkbook workbook)
     {
         // worksheet
         if (!workbook.HasSheet(SheetSpecification.Lookup))
@@ -23,7 +22,7 @@ internal static class LookupImport
         var worksheet = workbook.GetSheet(SheetSpecification.Lookup);
 
         // no data rows
-        if (worksheet.PhysicalNumberOfRows < 2)
+        if (worksheet.RowCount < 2)
         {
             return null;
         }
@@ -37,7 +36,7 @@ internal static class LookupImport
 
         // lookups
         var lookups = new List<LookupSet>();
-        for (var i = 1; i < worksheet.PhysicalNumberOfRows; i++)
+        for (var i = 1; i < worksheet.RowCount; i++)
         {
             var row = worksheet.GetRow(i);
             if (row.IsBlank())

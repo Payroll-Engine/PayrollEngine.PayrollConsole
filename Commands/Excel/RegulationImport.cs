@@ -1,5 +1,4 @@
 ﻿using System;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -11,7 +10,7 @@ internal static class RegulationImport
     /// <param name="workbook">The source workbook.</param>
     /// <returns>The imported regulation set.</returns>
     /// <exception cref="PayrollException">Thrown when the sheet is missing, contains invalid data, or the regulation name is empty.</exception>
-    internal static RegulationSet Import(IWorkbook workbook)
+    internal static RegulationSet Import(ExcelWorkbook workbook)
     {
         // regulation worksheet
         if (!workbook.HasSheet(SheetSpecification.Regulation))
@@ -22,7 +21,7 @@ internal static class RegulationImport
         var worksheet = workbook.GetSheet(SheetSpecification.Regulation);
 
         // only one row allowed
-        if (worksheet.PhysicalNumberOfRows > 2)
+        if (worksheet.RowCount > 2)
         {
             throw new PayrollException($"Only one row allowed in sheet {SheetSpecification.Regulation}.");
         }

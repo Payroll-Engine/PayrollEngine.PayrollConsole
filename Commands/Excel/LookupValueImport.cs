@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -14,14 +13,14 @@ internal static class LookupValueImport
     /// <param name="workbook">The source workbook.</param>
     /// <param name="lookups">The previously imported lookups to populate with values.</param>
     /// <exception cref="PayrollException">Thrown when referenced lookups are unknown, keys are missing, or duplicates are found.</exception>
-    internal static void Import(IWorkbook workbook, List<LookupSet> lookups)
+    internal static void Import(ExcelWorkbook workbook, List<LookupSet> lookups)
     {
         ImportDefaultSheet(workbook, lookups);
         ImportLookupSheets(workbook, lookups);
     }
 
     /// <summary>Imports lookup values from individual <c>Lookup.*</c> named sheets.</summary>
-    private static void ImportLookupSheets(IWorkbook workbook, List<LookupSet> lookups)
+    private static void ImportLookupSheets(ExcelWorkbook workbook, List<LookupSet> lookups)
     {
         // process all Lookup.* sheets
         var sheets = workbook.GetSheetsOf(SheetSpecification.LookupMask);
@@ -50,7 +49,7 @@ internal static class LookupValueImport
         }
     }
 
-    private static Tuple<string, DateTime?, List<LookupValue>> GetSheetLookupValues(ISheet worksheet)
+    private static Tuple<string, DateTime?, List<LookupValue>> GetSheetLookupValues(ExcelSheet worksheet)
     {
         // lookup name
         var name = worksheet.SheetName.RemoveFromStart(SheetSpecification.LookupMask, StringComparison.InvariantCultureIgnoreCase);
@@ -73,7 +72,7 @@ internal static class LookupValueImport
         // collect lookup values (skip header row)
         DateTime? lookupCreatedDate = null;
         var lookupValues = new List<LookupValue>();
-        for (var i = 1; i < worksheet.PhysicalNumberOfRows; i++)
+        for (var i = 1; i < worksheet.RowCount; i++)
         {
             var row = worksheet.GetRow(i);
             if (row.IsBlank())
@@ -146,7 +145,7 @@ internal static class LookupValueImport
         return new(name, lookupCreatedDate, lookupValues);
     }
 
-    private static DateTime? GetLookupCreatedDate(IRow row, int createdColumn, LookupValue lookupValue,
+    private static DateTime? GetLookupCreatedDate(ExcelRow row, int createdColumn, LookupValue lookupValue,
         DateTime? lookupCreatedDate)
     {
         var created = row.GetCell(createdColumn).GetCellValue<DateTime?>();
@@ -162,7 +161,7 @@ internal static class LookupValueImport
         return lookupCreatedDate;
     }
 
-    private static Dictionary<string, object> GetCellValues(ISheet worksheet, Dictionary<int, string> columns, IRow row)
+    private static Dictionary<string, object> GetCellValues(ExcelSheet worksheet, Dictionary<int, string> columns, ExcelRow row)
     {
         var values = new Dictionary<string, object>();
         foreach (var column in columns)
@@ -173,10 +172,10 @@ internal static class LookupValueImport
         return values;
     }
 
-    private static Tuple<string, object> GetCellValue(ISheet worksheet, IRow row, int valueColumn)
+    private static Tuple<string, object> GetCellValue(ExcelSheet worksheet, ExcelRow row, int valueColumn)
     {
         var value = row.GetCell(valueColumn).GetCellValue();
-        var header = worksheet.HeaderCell(valueColumn).StringCellValue.Trim();
+        var header = worksheet.HeaderCell(valueColumn).StringValue.Trim();
         string valueName;
         if (string.Equals(LookupSheetSpecification.Value, header, StringComparison.InvariantCultureIgnoreCase))
         {
@@ -196,7 +195,7 @@ internal static class LookupValueImport
         return new(valueName, value);
     }
 
-    private static decimal? GetCellRangeValue(IRow row, int rangeColumn)
+    private static decimal? GetCellRangeValue(ExcelRow row, int rangeColumn)
     {
         decimal? rangeValue = null;
         var cellValue = row.GetCell(rangeColumn).GetCellValue();
@@ -215,7 +214,7 @@ internal static class LookupValueImport
         return rangeValue;
     }
 
-    private static List<object> GetKeyValues(Dictionary<int, string> keyColumns, IRow row)
+    private static List<object> GetKeyValues(Dictionary<int, string> keyColumns, ExcelRow row)
     {
         var keyObjects = new List<object>();
         foreach (var keyColumn in keyColumns)
@@ -226,7 +225,7 @@ internal static class LookupValueImport
         return keyObjects;
     }
 
-    private static void ImportDefaultSheet(IWorkbook workbook, List<LookupSet> lookups)
+    private static void ImportDefaultSheet(ExcelWorkbook workbook, List<LookupSet> lookups)
     {
         // case worksheet
         if (!workbook.HasSheet(SheetSpecification.LookupValue))
@@ -237,7 +236,7 @@ internal static class LookupValueImport
         var worksheet = workbook.GetSheet(SheetSpecification.LookupValue);
 
         // no data rows
-        if (worksheet.PhysicalNumberOfRows < 2)
+        if (worksheet.RowCount < 2)
         {
             return;
         }
@@ -255,7 +254,7 @@ internal static class LookupValueImport
 
         // lookup values
         var lookupValues = new List<LookupValue>();
-        for (var i = 1; i < worksheet.PhysicalNumberOfRows; i++)
+        for (var i = 1; i < worksheet.RowCount; i++)
         {
             var row = worksheet.GetRow(i);
             if (row.IsBlank())

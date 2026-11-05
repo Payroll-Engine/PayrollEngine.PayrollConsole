@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -24,7 +23,7 @@ internal sealed class WageTypeSheetColumns
     internal int? ClustersColumn { get; }
     internal int? AttributesColumn { get; }
 
-    internal WageTypeSheetColumns(ISheet sheet)
+    internal WageTypeSheetColumns(ExcelSheet sheet)
     {
         ArgumentNullException.ThrowIfNull(sheet);
         CreatedColumn = sheet.GetHeaderColumn(nameof(WageType.Created));

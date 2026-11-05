@@ -448,7 +448,7 @@
             <returns>The exchange model containing the imported case changes.</returns>
             <exception cref="T:PayrollEngine.PayrollException">Thrown when the file is missing, tenant or user is unknown, or data is invalid.</exception>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.ReadAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.IWorkbook,System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.ReadAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook,System.String)">
             <summary>
             Read case changes from Excel file
             </summary>
@@ -457,7 +457,7 @@
             <param name="workbook">Excel workbook</param>
             <param name="fileName">Excel file name</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetCaseData(NPOI.SS.UserModel.IWorkbook,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,PayrollEngine.Client.Model.PayrollSet,System.String,System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetCaseData(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,PayrollEngine.Client.Model.PayrollSet,System.String,System.String)">
             <summary>
             Get case data
             </summary>
@@ -468,7 +468,7 @@
             <param name="reason">The reason</param>
             <param name="namespace">The case and case field namespace</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.AddCaseData(NPOI.SS.UserModel.ISheet,PayrollEngine.Client.Model.PayrollSet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String,System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.AddCaseData(PayrollEngine.PayrollConsole.Commands.Excel.ExcelSheet,PayrollEngine.Client.Model.PayrollSet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String,System.String)">
             <summary>Add case data</summary>
             <param name="worksheet">The worksheet</param>
             <param name="payroll">The payroll</param>
@@ -477,14 +477,14 @@
             <param name="reason">The reason</param>
             <param name="namespace">The case and case field namespace</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetCaseColumns(NPOI.SS.UserModel.ISheet,System.Int32)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetCaseColumns(PayrollEngine.PayrollConsole.Commands.Excel.ExcelSheet,System.Int32)">
             <summary>
             Gets sheet column indexed by column name
             </summary>
             <param name="worksheet">The worksheet</param>
             <param name="firstColumnIndex">The first column index</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetCaseChangesAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.IWorkbook,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String,PayrollEngine.Client.Model.PayrollSet)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetCaseChangesAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String,PayrollEngine.Client.Model.PayrollSet)">
             <summary>
             Get case changes
             </summary>
@@ -497,7 +497,7 @@
             <param name="payroll"></param>
             <returns></returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetCaseChange(NPOI.SS.UserModel.ISheet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetCaseChange(PayrollEngine.PayrollConsole.Commands.Excel.ExcelSheet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String)">
             <summary>Gets the case change</summary>
             <param name="worksheet">The worksheet</param>
             <param name="division">The division</param>
@@ -505,7 +505,7 @@
             <param name="reason">The reason</param>
             <returns>Case change setup</returns>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetEmployeeCaseChangesAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,NPOI.SS.UserModel.ISheet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseChangeImport.GetEmployeeCaseChangesAsync(PayrollEngine.Client.PayrollHttpClient,PayrollEngine.Client.Model.ExchangeTenant,PayrollEngine.PayrollConsole.Commands.Excel.ExcelSheet,PayrollEngine.Client.Model.Division,PayrollEngine.Client.Model.User,System.String)">
             <summary>Gets the employee case changes grouped by employee identifier</summary>
             <param name="httpClient">The http client</param>
             <param name="tenant">The tenant</param>
@@ -521,7 +521,7 @@
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CaseFieldConvert">
             <summary>Imports <see cref="T:PayrollEngine.Client.Model.CaseFieldSet"/> objects from the case field Excel worksheet.</summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseFieldConvert.ReadCaseFields(NPOI.SS.UserModel.IWorkbook,System.Collections.Generic.IList{PayrollEngine.Client.Model.CaseSet})">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseFieldConvert.ReadCaseFields(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook,System.Collections.Generic.IList{PayrollEngine.Client.Model.CaseSet})">
             <summary>Reads case fields from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.CaseField"/> sheet
             and assigns them to the corresponding cases.</summary>
             <param name="workbook">The source workbook.</param>
@@ -534,7 +534,7 @@
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CaseImport">
             <summary>Imports <see cref="T:PayrollEngine.Client.Model.CaseSet"/> objects from the case Excel worksheet.</summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseImport.Import(NPOI.SS.UserModel.IWorkbook)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseImport.Import(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook)">
             <summary>Imports cases from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Case"/> sheet.</summary>
             <param name="workbook">The source workbook.</param>
             <returns>The imported cases, or <c>null</c> if the sheet is missing or empty.</returns>
@@ -543,7 +543,7 @@
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CaseRelationImport">
             <summary>Imports <see cref="T:PayrollEngine.Client.Model.CaseRelation"/> objects from the case relation Excel worksheet.</summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseRelationImport.Import(NPOI.SS.UserModel.IWorkbook)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CaseRelationImport.Import(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook)">
             <summary>Imports case relations from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.CaseRelation"/> sheet.</summary>
             <param name="workbook">The source workbook.</param>
             <returns>The imported case relations, or <c>null</c> if the sheet is missing or empty.</returns>
@@ -561,7 +561,7 @@
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CollectorImport">
             <summary>Imports <see cref="T:PayrollEngine.Client.Model.Collector"/> objects from the collector Excel worksheet.</summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CollectorImport.Import(NPOI.SS.UserModel.IWorkbook)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.CollectorImport.Import(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook)">
             <summary>Imports collectors from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Collector"/> sheet.</summary>
             <param name="workbook">The source workbook.</param>
             <returns>The imported collectors, or <c>null</c> if the sheet is missing or empty.</returns>
@@ -569,6 +569,110 @@
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.CollectorSheetColumns">
             <summary>Maps the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Collector"/> Excel sheet columns to their indexes.</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCell">
+            <summary>Read-only Excel cell</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCell.ColumnIndex">
+            <summary>Zero-based column index</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCell.Address">
+            <summary>Cell address (e.g. B2)</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCell.CellType">
+            <summary>Cell value type, formula cells are <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCellType.Formula"/></summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCell.IsDate">
+            <summary>True for a numeric cell with a date format</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCell.StringValue">
+            <summary>Text value, other value types as formatted text</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCell.NumericValue">
+            <summary>Numeric value, dates and times as serial number</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCell.DateValue">
+            <summary>Date value, numbers are read as serial date</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCell.BooleanValue">
+            <summary>Boolean value</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCell.Formula">
+            <summary>Formula without the leading equal sign</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCell.ErrorValue">
+            <summary>Error code (Excel BIFF error code)</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCellType">
+            <summary>Excel cell value type</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCellType.Blank">
+            <summary>Empty cell</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCellType.Numeric">
+            <summary>Number, date or time value</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCellType.String">
+            <summary>Text value</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCellType.Boolean">
+            <summary>Boolean value</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCellType.Formula">
+            <summary>Formula cell</summary>
+        </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.Excel.ExcelCellType.Error">
+            <summary>Error value</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ExcelRow">
+            <summary>Read-only Excel row</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelRow.IsEmpty">
+            <summary>True if the row has no cell with a value</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExcelRow.GetCell(System.Int32)">
+            <summary>Get a cell</summary>
+            <param name="index">Zero-based column index</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ExcelSheet">
+            <summary>Read-only Excel worksheet</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelSheet.SheetName">
+            <summary>Worksheet name</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelSheet.RowCount">
+            <summary>Number of rows up to the last row with a value, including the header row</summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelSheet.ColumnCount">
+            <summary>Number of columns up to the last column with a value</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExcelSheet.GetRow(System.Int32)">
+            <summary>Get a row</summary>
+            <param name="index">Zero-based row index</param>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook">
+            <summary>Read-only Excel workbook (xlsx)</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook.Open(System.IO.Stream)">
+            <summary>Open a workbook from a stream</summary>
+            <param name="stream">The xlsx stream</param>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook.Sheets">
+            <summary>Worksheets in workbook order</summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook.GetSheet(System.String)">
+            <summary>Get a worksheet by name</summary>
+            <param name="sheetName">The worksheet name</param>
+            <returns>The worksheet, null if not present</returns>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook.GetNamedCell(System.String)">
+            <summary>Get the cell of a defined name (workbook scope first, then worksheet scope)</summary>
+            <param name="name">The defined name</param>
+            <returns>The cell, null if the name is missing or has no valid reference</returns>
+            <exception cref="T:PayrollEngine.PayrollException">The name refers to more than one cell</exception>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook.Dispose">
+            <inheritdoc />
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ExchangeRegulationImport">
             <summary>Imports a complete regulation from an Excel workbook into an <see cref="T:PayrollEngine.Client.Model.Exchange"/> model.</summary>
@@ -583,7 +687,7 @@
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.LookupImport">
             <summary>Imports <see cref="T:PayrollEngine.Client.Model.LookupSet"/> objects from the lookup Excel worksheet.</summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.LookupImport.Import(NPOI.SS.UserModel.IWorkbook)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.LookupImport.Import(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook)">
             <summary>Imports lookups from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Lookup"/> sheet.</summary>
             <param name="workbook">The source workbook.</param>
             <returns>The imported lookups, or <c>null</c> if the sheet is missing or empty.</returns>
@@ -598,14 +702,14 @@
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.LookupValueImport">
             <summary>Imports <see cref="T:PayrollEngine.Client.Model.LookupValue"/> objects from lookup value Excel worksheets.</summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.LookupValueImport.Import(NPOI.SS.UserModel.IWorkbook,System.Collections.Generic.List{PayrollEngine.Client.Model.LookupSet})">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.LookupValueImport.Import(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook,System.Collections.Generic.List{PayrollEngine.Client.Model.LookupSet})">
             <summary>Imports lookup values from the default <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.LookupValue"/> sheet
             and from individual <c>Lookup.*</c> sheets into the corresponding lookups.</summary>
             <param name="workbook">The source workbook.</param>
             <param name="lookups">The previously imported lookups to populate with values.</param>
             <exception cref="T:PayrollEngine.PayrollException">Thrown when referenced lookups are unknown, keys are missing, or duplicates are found.</exception>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.LookupValueImport.ImportLookupSheets(NPOI.SS.UserModel.IWorkbook,System.Collections.Generic.List{PayrollEngine.Client.Model.LookupSet})">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.LookupValueImport.ImportLookupSheets(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook,System.Collections.Generic.List{PayrollEngine.Client.Model.LookupSet})">
             <summary>Imports lookup values from individual <c>Lookup.*</c> named sheets.</summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.RegionNames">
@@ -614,7 +718,7 @@
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.RegulationImport">
             <summary>Imports a <see cref="T:PayrollEngine.Client.Model.RegulationSet"/> from the regulation Excel worksheet.</summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.RegulationImport.Import(NPOI.SS.UserModel.IWorkbook)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.RegulationImport.Import(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook)">
             <summary>Imports the regulation from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Regulation"/> sheet.</summary>
             <param name="workbook">The source workbook.</param>
             <returns>The imported regulation set.</returns>
@@ -626,7 +730,7 @@
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ReportImport">
             <summary>Imports <see cref="T:PayrollEngine.Client.Model.ReportSet"/> objects from the report Excel worksheet.</summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ReportImport.Import(NPOI.SS.UserModel.IWorkbook)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ReportImport.Import(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook)">
             <summary>Imports reports from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Report"/> sheet.</summary>
             <param name="workbook">The source workbook.</param>
             <returns>The imported reports, or <c>null</c> if the sheet is missing or empty.</returns>
@@ -635,7 +739,7 @@
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ReportParameterImport">
             <summary>Imports <see cref="T:PayrollEngine.Client.Model.ReportParameter"/> objects from the report parameter Excel worksheet.</summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ReportParameterImport.Import(NPOI.SS.UserModel.IWorkbook,System.Collections.Generic.List{PayrollEngine.Client.Model.ReportSet})">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ReportParameterImport.Import(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook,System.Collections.Generic.List{PayrollEngine.Client.Model.ReportSet})">
             <summary>Imports report parameters from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.ReportParameter"/> sheet
             into the corresponding reports.</summary>
             <param name="workbook">The source workbook.</param>
@@ -645,7 +749,7 @@
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ReportTemplateImport">
             <summary>Imports <see cref="T:PayrollEngine.Client.Model.ReportTemplate"/> objects from the report template Excel worksheet.</summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ReportTemplateImport.Import(NPOI.SS.UserModel.IWorkbook,System.Collections.Generic.List{PayrollEngine.Client.Model.ReportSet})">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ReportTemplateImport.Import(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook,System.Collections.Generic.List{PayrollEngine.Client.Model.ReportSet})">
             <summary>Imports report templates from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.ReportTemplate"/> sheet
             into the corresponding reports.</summary>
             <param name="workbook">The source workbook.</param>
@@ -655,31 +759,37 @@
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.ScriptImport">
             <summary>Imports <see cref="T:PayrollEngine.Client.Model.Script"/> objects from the script Excel worksheet.</summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ScriptImport.Import(NPOI.SS.UserModel.IWorkbook)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.ScriptImport.Import(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook)">
             <summary>Imports scripts from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.Script"/> sheet.</summary>
             <param name="workbook">The source workbook.</param>
             <returns>The imported scripts, or <c>null</c> if the sheet is missing or empty.</returns>
             <exception cref="T:PayrollEngine.PayrollException">Thrown when required columns are missing, names are empty, or duplicates are found.</exception>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.GetColumnIndexes(NPOI.SS.UserModel.ISheet,System.Collections.Generic.ICollection{System.String})">
-            <inheritdoc cref="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$0C2B5C45F22AF69CA8772018E36FE485.GetColumnIndexes(System.Collections.Generic.ICollection{System.String})"/>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.GetColumnIndexes(PayrollEngine.PayrollConsole.Commands.Excel.ExcelSheet,System.Collections.Generic.ICollection{System.String})">
+            <inheritdoc cref="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$F449C944794AFFAD774347661ABACD94.GetColumnIndexes(System.Collections.Generic.ICollection{System.String})"/>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.GetCellValue``1(NPOI.SS.UserModel.ICell,System.IFormatProvider)">
-            <inheritdoc cref="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$AE3F3072D3678181A5C6906ED6CA76E8.GetCellValue``1(System.IFormatProvider)"/>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.HeaderCells(PayrollEngine.PayrollConsole.Commands.Excel.ExcelSheet)">
+            <inheritdoc cref="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$F449C944794AFFAD774347661ABACD94.HeaderCells"/>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$0C2B5C45F22AF69CA8772018E36FE485.&lt;M&gt;$A0174C259574A4C42A0573669B7075C8">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.GetCellValue``1(PayrollEngine.PayrollConsole.Commands.Excel.ExcelCell,System.IFormatProvider)">
+            <inheritdoc cref="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$ECE7B6C53433B21A6D5477C02BC0A15B.GetCellValue``1(System.IFormatProvider)"/>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$F449C944794AFFAD774347661ABACD94.&lt;M&gt;$CA437185D1B80C7A38718FD99DD6781A">
             <param name="worksheet">The worksheet</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$0C2B5C45F22AF69CA8772018E36FE485.GetColumnIndexes(System.Collections.Generic.ICollection{System.String})">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$F449C944794AFFAD774347661ABACD94.GetColumnIndexes(System.Collections.Generic.ICollection{System.String})">
             <summary>
             Gets sheet column indexed by column name
             </summary>
             <param name="titles">The column titles</param>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$AE3F3072D3678181A5C6906ED6CA76E8.&lt;M&gt;$3A7C2AF6253F8714155160DEB6B11E6C">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$F449C944794AFFAD774347661ABACD94.HeaderCells">
+            <summary>Header cells up to the last used column, null for empty cells</summary>
+        </member>
+        <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$ECE7B6C53433B21A6D5477C02BC0A15B.&lt;M&gt;$13522C4DCCD0028ACD2DB9D8FC20231C">
             <param name="cell">The source cell</param>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$AE3F3072D3678181A5C6906ED6CA76E8.GetCellValue``1(System.IFormatProvider)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.SheetExtensions.&lt;G&gt;$ECE7B6C53433B21A6D5477C02BC0A15B.GetCellValue``1(System.IFormatProvider)">
             <summary>
             Get the cell value
             </summary>
@@ -695,7 +805,7 @@
         <member name="T:PayrollEngine.PayrollConsole.Commands.Excel.WageTypeImport">
             <summary>Imports <see cref="T:PayrollEngine.Client.Model.WageType"/> objects from the wage type Excel worksheet.</summary>
         </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.WageTypeImport.Import(NPOI.SS.UserModel.IWorkbook)">
+        <member name="M:PayrollEngine.PayrollConsole.Commands.Excel.WageTypeImport.Import(PayrollEngine.PayrollConsole.Commands.Excel.ExcelWorkbook)">
             <summary>Imports wage types from the <see cref="F:PayrollEngine.PayrollConsole.Commands.Excel.SheetSpecification.WageType"/> sheet.</summary>
             <param name="workbook">The source workbook.</param>
             <returns>The imported wage types, or <c>null</c> if the sheet is missing or empty.</returns>

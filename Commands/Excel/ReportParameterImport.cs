@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -14,7 +13,7 @@ internal static class ReportParameterImport
     /// <param name="workbook">The source workbook.</param>
     /// <param name="reports">The previously imported reports to populate with parameters.</param>
     /// <exception cref="PayrollException">Thrown when referenced reports are unknown, names are empty, or duplicates are found.</exception>
-    internal static void Import(IWorkbook workbook, List<ReportSet> reports)
+    internal static void Import(ExcelWorkbook workbook, List<ReportSet> reports)
     {
         // case worksheet
         if (!workbook.HasSheet(SheetSpecification.ReportParameter))
@@ -24,7 +23,7 @@ internal static class ReportParameterImport
         var worksheet = workbook.GetSheet(SheetSpecification.ReportParameter);
 
         // no data rows
-        if (worksheet.PhysicalNumberOfRows < 2)
+        if (worksheet.RowCount < 2)
         {
             return;
         }
@@ -42,7 +41,7 @@ internal static class ReportParameterImport
 
         // report parameters
         var parameters = new List<ReportParameter>();
-        for (var i = 1; i < worksheet.PhysicalNumberOfRows; i++)
+        for (var i = 1; i < worksheet.RowCount; i++)
         {
             var row = worksheet.GetRow(i);
             if (row.IsBlank())

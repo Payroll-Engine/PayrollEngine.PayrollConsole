@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -21,7 +20,7 @@ internal sealed class LookupValueSheetColumns
     internal Dictionary<int,string> ValueColumns { get; }
     internal int? RangeColumn { get; }
 
-    internal LookupValueSheetColumns(ISheet sheet)
+    internal LookupValueSheetColumns(ExcelSheet sheet)
     {
         ArgumentNullException.ThrowIfNull(sheet);
 

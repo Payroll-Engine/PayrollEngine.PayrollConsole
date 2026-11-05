@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -21,7 +20,7 @@ internal sealed class ReportParameterSheetColumns
     internal int? OverrideTypeColumn { get; }
     internal int? AttributesColumn { get; }
 
-    internal ReportParameterSheetColumns(ISheet sheet)
+    internal ReportParameterSheetColumns(ExcelSheet sheet)
     {
         ArgumentNullException.ThrowIfNull(sheet);
         CreatedColumn = sheet.GetHeaderColumn(nameof(ReportParameter.Created));

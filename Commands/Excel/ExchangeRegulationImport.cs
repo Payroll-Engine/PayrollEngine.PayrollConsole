@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 using PayrollEngine.Client;
 using PayrollEngine.Client.Model;
 using PayrollEngine.Client.Scripting;
@@ -29,7 +27,7 @@ internal static class ExchangeRegulationImport
 
         // workbook (file share to load open/locked Excel document)
         await using var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        IWorkbook workbook = new XSSFWorkbook(stream);
+        using var workbook = ExcelWorkbook.Open(stream);
 
         // read tenant
         var tenant = ReadTenant(workbook);
@@ -69,7 +67,7 @@ internal static class ExchangeRegulationImport
         };
     }
 
-    private static ExchangeTenant ReadTenant(IWorkbook workbook)
+    private static ExchangeTenant ReadTenant(ExcelWorkbook workbook)
     {
         var tenantName = workbook.GetNamedValue<string>(RegionNames.TenantRegionName);
         if (string.IsNullOrWhiteSpace(tenantName))

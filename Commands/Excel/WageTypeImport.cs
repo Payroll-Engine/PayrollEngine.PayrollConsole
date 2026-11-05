@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using NPOI.SS.UserModel;
 using PayrollEngine.Client.Model;
 
 namespace PayrollEngine.PayrollConsole.Commands.Excel;
@@ -13,7 +12,7 @@ internal static class WageTypeImport
     /// <param name="workbook">The source workbook.</param>
     /// <returns>The imported wage types, or <c>null</c> if the sheet is missing or empty.</returns>
     /// <exception cref="PayrollException">Thrown when required columns are missing, numbers or names are empty, or duplicates are found.</exception>
-    internal static List<WageType> Import(IWorkbook workbook)
+    internal static List<WageType> Import(ExcelWorkbook workbook)
     {
         // worksheet
         if (!workbook.HasSheet(SheetSpecification.WageType))
@@ -23,7 +22,7 @@ internal static class WageTypeImport
         var worksheet = workbook.GetSheet(SheetSpecification.WageType);
 
         // no data rows
-        if (worksheet.PhysicalNumberOfRows < 2)
+        if (worksheet.RowCount < 2)
         {
             return null;
         }
@@ -41,7 +40,7 @@ internal static class WageTypeImport
 
         // wage types
         var wageTypes = new List<WageType>();
-        for (var i = 1; i < worksheet.PhysicalNumberOfRows; i++)
+        for (var i = 1; i < worksheet.RowCount; i++)
         {
             var row = worksheet.GetRow(i);
             if (row.IsBlank())
