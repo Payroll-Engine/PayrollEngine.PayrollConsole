@@ -7,8 +7,6 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Lex;
-using PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex;
-
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 
 /// <summary>
@@ -65,7 +63,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             }
 
             var results = new List<CheckResult>();
-            using var urlChecker = parameters.UrlMode == LexUrlMode.CheckUrls ? new UrlChecker(LexWorkbookReader.Readers) : null;
+            using var urlChecker = parameters.UrlMode == LexUrlMode.CheckUrls ? new UrlChecker() : null;
             foreach (var lexFile in files)
             {
                 results.Add(await CheckFile(lexFile, parameters.LocationMode == LexLocationMode.Required,

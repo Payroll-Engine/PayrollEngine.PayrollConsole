@@ -16,13 +16,8 @@
 		<InternalsVisibleTo Include="PayrollEngine.PayrollConsole.Commands.Tests" />
 	</ItemGroup>
 
-	<PropertyGroup>
-		<AcceptNPOIOSMFLicense>true</AcceptNPOIOSMFLicense>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="ClosedXML" Version="0.105.1" />
-		<PackageReference Include="NPOI" Version="2.8.1" />
 		<PackageReference Include="PayrollEngine.Client.Services" Version="$(PayrollEngineVersion)" />
 		<PackageReference Include="PayrollEngine.Document" Version="$(PayrollEngineVersion)" />
 		<PackageReference Include="PayrollEngine.Lex" Version="$(PayrollEngineVersion)" />

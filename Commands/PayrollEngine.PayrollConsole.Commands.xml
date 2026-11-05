@@ -3353,21 +3353,6 @@
             Parse command parameters
             </summary>
         </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexWorkbookReader">
-            <summary>
-            Reads the text of a spreadsheet source document for the lex source verification
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexWorkbookReader.Readers">
-            <summary>
-            Readers by file extension, as expected by <see cref="T:PayrollEngine.Lex.SourceDocument"/>
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex.LexWorkbookReader.Read(System.IO.Stream)">
-            <summary>
-            Text of a spreadsheet (one section per sheet)
-            </summary>
-        </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImport">
             <summary>
             Import text file to lookup

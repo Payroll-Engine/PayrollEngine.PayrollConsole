@@ -7,8 +7,6 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Lex;
-using PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex;
-
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 
 /// <summary>
@@ -159,7 +157,7 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
                     }
                 },
                 keepLocalFiles: parameters.OverwriteMode == LexOverwriteMode.Overwrite,
-                loadLiveSource: url => SourceDocument.LoadLive(url, client, LexWorkbookReader.Readers));
+                loadLiveSource: url => SourceDocument.LoadLive(url, client));
 
             var label = dryRun ? "[DRY-RUN]" : "[OK]";
             context.Console.DisplaySuccessLine(

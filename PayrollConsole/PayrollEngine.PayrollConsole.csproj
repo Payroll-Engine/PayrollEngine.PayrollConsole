@@ -9,10 +9,6 @@
 		<Description>Payroll Engine Payroll Console</Description>
 	</PropertyGroup>
 
-	<PropertyGroup>
-		<AcceptNPOIOSMFLicense>true</AcceptNPOIOSMFLicense>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="PayrollEngine.Serilog" Version="$(PayrollEngineVersion)" />
 		<PackageReference Include="Serilog.Settings.AppSettings" Version="3.0.0" />

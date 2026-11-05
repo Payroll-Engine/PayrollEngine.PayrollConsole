@@ -7,8 +7,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Lex;
-using PayrollEngine.PayrollConsole.Commands.RegulationCommands.Lex;
-
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 
 /// <summary>
@@ -94,7 +92,7 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
                 if (!documents.TryGetValue(entry.SourceUrl, out document))
                 {
                     documents[entry.SourceUrl] = document =
-                        await SourceDocument.LoadLive(entry.SourceUrl, client, LexWorkbookReader.Readers);
+                        await SourceDocument.LoadLive(entry.SourceUrl, client);
                 }
             }
             else
@@ -107,7 +105,7 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
                 var cacheKey = localPath ?? string.Empty;
                 if (!documents.TryGetValue(cacheKey, out document))
                 {
-                    documents[cacheKey] = document = await SourceDocument.LoadLocal(localPath, LexWorkbookReader.Readers);
+                    documents[cacheKey] = document = await SourceDocument.LoadLocal(localPath);
                 }
             }
             results.Add(SourceVerifier.Verify(entry, document));
