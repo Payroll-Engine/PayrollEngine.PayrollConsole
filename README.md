@@ -542,6 +542,9 @@ Environment variable used during build:
 ## Third Party Components
 - Excel conversion with [ClosedXML](https://github.com/ClosedXML/ClosedXML/) — license `MIT`
 - Logging with [Serilog](https://github.com/serilog/serilog/) — license `Apache 2.0`
+- Lex source reading with [PdfPig](https://github.com/UglyToad/PdfPig) — license `Apache 2.0` and [ExcelDataReader](https://github.com/ExcelDataReader/ExcelDataReader) — license `MIT`
+
+All distributed components, their licenses and notices are listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md); the file is part of every build output.
 
 ---
 
