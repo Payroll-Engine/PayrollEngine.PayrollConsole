@@ -610,14 +610,14 @@ Look up the numbers of every lex entry — inline `content` or a JSON `contentFi
 The format is detected from the content: HTML, text and CSV, spreadsheets (`xls`, `xlsx`, `xlsb`, `ods`; one section per sheet), PDF with a text layer (one section per page, plus the form field values) and text documents (`docx`, `odt`; one section per heading).
 
 Number search:
-- A value below 1 is also looked up as percentage (`0.085` as `8.5%`) only when the unit names a rate — a token `%`, `percent`, `rate` or `fraction` (e.g. `rate`, `% of salary`, `USD / rate`) — and the source writes `%`, `percent` or `per cent` directly after the number. Without unit and for `mixed`, `factor`, `coefficient` or a currency the value is looked up as written.
+- A value below 1 is also looked up as percentage (`0.085` as `8.5%`) when the source writes `%`, `percent` or `per cent` directly after the number. Units that are no rate disable this: `factor`, `hours`, `days` and currency codes (`USD`, `EUR`); an empty unit, `mixed` or a combined unit like `USD / rate` allow it. A factor `0.5` is therefore not found in "50 hours a week".
 - Numbers in words are recognized: `$1 million`, `2.5 billion`, `2.5 lakh`, `1 crore`, `one-half`, `½`, `1½`, `one and one-half`, `time and a half`, `double time`, and the Indian grouping `1,50,000`. A scale word needs a numeral (`a million` holds no number).
 - A table with more than 40 numbers is checked with 40 numbers evenly distributed over the sorted list (`sampled 40 of 2200 numbers`).
 
 | Result | Meaning |
 |:-------|:--------|
 | Found | All numbers of the entry are in the source |
-| Ambiguous | Weak evidence: a single number with at most two significant digits, a single number in more than three sections, or a number found in words only — confirm with `LexAttest` or add `sourceQuote` |
+| Ambiguous | Weak evidence of a single number: written in the source with at most two digits (separators not counted: `22%`, `1.5`, `50`; `0.012` found as `1.2%`), written with at most three digits and found in more than three sections, or found in words only — confirm with `LexAttest` or add `sourceQuote` |
 | Partial / not found | Numbers are missing in the source — review the value |
 | Quote not found | The `sourceQuote` of the entry is in no readable source — correct the quote |
 | Unreadable / no local evidence | Blocked host, script-only page, scanned or encrypted PDF, other binary format, or no local file — verify the value manually (`LexAttest`) |
