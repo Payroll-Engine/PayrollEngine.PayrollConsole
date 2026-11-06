@@ -166,6 +166,9 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         if (result.Release && result.ManualVerificationRequired > 0)
             console.DisplayErrorLine($"         {result.ManualVerificationRequired} entr(ies) need a manual verification (LexAttest): " +
                                      string.Join(", ", result.ManualVerificationSamples));
+        if (result.Release && result.UnjustifiedZero > 0)
+            console.DisplayErrorLine($"         {result.UnjustifiedZero} entr(ies) with {SourceVerifier.UnjustifiedZeroHint}: " +
+                                     string.Join(", ", result.UnjustifiedZeroSamples));
         foreach (var problem in result.FileProblems) console.DisplayErrorLine($"         evidence: {problem}");
         if (!result.ValidFromMatch)
             console.DisplayErrorLine($"         validFrom: lex {result.LexValidFrom}, regulation {result.RegulationValidFrom}");
@@ -182,6 +185,9 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             console.DisplayInfoLine($"         info: {result.UnspecificLocations} location(s) not entry-specific: {string.Join(", ", result.UnspecificLocationSamples)}");
         if (!result.Release && result.SecondaryMainSource > 0)
             console.DisplayInfoLine($"         info: {result.SecondaryMainSource} secondary main source(s): {string.Join(", ", result.SecondaryMainSourceSamples)}");
+        if (!result.Release && result.UnjustifiedZero > 0)
+            console.DisplayInfoLine($"         info: {result.UnjustifiedZero} entr(ies) with {SourceVerifier.UnjustifiedZeroHint}: " +
+                                    string.Join(", ", result.UnjustifiedZeroSamples));
     }
 
     /// <inheritdoc />
@@ -203,9 +209,11 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("      verification of a source with review FourEyes needs reviewedBy and reviewedOn.");
         console.DisplayTextLine("      Information (a finding with /required): a location that is not entry-specific (the same location");
         console.DisplayTextLine("      longer than 200 characters on 5 or more entries, or a location longer than 500 characters).");
-        console.DisplayTextLine("      Information (a finding with /release): a secondary main source (first source URL with official: false).");
-        console.DisplayTextLine("      Exclusions of all kinds (coverage, sourceLocation, orphan, autoVerification, derived) are listed in the report;");
-        console.DisplayTextLine("      a derived exclusion whose pattern matches no property of an entry is a manifest finding.");
+        console.DisplayTextLine("      Information (a finding with /release): a secondary main source (first source URL with official: false)");
+        console.DisplayTextLine("      and a bundle property with the value 0 without notApplicable exclusion (zero values without justification).");
+        console.DisplayTextLine("      Exclusions of all kinds (coverage, sourceLocation, orphan, autoVerification, derived, notApplicable) are");
+        console.DisplayTextLine("      listed in the report; a derived or notApplicable exclusion whose pattern matches no property of an entry,");
+        console.DisplayTextLine("      and a notApplicable exclusion of a property that is not 0, are manifest findings.");
         console.DisplayTextLine("      Freshness of snapshot.json is checked by LexVerify.");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. file name or file mask [FileMask] (e.g. lex.json or **/lex.json)");
@@ -224,7 +232,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("          release gate: /development (default) or /release (/required and /verificationrequired; a secondary");
         console.DisplayTextLine("                        main source is a finding; the entries are verified against their local evidence and");
         console.DisplayTextLine("                        an entry without manual verification is a finding when it is ambiguous, its quote is");
-        console.DisplayTextLine("                        not found or it is excluded from auto verification but has an automatic record)");
+        console.DisplayTextLine("                        not found or it is excluded from auto verification but has an automatic record;");
+        console.DisplayTextLine("                        zero values without justification are a finding)");
         console.DisplayTextLine("      Exit codes:");
         console.DisplayTextLine("          0 no findings (or /lenient), 4 findings (/strict), 6 no lex.json found or root folder missing,");
         console.DisplayTextLine("          -1 invalid parameters or unexpected error");

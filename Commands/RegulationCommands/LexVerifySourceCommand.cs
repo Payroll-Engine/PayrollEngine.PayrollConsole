@@ -115,20 +115,28 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         {
             context.Console.DisplayInfoLine($"         no content: {result.Key} - {result.Reason}");
         }
-        foreach (var result in results.Where(r => r.Derived.Count > 0))
+        foreach (var result in results.Where(r => r.Derived.Count > 0 || r.NotApplicable.Count > 0 ||
+                                                  r.UnjustifiedZero.Count > 0 || r.Note != null))
         {
             foreach (var derived in result.Derived)
             {
                 context.Console.DisplayTextLine($"         {result.Key} - derived: {derived.Property} = {derived.Value} ({derived.Reason})");
             }
+            foreach (var notApplicable in result.NotApplicable)
+            {
+                context.Console.DisplayTextLine(
+                    $"         {result.Key} - not applicable: {notApplicable.Property} = {notApplicable.Value} ({notApplicable.Reason})");
+            }
+            var unjustified = result.UnjustifiedZero;
+            if (unjustified.Count > 0)
+            {
+                context.Console.DisplayInfoLine(
+                    $"         {result.Key} - {SourceVerifier.UnjustifiedZeroHint}: {string.Join(", ", unjustified)}");
+            }
             if (result.Note != null)
             {
                 context.Console.DisplayInfoLine($"         {result.Key} - {result.Note}");
             }
-        }
-        foreach (var result in results.Where(r => r.Derived.Count == 0 && r.Note != null))
-        {
-            context.Console.DisplayInfoLine($"         {result.Key} - {result.Note}");
         }
         foreach (var result in results.Where(r => r.ExcludedReason != null))
         {
@@ -211,6 +219,9 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         console.DisplayTextLine("      as reason) are not looked up and are listed as derived: <property> = <value> (<reason>); a number");
         console.DisplayTextLine("      that is also in another property is looked up there. The verification record lists the derived");
         console.DisplayTextLine("      properties. An entry with derived numbers only gives no numbers: confirm it with LexAttest.");
+        console.DisplayTextLine("      A property of a bundle with the value 0 is not looked up. Document a rule that does not apply");
+        console.DisplayTextLine("      with a notApplicable exclusion (Lookup.Key.Property, reason): not applicable: <property> = 0 (<reason>);");
+        console.DisplayTextLine("      without it the entry is reported as zero values without justification: <property>, ...");
         console.DisplayTextLine("      The location names at most three sections per source, with several sources one part per source");
         console.DisplayTextLine("      (<host>: Section \"...\"; <host>: Sections \"...\", \"...\"). A location longer than 500 characters is");
         console.DisplayTextLine("      not written: location too long: set sourceLocation manually.");

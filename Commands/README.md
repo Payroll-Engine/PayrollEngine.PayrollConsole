@@ -564,13 +564,14 @@ Check `lex.json` manifests against the lookup values of their data regulation (t
 | Location not entry-specific | With `/required` (otherwise information): the same `sourceLocation` longer than 200 characters on 5 or more entries, or a `sourceLocation` longer than 500 characters |
 | Secondary main source | With `/release` (otherwise information): the first source URL of an entry is declared with `official: false` |
 | Manual verification required | With `/release`: an entry without manual verification is ambiguous or its `sourceQuote` is not found in the local evidence (see `LexVerifySource`), or it has an `autoVerification` exclusion and an `auto` record |
+| Zero values without justification | With `/release` (otherwise information): a property of a bundle entry has the value 0 without a `notApplicable` (or `derived`) exclusion; a rate set to 0 by mistake would never be looked up in the source |
 | Evidence | A declared or referenced file is missing in `.lex`, untracked or ignored in git, or a verification evidence is not in the snapshot |
 | Snapshot / validFrom | `snapshot.json` is missing, or `validFrom` of lex and regulation differ |
 | Verification | A manual verification of a `FourEyes` source without `reviewedBy`/`reviewedOn`; with `/verificationrequired` an entry without verification record |
 | Open entry | An entry taken from the previous cycle by `LexRollover`, to be verified again |
 | Source URL | With `/checkurls`: 404/410 or unknown host, or a source text changed since the snapshot (check the value); a blocking host is a note |
 
-An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored as file). Satellites whose lookup values are not stored in the `Regulation` folder are reported with a note for manual review. Documented `exclusions` (`coverage`, `sourceLocation`, `orphan`, `autoVerification`, `derived`) are listed in the report with their reason instead of the findings; an `autoVerification` exclusion that matches no entry and a `derived` exclusion that matches no property of an entry (e.g. a renamed property) are manifest findings. The verification records are counted per satellite (auto, manual, without, open). The freshness of `snapshot.json` is checked by `LexVerify`.
+An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored as file). Satellites whose lookup values are not stored in the `Regulation` folder are reported with a note for manual review. Documented `exclusions` (`coverage`, `sourceLocation`, `orphan`, `autoVerification`, `derived`, `notApplicable`) are listed in the report with their reason instead of the findings; an `autoVerification` exclusion that matches no entry, a `derived` or `notApplicable` exclusion that matches no property of an entry (e.g. a renamed property) and a `notApplicable` exclusion of a property that is not 0 are manifest findings. The verification records are counted per satellite (auto, manual, without, open). The freshness of `snapshot.json` is checked by `LexVerify`.
 
 | # | Argument | Description |
 |---|:---------|:------------|
@@ -590,9 +591,9 @@ An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored 
 - source location: `/optional` (default, a missing `sourceLocation` is information) or `/required` (finding)
 - verification: `/verificationoptional` (default, entries without verification are counted) or `/verificationrequired` (finding)
 - source URLs: `/skipurls` (default) or `/checkurls` (load every source URL)
-- release gate: `/development` (default) or `/release` — `/required` and `/verificationrequired`, a secondary main source is a finding, and the entries are verified against their local evidence: an entry without manual verification that is ambiguous, whose quote is not found or that is excluded from auto verification but has an `auto` record is a finding
+- release gate: `/development` (default) or `/release` — `/required` and `/verificationrequired`, a secondary main source is a finding, and the entries are verified against their local evidence: an entry without manual verification that is ambiguous, whose quote is not found or that is excluded from auto verification but has an `auto` record is a finding; zero values without justification are a finding
 
-The report (Markdown and CSV) shows the new counts per satellite: `UnspecificLocations`, `SecondaryMainSource`, `Release`, `Ambiguous`, `QuoteNotFound`, `ExcludedAutoVerified` and `ExcludedDerived` (CSV columns appended at the end).
+The report (Markdown and CSV) shows the new counts per satellite: `UnspecificLocations`, `SecondaryMainSource`, `Release`, `Ambiguous`, `QuoteNotFound`, `ExcludedAutoVerified`, `ExcludedDerived`, `ExcludedNotApplicable` and `UnjustifiedZero` (CSV columns appended at the end).
 
 With `/release` the header lines `Location mode` and `Verification` show the effective modes `Required (release)` and `VerificationRequired (release)`.
 
@@ -628,6 +629,8 @@ Number search:
 With `sourceQuote` the quote must be in a section of a source (whitespace, line-end hyphenation and typographic quotes are normalized) and the numbers of the entry in that section or in the quote; the result is found with this section as location, never ambiguous. An entry with an `autoVerification` exclusion is reported as `excluded from auto verification: <reason>` and is never written.
 
 A property of a bundle entry that is computed from other values and is in no source is documented with a `derived` exclusion (`Lookup.Key.Property`, the `reason` holds formula and legal reference). Its numbers are not looked up; a number that is also in another property of the entry is still looked up there. When all other numbers are found, the entry is found and its `auto` record lists the property in `derived`. The report shows each derived property as `<key> - derived: <property> = <value> (<reason>)`.
+
+A property of a bundle entry with the value 0 (number or numeric text; a 0 within an array, e.g. the first tier of a table, does not count) means that the rule does not apply, e.g. a state without disability insurance (`"SDIRate": 0`). Its number is not looked up, so a rate set to 0 by mistake would stay unnoticed. Document such a property with a `notApplicable` exclusion (`Lookup.Key.Property`, the `reason` says why the rule does not apply, e.g. `TX: no state disability insurance program`); the report shows it as `<key> - not applicable: <property> = 0 (<reason>)`. A zero property without `notApplicable` (or `derived`) exclusion is reported as `<key> - zero values without justification: <property>, ...` (information; a finding of `LexCheck /release`).
 
 With `/writelocations` the command sets the `sourceLocation` of found entries without one and writes an `auto` verification record for entries whose numbers were all found. `/refreshlocations` does the same and also replaces locations written by the command (`Section "…"`, `Sections "…"`, optionally with a `<file or host>: ` prefix); a location written by a person is kept. Ambiguous entries are never written, a manual record is never replaced. Afterwards regenerate the snapshot with `LexSnapshot /overwrite`.
 
@@ -771,7 +774,7 @@ The `lex.json` file documents the provenance of compliance values in a data regu
 | `sources` | array | No | Document-level source references (general provenance) |
 | `values` | array | No | Compliance values with content and precise provenance |
 | `files` | array | No | Source documents to copy into the `.lex` folder |
-| `exclusions` | array | No | Documented exclusions from the coverage, orphan and `sourceLocation` checks and from the automatic verification, and derived properties of entries |
+| `exclusions` | array | No | Documented exclusions from the coverage, orphan and `sourceLocation` checks and from the automatic verification, derived properties and properties not applicable of entries |
 
 **`sources[]` — document-level provenance:**
 
@@ -818,9 +821,9 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 
 | Property | Required | Description |
 |:---------|:--------:|:------------|
-| `kind` | **Yes** | `coverage` (regulation values without lex entry), `orphan` (lex entries without regulation value, e.g. a rule implemented in code), `sourceLocation` (entries without `sourceLocation`), `autoVerification` (entries that `LexVerifySource` never verifies automatically, e.g. a value whose number is in the source but means something else; verify with `LexAttest`) or `derived` (a property of an entry computed from other values that is in no source; `LexVerifySource` does not look up its numbers) |
-| `pattern` | **Yes** | `Lookup`, `Lookup.Key` or a prefix with trailing `*`; a name also matches all keys below it. `derived`: entry key and property path of the JSON content (`Lookup.Key.Property`, nested properties separated by `.`); a pattern without property is invalid |
-| `reason` | **Yes** | Justification, shown in the check report; `derived`: formula and legal reference |
+| `kind` | **Yes** | `coverage` (regulation values without lex entry), `orphan` (lex entries without regulation value, e.g. a rule implemented in code), `sourceLocation` (entries without `sourceLocation`), `autoVerification` (entries that `LexVerifySource` never verifies automatically, e.g. a value whose number is in the source but means something else; verify with `LexAttest`), `derived` (a property of an entry computed from other values that is in no source; `LexVerifySource` does not look up its numbers) or `notApplicable` (a property of an entry with the value 0 because the rule does not apply; a zero property without this exclusion is reported) |
+| `pattern` | **Yes** | `Lookup`, `Lookup.Key` or a prefix with trailing `*`; a name also matches all keys below it. `derived` and `notApplicable`: entry key and property path of the JSON content (`Lookup.Key.Property`, nested properties separated by `.`); a pattern without property is invalid |
+| `reason` | **Yes** | Justification, shown in the check report; `derived`: formula and legal reference; `notApplicable`: why the rule does not apply (e.g. `TX: no state disability insurance program`) |
 
 **`content` vs. `contentFile` — when to use which:**
 
