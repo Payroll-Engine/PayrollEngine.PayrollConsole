@@ -570,7 +570,7 @@ Check `lex.json` manifests against the lookup values of their data regulation (t
 | Open entry | An entry taken from the previous cycle by `LexRollover`, to be verified again |
 | Source URL | With `/checkurls`: 404/410 or unknown host, or a source text changed since the snapshot (check the value); a blocking host is a note |
 
-An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored as file). Satellites whose lookup values are not stored in the `Regulation` folder are reported with a note for manual review. Documented `exclusions` (`coverage`, `sourceLocation`, `orphan`, `autoVerification`) are listed in the report instead of the findings; an `autoVerification` exclusion that matches no entry is a manifest finding. The verification records are counted per satellite (auto, manual, without, open). The freshness of `snapshot.json` is checked by `LexVerify`.
+An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored as file). Satellites whose lookup values are not stored in the `Regulation` folder are reported with a note for manual review. Documented `exclusions` (`coverage`, `sourceLocation`, `orphan`, `autoVerification`, `derived`) are listed in the report with their reason instead of the findings; an `autoVerification` exclusion that matches no entry and a `derived` exclusion that matches no property of an entry (e.g. a renamed property) are manifest findings. The verification records are counted per satellite (auto, manual, without, open). The freshness of `snapshot.json` is checked by `LexVerify`.
 
 | # | Argument | Description |
 |---|:---------|:------------|
@@ -592,7 +592,9 @@ An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored 
 - source URLs: `/skipurls` (default) or `/checkurls` (load every source URL)
 - release gate: `/development` (default) or `/release` — `/required` and `/verificationrequired`, a secondary main source is a finding, and the entries are verified against their local evidence: an entry without manual verification that is ambiguous, whose quote is not found or that is excluded from auto verification but has an `auto` record is a finding
 
-The report (Markdown and CSV) shows the new counts per satellite: `UnspecificLocations`, `SecondaryMainSource`, `Release`, `Ambiguous`, `QuoteNotFound` and `ExcludedAutoVerified` (CSV columns appended at the end).
+The report (Markdown and CSV) shows the new counts per satellite: `UnspecificLocations`, `SecondaryMainSource`, `Release`, `Ambiguous`, `QuoteNotFound`, `ExcludedAutoVerified` and `ExcludedDerived` (CSV columns appended at the end).
+
+With `/release` the header lines `Location mode` and `Verification` show the effective modes `Required (release)` and `VerificationRequired (release)`.
 
 Exit codes: `0` no findings (or `/lenient`), `4` findings (`/strict`), `6` no `lex.json` found or root folder missing, `-1` invalid parameters or error.
 
@@ -621,9 +623,11 @@ Number search:
 | Partial / not found | Numbers are missing in the source — review the value |
 | Quote not found | The `sourceQuote` of the entry is in no readable source — correct the quote |
 | Unreadable / no local evidence | Blocked host, script-only page, scanned or encrypted PDF, other binary format, or no local file — verify the value manually (`LexAttest`) |
-| No numbers / no content | The entry holds no number, or its `contentFile` is missing or not JSON |
+| No numbers / no content | The entry holds no number, or its `contentFile` is missing or not JSON; an entry whose numbers are all derived is reported as `all numbers derived: confirm with LexAttest` |
 
 With `sourceQuote` the quote must be in a section of a source (whitespace, line-end hyphenation and typographic quotes are normalized) and the numbers of the entry in that section or in the quote; the result is found with this section as location, never ambiguous. An entry with an `autoVerification` exclusion is reported as `excluded from auto verification: <reason>` and is never written.
+
+A property of a bundle entry that is computed from other values and is in no source is documented with a `derived` exclusion (`Lookup.Key.Property`, the `reason` holds formula and legal reference). Its numbers are not looked up; a number that is also in another property of the entry is still looked up there. When all other numbers are found, the entry is found and its `auto` record lists the property in `derived`. The report shows each derived property as `<key> - derived: <property> = <value> (<reason>)`.
 
 With `/writelocations` the command sets the `sourceLocation` of found entries without one and writes an `auto` verification record for entries whose numbers were all found. `/refreshlocations` does the same and also replaces locations written by the command (`Section "…"`, `Sections "…"`, optionally with a `<file or host>: ` prefix); a location written by a person is kept. Ambiguous entries are never written, a manual record is never replaced. Afterwards regenerate the snapshot with `LexSnapshot /overwrite`.
 
@@ -767,7 +771,7 @@ The `lex.json` file documents the provenance of compliance values in a data regu
 | `sources` | array | No | Document-level source references (general provenance) |
 | `values` | array | No | Compliance values with content and precise provenance |
 | `files` | array | No | Source documents to copy into the `.lex` folder |
-| `exclusions` | array | No | Documented exclusions from the coverage, orphan and `sourceLocation` checks and from the automatic verification |
+| `exclusions` | array | No | Documented exclusions from the coverage, orphan and `sourceLocation` checks and from the automatic verification, and derived properties of entries |
 
 **`sources[]` — document-level provenance:**
 
@@ -805,6 +809,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 | `mode` | **Yes** | `auto` (verified by a tool against the source, `LexVerifySource`) or `manual` (verified by a person, `LexAttest`) |
 | `verifiedOn` | **Yes** | Verification date `YYYY-MM-DD` |
 | `method` | `auto` | Tool and version (e.g. `LexVerifySource 1.2`) |
+| `derived` | No | `auto` only: properties of the value that are derived and not taken from the source (see exclusion kind `derived`); part of the snapshot hash |
 | `verifiedBy` | `manual` | Person who verified the value |
 | `evidence` | `manual` | Evidence document declared in `files[]` |
 | `reviewedBy`, `reviewedOn` | `FourEyes` | Second person and date of the review; only together |
@@ -813,9 +818,9 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 
 | Property | Required | Description |
 |:---------|:--------:|:------------|
-| `kind` | **Yes** | `coverage` (regulation values without lex entry), `orphan` (lex entries without regulation value, e.g. a rule implemented in code), `sourceLocation` (entries without `sourceLocation`) or `autoVerification` (entries that `LexVerifySource` never verifies automatically, e.g. a value whose number is in the source but means something else; verify with `LexAttest`) |
-| `pattern` | **Yes** | `Lookup`, `Lookup.Key` or a prefix with trailing `*`; a name also matches all keys below it |
-| `reason` | **Yes** | Justification, shown in the check report |
+| `kind` | **Yes** | `coverage` (regulation values without lex entry), `orphan` (lex entries without regulation value, e.g. a rule implemented in code), `sourceLocation` (entries without `sourceLocation`), `autoVerification` (entries that `LexVerifySource` never verifies automatically, e.g. a value whose number is in the source but means something else; verify with `LexAttest`) or `derived` (a property of an entry computed from other values that is in no source; `LexVerifySource` does not look up its numbers) |
+| `pattern` | **Yes** | `Lookup`, `Lookup.Key` or a prefix with trailing `*`; a name also matches all keys below it. `derived`: entry key and property path of the JSON content (`Lookup.Key.Property`, nested properties separated by `.`); a pattern without property is invalid |
+| `reason` | **Yes** | Justification, shown in the check report; `derived`: formula and legal reference |
 
 **`content` vs. `contentFile` — when to use which:**
 

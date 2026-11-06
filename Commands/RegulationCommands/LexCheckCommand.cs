@@ -41,8 +41,9 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             context.Console.DisplayTextLine($"Report           {(string.IsNullOrWhiteSpace(parameters.Report) ? "-" : parameters.Report)}");
             context.Console.DisplayTextLine($"Directory mode   {parameters.DirectoryMode}");
             context.Console.DisplayTextLine($"Check mode       {parameters.CheckMode}");
-            context.Console.DisplayTextLine($"Location mode    {parameters.LocationMode}");
-            context.Console.DisplayTextLine($"Verification     {parameters.VerificationMode}");
+            var release = parameters.ReleaseMode == LexReleaseMode.Release;
+            context.Console.DisplayTextLine($"Location mode    {(release ? $"{LexLocationMode.Required} (release)" : parameters.LocationMode)}");
+            context.Console.DisplayTextLine($"Verification     {(release ? $"{LexVerificationMode.VerificationRequired} (release)" : parameters.VerificationMode)}");
             context.Console.DisplayTextLine($"URL mode         {parameters.UrlMode}");
             context.Console.DisplayTextLine($"Release mode     {parameters.ReleaseMode}");
         }
@@ -203,7 +204,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("      Information (a finding with /required): a location that is not entry-specific (the same location");
         console.DisplayTextLine("      longer than 200 characters on 5 or more entries, or a location longer than 500 characters).");
         console.DisplayTextLine("      Information (a finding with /release): a secondary main source (first source URL with official: false).");
-        console.DisplayTextLine("      Exclusions of all kinds (coverage, sourceLocation, orphan, autoVerification) are listed in the report.");
+        console.DisplayTextLine("      Exclusions of all kinds (coverage, sourceLocation, orphan, autoVerification, derived) are listed in the report;");
+        console.DisplayTextLine("      a derived exclusion whose pattern matches no property of an entry is a manifest finding.");
         console.DisplayTextLine("      Freshness of snapshot.json is checked by LexVerify.");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. file name or file mask [FileMask] (e.g. lex.json or **/lex.json)");

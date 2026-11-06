@@ -115,6 +115,17 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         {
             context.Console.DisplayInfoLine($"         no content: {result.Key} - {result.Reason}");
         }
+        foreach (var result in results.Where(r => r.Derived.Count > 0))
+        {
+            foreach (var derived in result.Derived)
+            {
+                context.Console.DisplayTextLine($"         {result.Key} - derived: {derived.Property} = {derived.Value} ({derived.Reason})");
+            }
+            if (result.Note != null)
+            {
+                context.Console.DisplayInfoLine($"         {result.Key} - {result.Note}");
+            }
+        }
         foreach (var result in results.Where(r => r.ExcludedReason != null))
         {
             context.Console.DisplayInfoLine($"         excluded from auto verification: {result.Key} - {result.ExcludedReason}");
@@ -158,7 +169,8 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
             {
                 locations++;
             }
-            if (editor.SetAutoVerification(result.Key, SourceVerifier.AutoVerification(today, result.Evidence)))
+            if (editor.SetAutoVerification(result.Key,
+                    SourceVerifier.AutoVerification(today, result.Evidence, result.Derived.Select(x => x.Property))))
             {
                 verifications++;
             }
@@ -191,6 +203,10 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         console.DisplayTextLine("      Numbers in words count ($1 million, 2.5 lakh, one and one-half).");
         console.DisplayTextLine("      A table with more than 40 numbers is checked with 40 numbers evenly distributed over the table.");
         console.DisplayTextLine("      With sourceQuote, the quote must be in the source and the numbers in the section of the quote.");
+        console.DisplayTextLine("      The numbers of a property with a derived exclusion (Lookup.Key.Property, formula and legal reference");
+        console.DisplayTextLine("      as reason) are not looked up and are listed as derived: <property> = <value> (<reason>); a number");
+        console.DisplayTextLine("      that is also in another property is looked up there. The verification record lists the derived");
+        console.DisplayTextLine("      properties. An entry with derived numbers only gives no numbers: confirm it with LexAttest.");
         console.DisplayTextLine("      Readable: HTML, text, csv, xls/xlsx/xlsb/ods, PDF with text layer, docx/odt.");
         console.DisplayTextLine("      Results:");
         console.DisplayTextLine("          found: all numbers are in the sources");
