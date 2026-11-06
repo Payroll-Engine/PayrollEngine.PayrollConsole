@@ -185,6 +185,9 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
             console.DisplayInfoLine($"         info: {result.UnspecificLocations} location(s) not entry-specific: {string.Join(", ", result.UnspecificLocationSamples)}");
         if (!result.Release && result.SecondaryMainSource > 0)
             console.DisplayInfoLine($"         info: {result.SecondaryMainSource} secondary main source(s): {string.Join(", ", result.SecondaryMainSourceSamples)}");
+        if (result.OtherReferenceYear > 0)
+            console.DisplayInfoLine($"         info: {result.OtherReferenceYear} entr(ies) with a reference year other than the validFrom year: " +
+                                    string.Join(", ", result.OtherReferenceYearSamples));
         if (!result.Release && result.UnjustifiedZero > 0)
             console.DisplayInfoLine($"         info: {result.UnjustifiedZero} entr(ies) with {SourceVerifier.UnjustifiedZeroHint}: " +
                                     string.Join(", ", result.UnjustifiedZeroSamples));
@@ -211,6 +214,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("      longer than 200 characters on 5 or more entries, or a location longer than 500 characters).");
         console.DisplayTextLine("      Information (a finding with /release): a secondary main source (first source URL with official: false)");
         console.DisplayTextLine("      and a bundle property with the value 0 without notApplicable exclusion (zero values without justification).");
+        console.DisplayTextLine("      Information: entries with a referenceYear other than the validFrom year.");
         console.DisplayTextLine("      Exclusions of all kinds (coverage, sourceLocation, orphan, autoVerification, derived, notApplicable) are");
         console.DisplayTextLine("      listed in the report; a derived or notApplicable exclusion whose pattern matches no property of an entry,");
         console.DisplayTextLine("      and a notApplicable exclusion of a property that is not 0, are manifest findings.");

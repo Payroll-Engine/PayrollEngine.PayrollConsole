@@ -593,7 +593,9 @@ An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored 
 - source URLs: `/skipurls` (default) or `/checkurls` (load every source URL)
 - release gate: `/development` (default) or `/release` — `/required` and `/verificationrequired`, a secondary main source is a finding, and the entries are verified against their local evidence: an entry without manual verification that is ambiguous, whose quote is not found or that is excluded from auto verification but has an `auto` record is a finding; zero values without justification are a finding
 
-The report (Markdown and CSV) shows the new counts per satellite: `UnspecificLocations`, `SecondaryMainSource`, `Release`, `Ambiguous`, `QuoteNotFound`, `ExcludedAutoVerified`, `ExcludedDerived`, `ExcludedNotApplicable` and `UnjustifiedZero` (CSV columns appended at the end).
+The report (Markdown and CSV) shows the new counts per satellite: `UnspecificLocations`, `SecondaryMainSource`, `Release`, `Ambiguous`, `QuoteNotFound`, `ExcludedAutoVerified`, `ExcludedDerived`, `ExcludedNotApplicable`, `UnjustifiedZero` and `OtherReferenceYear` (CSV columns appended at the end).
+
+Entries with a `referenceYear` other than the year of `validFrom` are listed as information (`<key> (<year>)`), never as finding.
 
 With `/release` the header lines `Location mode` and `Verification` show the effective modes `Required (release)` and `VerificationRequired (release)`.
 
@@ -620,17 +622,19 @@ Number search:
 | Result | Meaning |
 |:-------|:--------|
 | Found | All numbers of the entry are in the source |
-| Ambiguous | Weak evidence of a single number: written in the source with at most two digits (separators not counted: `22%`, `1.5`, `50`; `0.012` found as `1.2%`), written with at most three digits and found in more than three sections, or found in words only — confirm with `LexAttest` or add `sourceQuote` |
+| Ambiguous | Weak evidence of a single number: written in the source with at most two digits (separators not counted: `22%`, `1.5`, `50`; `0.012` found as `1.2%`), written with at most three digits and found in more than three sections, or found in words only — confirm with `LexAttest` or add `sourceQuote`; or a number of another year (`multi-year section`, see below) |
 | Partial / not found | Numbers are missing in the source — review the value |
 | Quote not found | The `sourceQuote` of the entry is in no readable source — correct the quote |
 | Unreadable / no local evidence | Blocked host, script-only page, scanned or encrypted PDF, other binary format, or no local file — verify the value manually (`LexAttest`) |
 | No numbers / no content | The entry holds no number, or its `contentFile` is missing or not JSON; an entry whose numbers are all derived is reported as `all numbers derived: confirm with LexAttest` |
 
-With `sourceQuote` the quote must be in a section of a source (whitespace, line-end hyphenation and typographic quotes are normalized) and the numbers of the entry in that section or in the quote; the result is found with this section as location, never ambiguous. An entry with an `autoVerification` exclusion is reported as `excluded from auto verification: <reason>` and is never written.
+With `sourceQuote` the quote must be in a section of a source (whitespace, line-end hyphenation and typographic quotes are normalized) and the numbers of the entry in that section or in the quote; the result is found with this section as location; it is ambiguous only when a number of the quote stands next to another year within the quote. An entry with an `autoVerification` exclusion is reported as `excluded from auto verification: <reason>` and is never written.
+
+Year context: each hit of a number is rated by the closest year within 120 characters (years of the entry year minus 3 to plus 1; an enumeration or range like `2024, 2025, or 2026` or `2024 through 2026` is one group). The entry year is `referenceYear`, otherwise the year of `validFrom`. A hit next to the entry year is positive, next to another year weak, without year or next to a validity start up to the entry year (`effective January 1, 2025`, `beginning on or after …`, `2025 and after`) neutral; four-digit numbers within a number row (wage bracket tables) are no years. With `sourceQuote` only the quote is rated: a quote with the entry year or without any year anchors the value. A number with a weak and without a positive hit is reported as `multi-year section: add sourceQuote with the year (<numbers>)`. Resolve it with a `sourceQuote` holding the entry year, with `referenceYear` when the value legally belongs to another year (e.g. a surcharge `for 2025` in the 2026 satellite), or confirm it with `LexAttest`.
 
 A property of a bundle entry that is computed from other values and is in no source is documented with a `derived` exclusion (`Lookup.Key.Property`, the `reason` holds formula and legal reference). Its numbers are not looked up; a number that is also in another property of the entry is still looked up there. When all other numbers are found, the entry is found and its `auto` record lists the property in `derived`. The report shows each derived property as `<key> - derived: <property> = <value> (<reason>)`.
 
-A property of a bundle entry with the value 0 (number or numeric text; a 0 within an array, e.g. the first tier of a table, does not count) means that the rule does not apply, e.g. a state without disability insurance (`"SDIRate": 0`). Its number is not looked up, so a rate set to 0 by mistake would stay unnoticed. Document such a property with a `notApplicable` exclusion (`Lookup.Key.Property`, the `reason` says why the rule does not apply, e.g. `TX: no state disability insurance program`); the report shows it as `<key> - not applicable: <property> = 0 (<reason>)`. A zero property without `notApplicable` (or `derived`) exclusion is reported as `<key> - zero values without justification: <property>, ...` (information; a finding of `LexCheck /release`).
+A property of a bundle entry with the value 0 (number or numeric text; a 0 within an array, e.g. the first tier of a table, does not count) means that the rule does not apply, e.g. a region without disability insurance (`"DisabilityRate": 0`). Its number is not looked up, so a rate set to 0 by mistake would stay unnoticed. Document such a property with a `notApplicable` exclusion (`Lookup.Key.Property`, the `reason` says why the rule does not apply, e.g. `XX: no disability insurance program`); the report shows it as `<key> - not applicable: <property> = 0 (<reason>)`. A zero property without `notApplicable` (or `derived`) exclusion is reported as `<key> - zero values without justification: <property>, ...` (information; a finding of `LexCheck /release`).
 
 With `/writelocations` the command sets the `sourceLocation` of found entries without one and writes an `auto` verification record for entries whose numbers were all found. `/refreshlocations` does the same and also replaces locations written by the command (`Section "…"`, `Sections "…"`, optionally with a `<file or host>: ` prefix); a location written by a person is kept. Ambiguous entries are never written, a manual record is never replaced. Afterwards regenerate the snapshot with `LexSnapshot /overwrite`.
 
@@ -799,6 +803,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 | `sourceUrls` | No | URLs where this specific value can be found; a value combined from several authorities lists one URL per authority, the first one is the main source |
 | `sourceLocation` | No | Precise location within the source document (free text) |
 | `sourceQuote` | No | Text passage of the source that contains the value; `LexVerifySource` looks up the numbers in the section of the quote. Anchors short numbers and numbers in words (`one and one-half`). Part of the snapshot hash |
+| `referenceYear` | No | Year the value legally belongs to when it differs from the cycle (e.g. `2025` for a surcharge `for 2025` in the 2026 satellite); replaces the `validFrom` year in the year context of `LexVerifySource` and for the quote. Listed by `LexCheck` as information, kept by `LexRollover`. Part of the snapshot hash |
 | `legalReference` | No | Legal norm reference (e.g. `Income Tax Act §12(1)`) |
 | `documentRef` | No | Local evidence document, declared in `files[]` |
 | `description` | No | Human-readable description |
@@ -823,7 +828,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 |:---------|:--------:|:------------|
 | `kind` | **Yes** | `coverage` (regulation values without lex entry), `orphan` (lex entries without regulation value, e.g. a rule implemented in code), `sourceLocation` (entries without `sourceLocation`), `autoVerification` (entries that `LexVerifySource` never verifies automatically, e.g. a value whose number is in the source but means something else; verify with `LexAttest`), `derived` (a property of an entry computed from other values that is in no source; `LexVerifySource` does not look up its numbers) or `notApplicable` (a property of an entry with the value 0 because the rule does not apply; a zero property without this exclusion is reported) |
 | `pattern` | **Yes** | `Lookup`, `Lookup.Key` or a prefix with trailing `*`; a name also matches all keys below it. `derived` and `notApplicable`: entry key and property path of the JSON content (`Lookup.Key.Property`, nested properties separated by `.`); a pattern without property is invalid |
-| `reason` | **Yes** | Justification, shown in the check report; `derived`: formula and legal reference; `notApplicable`: why the rule does not apply (e.g. `TX: no state disability insurance program`) |
+| `reason` | **Yes** | Justification, shown in the check report; `derived`: formula and legal reference; `notApplicable`: why the rule does not apply (e.g. `XX: no disability insurance program`) |
 
 **`content` vs. `contentFile` — when to use which:**
 
