@@ -126,6 +126,10 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
                 context.Console.DisplayInfoLine($"         {result.Key} - {result.Note}");
             }
         }
+        foreach (var result in results.Where(r => r.Derived.Count == 0 && r.Note != null))
+        {
+            context.Console.DisplayInfoLine($"         {result.Key} - {result.Note}");
+        }
         foreach (var result in results.Where(r => r.ExcludedReason != null))
         {
             context.Console.DisplayInfoLine($"         excluded from auto verification: {result.Key} - {result.ExcludedReason}");
@@ -207,6 +211,9 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         console.DisplayTextLine("      as reason) are not looked up and are listed as derived: <property> = <value> (<reason>); a number");
         console.DisplayTextLine("      that is also in another property is looked up there. The verification record lists the derived");
         console.DisplayTextLine("      properties. An entry with derived numbers only gives no numbers: confirm it with LexAttest.");
+        console.DisplayTextLine("      The location names at most three sections per source, with several sources one part per source");
+        console.DisplayTextLine("      (<host>: Section \"...\"; <host>: Sections \"...\", \"...\"). A location longer than 500 characters is");
+        console.DisplayTextLine("      not written: location too long: set sourceLocation manually.");
         console.DisplayTextLine("      Readable: HTML, text, csv, xls/xlsx/xlsb/ods, PDF with text layer, docx/odt.");
         console.DisplayTextLine("      Results:");
         console.DisplayTextLine("          found: all numbers are in the sources");
