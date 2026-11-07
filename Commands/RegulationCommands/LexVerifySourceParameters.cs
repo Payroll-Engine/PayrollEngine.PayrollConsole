@@ -73,6 +73,12 @@ public class LexVerifySourceParameters : ICommandParameters
     /// </summary>
     public LexSourceMode SourceMode { get; private init; } = LexSourceMode.Local;
 
+    /// <summary>
+    /// Folder of additional language files ({language}.json); without it the command uses the environment
+    /// variable PAYROLL_ENGINE_LEX_VOCABULARY
+    /// </summary>
+    public string Vocabulary { get; private init; }
+
     /// <inheritdoc />
     public Type[] Toggles => [typeof(DirectoryMode), typeof(LexCheckMode), typeof(LexSourceWriteMode), typeof(LexSourceMode)];
 
@@ -90,6 +96,7 @@ public class LexVerifySourceParameters : ICommandParameters
             DirectoryMode = parser.GetEnumToggle(DirectoryMode.Top),
             CheckMode = parser.GetEnumToggle(LexCheckMode.Lenient),
             WriteMode = parser.GetEnumToggle(LexSourceWriteMode.ReportOnly),
-            SourceMode = parser.GetEnumToggle(LexSourceMode.Local)
+            SourceMode = parser.GetEnumToggle(LexSourceMode.Local),
+            Vocabulary = parser.GetByName(nameof(Vocabulary))
         };
 }

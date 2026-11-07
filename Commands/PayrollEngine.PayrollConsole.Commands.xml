@@ -3301,6 +3301,9 @@
             and, on request, writes the found source location and the automatic verification record into the manifest.
             </summary>
         </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.VocabularyVariable">
+            <summary>Environment variable with the folder of additional language files</summary>
+        </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters)">
             <inheritdoc />
         </member>
@@ -3385,6 +3388,12 @@
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.SourceMode">
             <summary>
             Source mode: local evidence file (default) or live source URL
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.Vocabulary">
+            <summary>
+            Folder of additional language files ({language}.json); without it the command uses the environment
+            variable PAYROLL_ENGINE_LEX_VOCABULARY
             </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters.Toggles">

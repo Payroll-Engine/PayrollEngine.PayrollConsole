@@ -20,6 +20,9 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
 {
     private const int MaxQuoteLength = 120;
 
+    /// <summary>Environment variable with the folder of additional language files</summary>
+    private const string VocabularyVariable = "PAYROLL_ENGINE_LEX_VOCABULARY";
+
     private static readonly JsonSerializerOptions ReadOptions = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -31,6 +34,9 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
     protected override async Task<int> Execute(CommandContext context, LexVerifySourceParameters parameters)
     {
         DisplayTitle(context.Console, "Lex Verify Source");
+        var vocabulary = string.IsNullOrWhiteSpace(parameters.Vocabulary)
+            ? Environment.GetEnvironmentVariable(VocabularyVariable)
+            : parameters.Vocabulary;
         if (context.DisplayLevel == DisplayLevel.Full)
         {
             context.Console.DisplayTextLine($"File mask        {parameters.FileMask}");
@@ -38,6 +44,7 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
             context.Console.DisplayTextLine($"Check mode       {parameters.CheckMode}");
             context.Console.DisplayTextLine($"Write mode       {parameters.WriteMode}");
             context.Console.DisplayTextLine($"Source mode      {parameters.SourceMode}");
+            context.Console.DisplayTextLine($"Vocabulary       {vocabulary}");
         }
         context.Console.DisplayNewLine();
         try
@@ -55,7 +62,7 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
             int problems = 0, ambiguous = 0;
             foreach (var lexFile in files)
             {
-                var results = await VerifyFile(context, lexFile, parameters, client, documents);
+                var results = await VerifyFile(context, lexFile, parameters, vocabulary, client, documents);
                 problems += results.Count(r => r.Match is SourceMatch.Partial or SourceMatch.NotFound or SourceMatch.QuoteNotFound);
                 ambiguous += results.Count(r => r.Match == SourceMatch.Ambiguous);
             }
@@ -75,12 +82,12 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
     }
 
     private static async Task<List<SourceResult>> VerifyFile(CommandContext context, string lexFile, LexVerifySourceParameters parameters,
-        HttpClient client, Dictionary<string, SourceDocument> documents)
+        string vocabulary, HttpClient client, Dictionary<string, SourceDocument> documents)
     {
         var json = await File.ReadAllTextAsync(lexFile);
         var manifest = JsonSerializer.Deserialize<Manifest>(json, ReadOptions) ?? new Manifest();
         var results = await SourceVerifier.VerifyManifest(manifest, Path.GetDirectoryName(lexFile)!,
-            client != null ? url => SourceDocument.LoadLive(url, client) : null, documents);
+            client != null ? url => SourceDocument.LoadLive(url, client) : null, documents, vocabulary);
 
         int Count(SourceMatch m) => results.Count(r => r.Match == m);
         var problems = Count(SourceMatch.Partial) + Count(SourceMatch.NotFound) + Count(SourceMatch.QuoteNotFound);
@@ -88,7 +95,8 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
                    $"partial {Count(SourceMatch.Partial)}, not found {Count(SourceMatch.NotFound)}, " +
                    $"quote not found {Count(SourceMatch.QuoteNotFound)}, unreadable {Count(SourceMatch.Unreadable)}, " +
                    $"no local evidence {Count(SourceMatch.NoEvidence)}, no numbers {Count(SourceMatch.NoNumbers)}, " +
-                   $"no content {Count(SourceMatch.NoContent)}";
+                   $"no content {Count(SourceMatch.NoContent)}" +
+                   (results.Count > 0 ? $", languages {results[0].Languages}" : string.Empty);
         if (problems > 0) context.Console.DisplayErrorLine("  " + line);
         else context.Console.DisplayTextLine("  " + line);
         foreach (var result in results.Where(r => r.Match is SourceMatch.Partial or SourceMatch.NotFound))
@@ -182,7 +190,8 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
                 locations++;
             }
             if (editor.SetAutoVerification(result.Key,
-                    SourceVerifier.AutoVerification(today, result.Evidence, result.Derived.Select(x => x.Property))))
+                    SourceVerifier.AutoVerification(today, result.Evidence, result.Derived.Select(x => x.Property),
+                        result.Languages)))
             {
                 verifications++;
             }
@@ -225,6 +234,11 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         console.DisplayTextLine("      The location names at most three sections per source, with several sources one part per source");
         console.DisplayTextLine("      (<host>: Section \"...\"; <host>: Sections \"...\", \"...\"). A location longer than 500 characters is");
         console.DisplayTextLine("      not written: location too long: set sourceLocation manually.");
+        console.DisplayTextLine("      Number and year words (percent, million, 2024 and 2025, effective, Finance Act 2025) are read in the");
+        console.DisplayTextLine("      languages of the manifest (languages, e.g. [\"de\", \"fr\"]), without languages in all available");
+        console.DisplayTextLine("      languages. A language is a file {language}.json in the LexVocabulary folder of pecmd or in the folder");
+        console.DisplayTextLine("      of additional language files, which adds or replaces languages by language code. The verification");
+        console.DisplayTextLine("      record names the languages and the hash of their words (method ...; languages de,en 3f2a9c1b).");
         console.DisplayTextLine("      Readable: HTML, text, csv, xls/xlsx/xlsb/ods, PDF with text layer, docx/odt.");
         console.DisplayTextLine("      Results:");
         console.DisplayTextLine("          found: all numbers are in the sources");
@@ -237,6 +251,8 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         console.DisplayTextLine("          no local evidence, no numbers, no content (contentFile missing or not JSON): verify manually");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. file name or file mask [FileMask] (e.g. lex.json or **/lex.json)");
+        console.DisplayTextLine("          Vocabulary: folder of additional language files (default: environment variable");
+        console.DisplayTextLine("                      PAYROLL_ENGINE_LEX_VOCABULARY)");
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          directory mode: /top (default) or /recursive");
         console.DisplayTextLine("          result mode: /lenient (default, report only) or /strict (exit code 6 for partial, not found,");
@@ -253,5 +269,6 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         console.DisplayTextLine("          LexVerifySource .lex/lex.json /writelocations");
         console.DisplayTextLine("          LexVerifySource lex.json /recursive /refreshlocations");
         console.DisplayTextLine("          LexVerifySource .lex/lex.json /live");
+        console.DisplayTextLine("          LexVerifySource lex.json /recursive Vocabulary:C:\\Lex\\LexVocabulary");
     }
 }

@@ -39,6 +39,15 @@ public class LexVerifySourceParametersTests
         Assert.Equal(LexCheckMode.Strict, Parse("lex.json", "/strict").CheckMode);
 
     [Fact]
+    public void Vocabulary_FolderByName()
+    {
+        Assert.Null(Parse("lex.json").Vocabulary);
+        var parameters = Parse("lex.json", "/recursive", @"Vocabulary:C:\Lex\LexVocabulary");
+        Assert.Equal(@"C:\Lex\LexVocabulary", parameters.Vocabulary);
+        Assert.Equal("lex.json", parameters.FileMask);
+    }
+
+    [Fact]
     public void SourceMode_IsDeclaredToggle() =>
         Assert.Contains(typeof(LexSourceMode), Parse("lex.json").Toggles);
 }
