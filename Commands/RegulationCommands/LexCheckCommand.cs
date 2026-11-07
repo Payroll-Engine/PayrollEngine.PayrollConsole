@@ -169,6 +169,9 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         if (result.Release && result.UnjustifiedZero > 0)
             console.DisplayErrorLine($"         {result.UnjustifiedZero} entr(ies) with {SourceVerifier.UnjustifiedZeroHint}: " +
                                      string.Join(", ", result.UnjustifiedZeroSamples));
+        if (result.Release && result.UnusedEvidence > 0)
+            console.DisplayErrorLine($"         {result.UnusedEvidence} evidence file(s) that back no entry (set documentRef or the source URL): " +
+                                     string.Join(", ", result.UnusedEvidenceSamples));
         foreach (var problem in result.FileProblems) console.DisplayErrorLine($"         evidence: {problem}");
         if (!result.ValidFromMatch)
             console.DisplayErrorLine($"         validFrom: lex {result.LexValidFrom}, regulation {result.RegulationValidFrom}");
@@ -191,6 +194,9 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         if (!result.Release && result.UnjustifiedZero > 0)
             console.DisplayInfoLine($"         info: {result.UnjustifiedZero} entr(ies) with {SourceVerifier.UnjustifiedZeroHint}: " +
                                     string.Join(", ", result.UnjustifiedZeroSamples));
+        if (!result.Release && result.UnusedEvidence > 0)
+            console.DisplayInfoLine($"         info: {result.UnusedEvidence} evidence file(s) that back no entry (set documentRef or the source URL): " +
+                                    string.Join(", ", result.UnusedEvidenceSamples));
     }
 
     /// <inheritdoc />
@@ -213,7 +219,9 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("      Information (a finding with /required): a location that is not entry-specific (the same location");
         console.DisplayTextLine("      longer than 200 characters on 5 or more entries, or a location longer than 500 characters).");
         console.DisplayTextLine("      Information (a finding with /release): a secondary main source (first source URL with official: false)");
-        console.DisplayTextLine("      and a bundle property with the value 0 without notApplicable exclusion (zero values without justification).");
+        console.DisplayTextLine("      a bundle property with the value 0 without notApplicable exclusion (zero values without justification)");
+        console.DisplayTextLine("      and an evidence file that backs no entry (no documentRef, no source URL of an entry, no contentFile,");
+        console.DisplayTextLine("      no verification evidence, or a file in .lex not declared in files[]).");
         console.DisplayTextLine("      Information: entries with a referenceYear other than the validFrom year.");
         console.DisplayTextLine("      Exclusions of all kinds (coverage, sourceLocation, orphan, autoVerification, derived, notApplicable) are");
         console.DisplayTextLine("      listed in the report; a derived or notApplicable exclusion whose pattern matches no property of an entry,");
@@ -237,7 +245,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("                        main source is a finding; the entries are verified against their local evidence and");
         console.DisplayTextLine("                        an entry without manual verification is a finding when it is ambiguous, its quote is");
         console.DisplayTextLine("                        not found or it is excluded from auto verification but has an automatic record;");
-        console.DisplayTextLine("                        zero values without justification are a finding)");
+        console.DisplayTextLine("                        zero values without justification and evidence files that back no entry are a finding)");
         console.DisplayTextLine("      Exit codes:");
         console.DisplayTextLine("          0 no findings (or /lenient), 4 findings (/strict), 6 no lex.json found or root folder missing,");
         console.DisplayTextLine("          -1 invalid parameters or unexpected error");

@@ -159,6 +159,11 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         {
             context.Console.DisplayInfoLine($"         {withoutEvidence} entr(ies) without local evidence: verify manually or use /live");
         }
+        var unused = Checker.UnusedEvidence(manifest, Path.GetDirectoryName(lexFile)!);
+        if (unused.Count > 0)
+        {
+            context.Console.DisplayInfoLine($"         evidence file(s) that back no entry (set documentRef or the source URL): {string.Join(", ", unused)}");
+        }
 
         if (parameters.WriteMode != LexSourceWriteMode.ReportOnly)
         {
