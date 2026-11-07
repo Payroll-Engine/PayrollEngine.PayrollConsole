@@ -565,6 +565,8 @@ Check `lex.json` manifests against the lookup values of their data regulation (t
 | Secondary main source | With `/release` (otherwise information): the first source URL of an entry is declared with `official: false` |
 | Manual verification required | With `/release`: an entry without manual verification is ambiguous or its `sourceQuote` is not found in the local evidence (see `LexVerifySource`), or it has an `autoVerification` exclusion and an `auto` record |
 | Zero values without justification | With `/release` (otherwise information): a property of a bundle entry has the value 0 without a `notApplicable` (or `derived`) exclusion; a rate set to 0 by mistake would never be looked up in the source |
+| Evidence file that backs no entry | With `/release` (otherwise information): a file declared in `files[]` that no entry references (no `documentRef`, no source URL of an entry, no `contentFile`, no verification evidence), or a file in `.lex` that is not declared in `files[]`. Such a file is never read; set `documentRef` on the entries it backs or add its URL to their `sourceUrls` |
+| Verifiable neither locally nor live | With `/release`: an entry without manual verification has no readable local evidence, and none of its source URLs has a text hash in the snapshot (`liveSources`). A blocked host, a script-only page or a scanned PDF therefore needs a readable local copy (`documentRef`) or a manual verification (`LexAttest`) |
 | Evidence | A declared or referenced file is missing in `.lex`, untracked or ignored in git, or a verification evidence is not in the snapshot |
 | Snapshot / validFrom | `snapshot.json` is missing, or `validFrom` of lex and regulation differ |
 | Verification | A manual verification of a `FourEyes` source without `reviewedBy`/`reviewedOn`; with `/verificationrequired` an entry without verification record |
@@ -591,9 +593,9 @@ An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored 
 - source location: `/optional` (default, a missing `sourceLocation` is information) or `/required` (finding)
 - verification: `/verificationoptional` (default, entries without verification are counted) or `/verificationrequired` (finding)
 - source URLs: `/skipurls` (default) or `/checkurls` (load every source URL)
-- release gate: `/development` (default) or `/release` — `/required` and `/verificationrequired`, a secondary main source is a finding, and the entries are verified against their local evidence: an entry without manual verification that is ambiguous, whose quote is not found or that is excluded from auto verification but has an `auto` record is a finding; zero values without justification are a finding
+- release gate: `/development` (default) or `/release` — `/required` and `/verificationrequired`, a secondary main source is a finding, and the entries are verified against their local evidence: an entry without manual verification that is ambiguous, whose quote is not found or that is excluded from auto verification but has an `auto` record is a finding; an entry without manual verification that is verifiable neither locally nor live, zero values without justification and evidence files that back no entry are a finding
 
-The report (Markdown and CSV) shows the new counts per satellite: `UnspecificLocations`, `SecondaryMainSource`, `Release`, `Ambiguous`, `QuoteNotFound`, `ExcludedAutoVerified`, `ExcludedDerived`, `ExcludedNotApplicable`, `UnjustifiedZero` and `OtherReferenceYear` (CSV columns appended at the end).
+The report (Markdown and CSV) shows the new counts per satellite: `UnspecificLocations`, `SecondaryMainSource`, `Release`, `Ambiguous`, `QuoteNotFound`, `ExcludedAutoVerified`, `ExcludedDerived`, `ExcludedNotApplicable`, `UnjustifiedZero`, `OtherReferenceYear`, `UnusedEvidence` and `NotVerifiable` (CSV columns appended at the end).
 
 Entries with a `referenceYear` other than the year of `validFrom` are listed as information (`<key> (<year>)`), never as finding.
 
@@ -625,7 +627,7 @@ Number search:
 | Ambiguous | Weak evidence of a single number: written in the source with at most two digits (separators not counted: `22%`, `1.5`, `50`; `0.012` found as `1.2%`), written with at most three digits and found in more than three sections, or found in words only — confirm with `LexAttest` or add `sourceQuote`; or a number of another year (`multi-year section`, see below) |
 | Partial / not found | Numbers are missing in the source — review the value |
 | Quote not found | The `sourceQuote` of the entry is in no readable source — correct the quote |
-| Unreadable / no local evidence | Blocked host, script-only page, scanned or encrypted PDF, other binary format, or no local file — verify the value manually (`LexAttest`) |
+| Unreadable / no local evidence | Blocked host, script-only page, scanned or encrypted PDF, other binary format, or no local file — add a readable local copy (`documentRef`) or verify the value manually (`LexAttest`); the summary also lists the evidence files that back no entry |
 | No numbers / no content | The entry holds no number, or its `contentFile` is missing or not JSON; an entry whose numbers are all derived is reported as `all numbers derived: confirm with LexAttest` |
 
 With `sourceQuote` the quote must be in a section of a source (whitespace, line-end hyphenation and typographic quotes are normalized) and the numbers of the entry in that section or in the quote; the result is found with this section as location; it is ambiguous only when a number of the quote stands next to another year within the quote. An entry with an `autoVerification` exclusion is reported as `excluded from auto verification: <reason>` and is never written.
@@ -635,6 +637,8 @@ Year context: each hit of a number is rated by the closest year within 120 chara
 A property of a bundle entry that is computed from other values and is in no source is documented with a `derived` exclusion (`Lookup.Key.Property`, the `reason` holds formula and legal reference). Its numbers are not looked up; a number that is also in another property of the entry is still looked up there. When all other numbers are found, the entry is found and its `auto` record lists the property in `derived`. The report shows each derived property as `<key> - derived: <property> = <value> (<reason>)`.
 
 A property of a bundle entry with the value 0 (number or numeric text; a 0 within an array, e.g. the first tier of a table, does not count) means that the rule does not apply, e.g. a region without disability insurance (`"DisabilityRate": 0`). Its number is not looked up, so a rate set to 0 by mistake would stay unnoticed. Document such a property with a `notApplicable` exclusion (`Lookup.Key.Property`, the `reason` says why the rule does not apply, e.g. `XX: no disability insurance program`); the report shows it as `<key> - not applicable: <property> = 0 (<reason>)`. A zero property without `notApplicable` (or `derived`) exclusion is reported as `<key> - zero values without justification: <property>, ...` (information; a finding of `LexCheck /release`).
+
+Languages: the words around numbers and years (percent and scale words, connectors of year groups, validity phrases, enactment citations, month names) are read from language files `{language}.json`. The manifest selects the languages of its sources with `languages` (e.g. `["de", "fr"]`); without it all available languages apply. pecmd ships English, German, French, Spanish, Italian, Dutch and Portuguese in its `LexVocabulary` folder; the folder given by `Vocabulary` (or the environment variable `PAYROLL_ENGINE_LEX_VOCABULARY`) adds a language or replaces a shipped file with the same language code. A language without language file stops the command for the manifest. The `auto` record names the languages and the hash of their words (`LexVerifySource 1.2.0; languages de 21125685`), so a changed word list renews the record on the next run.
 
 With `/writelocations` the command sets the `sourceLocation` of found entries without one and writes an `auto` verification record for entries whose numbers were all found. `/refreshlocations` does the same and also replaces locations written by the command (`Section "…"`, `Sections "…"`, optionally with a `<file or host>: ` prefix); a location written by a person is kept. Ambiguous entries are never written, a manual record is never replaced. Afterwards regenerate the snapshot with `LexSnapshot /overwrite`.
 
@@ -648,6 +652,12 @@ With `/writelocations` the command sets the `sourceLocation` of found entries wi
 - source mode: `/local` (default, local evidence file, offline) or `/live` (source URL)
 - write mode: `/reportonly` (default), `/writelocations` or `/refreshlocations`
 
+**Named:**
+
+| Name | Default | Description |
+|:-----|:--------|:------------|
+| `Vocabulary` | environment variable `PAYROLL_ENGINE_LEX_VOCABULARY` | Folder of additional language files |
+
 Exit codes: `0` ok (or `/lenient`), `6` no `lex.json` found or problems (`/strict`), `-1` invalid parameters or error.
 
 **Examples:**
@@ -656,6 +666,7 @@ LexVerifySource lex.json /recursive
 LexVerifySource .lex/lex.json /writelocations
 LexVerifySource lex.json /recursive /refreshlocations
 LexVerifySource .lex/lex.json /live
+LexVerifySource lex.json /recursive Vocabulary:C:\Lex\LexVocabulary
 ```
 
 ### LexAttest
@@ -760,6 +771,7 @@ The `lex.json` file documents the provenance of compliance values in a data regu
   "regulation": "Data.Tax",
   "validFrom": "2026-01-01",
   "provider": "Tax authority",
+  "languages": ["en"],
   "sources": [ ],
   "values": [ ],
   "files": [ ]
@@ -775,6 +787,7 @@ The `lex.json` file documents the provenance of compliance values in a data regu
 | `regulation` | string | **Yes** | Regulation identifier (`Data.Tax`, `Data.Social`, ...) |
 | `validFrom` | string | **Yes** | Effective date in `YYYY-MM-DD` format |
 | `provider` | string | No | Issuing authority or data provider (`Tax authority`, `Social security agency`, ...) |
+| `languages` | array | No | Languages the sources are written in (ISO 639-1 or 639-3 codes, e.g. `["de", "fr"]`), for the number and year words of `LexVerifySource`; each needs a language file. Without it all available languages apply. Not part of the snapshot hash |
 | `sources` | array | No | Document-level source references (general provenance) |
 | `values` | array | No | Compliance values with content and precise provenance |
 | `files` | array | No | Source documents to copy into the `.lex` folder |
