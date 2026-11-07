@@ -172,6 +172,9 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         if (result.Release && result.UnusedEvidence > 0)
             console.DisplayErrorLine($"         {result.UnusedEvidence} evidence file(s) that back no entry (set documentRef or the source URL): " +
                                      string.Join(", ", result.UnusedEvidenceSamples));
+        if (result.Release && result.NotVerifiable > 0)
+            console.DisplayErrorLine($"         {result.NotVerifiable} entr(ies) verifiable neither locally nor live " +
+                                     $"(add local evidence or snapshot a readable source): {string.Join(", ", result.NotVerifiableSamples)}");
         foreach (var problem in result.FileProblems) console.DisplayErrorLine($"         evidence: {problem}");
         if (!result.ValidFromMatch)
             console.DisplayErrorLine($"         validFrom: lex {result.LexValidFrom}, regulation {result.RegulationValidFrom}");
@@ -245,6 +248,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("                        main source is a finding; the entries are verified against their local evidence and");
         console.DisplayTextLine("                        an entry without manual verification is a finding when it is ambiguous, its quote is");
         console.DisplayTextLine("                        not found or it is excluded from auto verification but has an automatic record;");
+        console.DisplayTextLine("                        an entry without manual verification is a finding when it has no readable local");
+        console.DisplayTextLine("                        evidence and no source that is readable live according to the snapshot;");
         console.DisplayTextLine("                        zero values without justification and evidence files that back no entry are a finding)");
         console.DisplayTextLine("      Exit codes:");
         console.DisplayTextLine("          0 no findings (or /lenient), 4 findings (/strict), 6 no lex.json found or root folder missing,");
