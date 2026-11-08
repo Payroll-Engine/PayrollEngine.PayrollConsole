@@ -86,7 +86,7 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
     {
         var json = await File.ReadAllTextAsync(lexFile);
         var manifest = JsonSerializer.Deserialize<Manifest>(json, ReadOptions) ?? new Manifest();
-        var results = await SourceVerifier.VerifyManifest(manifest, Path.GetDirectoryName(lexFile)!,
+        var results = await ManifestVerifier.VerifyManifest(manifest, Path.GetDirectoryName(lexFile)!,
             client != null ? url => SourceDocument.LoadLive(url, client) : null, documents, vocabulary);
 
         int Count(SourceMatch m) => results.Count(r => r.Match == m);
