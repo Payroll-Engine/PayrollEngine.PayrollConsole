@@ -3432,6 +3432,11 @@
             <param name="file">File to convert</param>
             <returns>Count of imported files</returns>
         </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImport.ToLookupValue(PayrollEngine.Lex.TextTableRow)">
+            <summary>
+            Lookup value of a table row
+            </summary>
+        </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextImport.ImportLookupFileAsync(PayrollEngine.Client.Model.LookupSet,System.String,System.Nullable{System.Int32})">
             <summary>
             Import lookup file
@@ -3513,94 +3518,6 @@
             Parse command parameters
             </summary>
             <param name="parser">Parameter parser</param>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextMap">
-            <summary>
-            Mapping from text line to lookup value
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextMap.Key">
-            <summary>
-            Key mapping
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextMap.Keys">
-            <summary>
-            Keys mapping
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextMap.RangeValue">
-            <summary>
-            Range value mapping
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextMap.Value">
-            <summary>
-            Value mapping
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextMap.Values">
-            <summary>
-            Values mapping
-            </summary>
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap">
-            <summary>
-            Mapping from text line part to lookup key/value part
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap.Name">
-            <summary>
-            Value name
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap.ValueType">
-            <summary>
-            Value type (default: text)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap.Start">
-            <summary>
-            Value start index in text line (0..n)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap.Length">
-            <summary>
-            Value length (1..)
-            </summary>
-        </member>
-        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap.DecimalPlaces">
-            <summary>
-            Decimal places for decimal values (default: 0)
-            </summary>
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupTextValueMap.ToString">
-            <inheritdoc />
-        </member>
-        <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupValueType">
-            <summary>
-            Lookup value type
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupValueType.Text">
-            <summary>
-            Text value
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupValueType.Decimal">
-            <summary>
-            Decimal value
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupValueType.Integer">
-            <summary>
-            Integer value
-            </summary>
-        </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LookupValueType.Boolean">
-            <summary>
-            Boolean value
-            </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.RegulationDryRun">
             <summary>

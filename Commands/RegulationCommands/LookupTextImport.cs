@@ -1,14 +1,13 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Globalization;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using PayrollEngine.Client;
 using PayrollEngine.Client.Model;
 using PayrollEngine.Client.Script;
 using PayrollEngine.Client.Exchange;
 using PayrollEngine.Client.Scripting.Script;
+using PayrollEngine.Lex;
 using Task = System.Threading.Tasks.Task;
 
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
@@ -21,12 +20,6 @@ internal sealed class LookupTextImport
     private IScriptParser ScriptParser { get; } = new ScriptParser();
     private LookupTextImportContext Context { get; }
     private LookupTextImportParameters Parameters { get; }
-
-    private enum LookupTextFormat
-    {
-        FixedColumns,
-        TabDelimited
-    }
 
     /// <summary>
     /// Default constructor
@@ -76,44 +69,26 @@ internal sealed class LookupTextImport
 
         Context.Logger.Debug($"Parsing text file {file.FullName}.");
 
+        // file
+        TextTableResult table;
+        await using (var fileStream = File.Open(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        await using (var bufferedStream = new BufferedStream(fileStream))
+        {
+            table = TextTable.Read(bufferedStream, Context.Mapping);
+        }
+        // lines rejected by a filter are expected (e.g. header records), lines without key or value are not
+        foreach (var line in table.IgnoredLines)
+        {
+            Context.Logger.Warning($"Ignoring source line: {line}");
+        }
+        Context.Logger.Debug($"Converted {table.Rows.Count} lines, filtered {table.Filtered} lines, ignored {table.Ignored} lines.");
+
         // lookup
         var lookup = new LookupSet
         {
             Name = lookupName,
-            Values = []
+            Values = table.Rows.Select(ToLookupValue).ToList()
         };
-
-        // file
-        await using (FileStream fileStream = File.Open(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-        await using (BufferedStream bufferedStream = new BufferedStream(fileStream))
-        using (StreamReader streamReader = new StreamReader(bufferedStream))
-        {
-            // lookup values
-            var count = 0;
-            var ignored = 0;
-            var format = LookupTextFormat.FixedColumns;
-            while (await streamReader.ReadLineAsync() is { } line)
-            {
-                if (count == 0)
-                {
-                    format = GetLineFormat(line);
-                }
-                var result = ConvertLine(line, Context.Mapping, format);
-                if (result != null)
-                {
-                    count++;
-                    lookup.Values.Add(result);
-                }
-                else
-                {
-                    ignored++;
-                    Context.Logger.Warning($"Ignoring source line: {line}");
-                }
-            }
-            Context.Logger.Debug(ignored > 0 ?
-                $"Converted {count} lines, ignored {ignored} lines." :
-                $"Converted {count} lines.");
-        }
 
         // empty result
         if (!lookup.Values.Any())
@@ -160,8 +135,28 @@ internal sealed class LookupTextImport
         return slice;
     }
 
-    private static LookupTextFormat GetLineFormat(string line) =>
-        line.Contains('\t') ? LookupTextFormat.TabDelimited : LookupTextFormat.FixedColumns;
+    /// <summary>
+    /// Lookup value of a table row
+    /// </summary>
+    private static LookupValue ToLookupValue(TextTableRow row)
+    {
+        var value = new LookupValue
+        {
+            RangeValue = row.RangeValue,
+            Key = row.Key,
+            Value = row.Value
+        };
+        // the key values replace the key, the value object replaces the value
+        if (row.KeyValues != null)
+        {
+            value.KeyValues = row.KeyValues.ToArray();
+        }
+        if (row.ValueObject != null)
+        {
+            value.ValueObject = row.ValueObject;
+        }
+        return value;
+    }
 
     /// <summary>
     /// Import lookup file
@@ -260,157 +255,4 @@ internal sealed class LookupTextImport
 
         return exchange;
     }
-
-    #region Convertion
-
-    private static LookupValue ConvertLine(string line, LookupTextMap mapping, LookupTextFormat format)
-    {
-        // key
-        var key = ConvertValue(line, mapping.Key, format);
-
-        // key values
-        var keyValues = new List<object>();
-        if (mapping.Keys != null)
-        {
-            foreach (var keyMap in mapping.Keys)
-            {
-                var keyValue = ConvertValue(line, keyMap, format);
-                if (keyValue != null)
-                {
-                    keyValues.Add(keyValue);
-                }
-            }
-        }
-        if (key == null && !keyValues.Any())
-        {
-            return null;
-        }
-
-        // range value
-        var rangeValue = ConvertDecimalValue(line, mapping.RangeValue, format);
-
-        // value
-        var value = ConvertValue(line, mapping.Value, format);
-
-        // values
-        var valueObject = new Dictionary<string, object>();
-        foreach (var valueMap in mapping.Values)
-        {
-            if (string.IsNullOrWhiteSpace(valueMap.Name))
-            {
-                throw new PayrollException($"Text value map without name {valueMap}.");
-            }
-
-            var objectValue = ConvertValue(line, valueMap, format);
-            if (objectValue != null)
-            {
-                valueObject[valueMap.Name] = objectValue;
-            }
-        }
-        if (value == null && !valueObject.Any())
-        {
-            return null;
-        }
-
-        var lookup = new LookupValue
-        {
-            RangeValue = rangeValue,
-            Key = key?.ToString(),
-            KeyValues = keyValues.Any() ? keyValues.ToArray() : null,
-            Value = value?.ToString(),
-            ValueObject = valueObject.Any() ? valueObject : null
-        };
-        return lookup;
-    }
-
-    private static decimal? ConvertDecimalValue(string line, LookupTextValueMap mapping, LookupTextFormat format)
-    {
-        var value = ConvertValue(line, mapping, format);
-        if (value != null)
-        {
-            return Convert.ToDecimal(value);
-        }
-        return null;
-    }
-
-    private static object ConvertValue(string line, LookupTextValueMap mapping, LookupTextFormat format)
-    {
-        if (mapping == null)
-        {
-            return null;
-        }
-        var textValue = ExtractValue(line, mapping, format);
-        if (string.IsNullOrWhiteSpace(textValue))
-        {
-            return null;
-        }
-        switch (mapping.ValueType)
-        {
-            case LookupValueType.Text:
-                return textValue;
-            case LookupValueType.Decimal:
-                return ConvertDecimal(textValue, mapping.DecimalPlaces);
-            case LookupValueType.Integer:
-                return ConvertInteger(textValue);
-            case LookupValueType.Boolean:
-                return ConvertBoolean(textValue);
-        }
-        return null;
-    }
-
-    private static bool? ConvertBoolean(string value)
-    {
-        if (bool.TryParse(value, out var result))
-        {
-            return result;
-        }
-        return null;
-    }
-
-    private static int? ConvertInteger(string value)
-    {
-        if (int.TryParse(value, CultureInfo.InvariantCulture, out var result))
-        {
-            return result;
-        }
-        return null;
-    }
-
-    private static decimal? ConvertDecimal(string value, int decimalPlaces)
-    {
-        if (decimal.TryParse(value, CultureInfo.InvariantCulture, out var result))
-        {
-            if (decimalPlaces == 0)
-            {
-                return result;
-            }
-            return result / (decimal)Math.Pow(10, decimalPlaces);
-        }
-        return null;
-    }
-
-    private static string ExtractValue(string line, LookupTextValueMap mapping, LookupTextFormat format)
-    {
-        if (string.IsNullOrWhiteSpace(line) || mapping.Start >= line.Length)
-        {
-            return null;
-        }
-
-        switch (format)
-        {
-            case LookupTextFormat.FixedColumns:
-                if (mapping.Length == 0)
-                {
-                    throw new PayrollException($"Missing length in fixed column mapping {mapping.Name}.");
-                }
-                var length = Math.Min(mapping.Length, line.Length - mapping.Start);
-                return line.Substring(mapping.Start, length).Trim();
-            case LookupTextFormat.TabDelimited:
-                var tokens = line.Split('\t');
-                return mapping.Start < tokens.Length ? tokens[mapping.Start].Trim() : null;
-        }
-        return null;
-    }
-
-    #endregion
 }

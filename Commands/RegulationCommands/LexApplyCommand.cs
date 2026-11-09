@@ -45,7 +45,7 @@ internal sealed class LexApplyCommand : CommandBase<LexApplyParameters>
                 return (int)ProgramExitCode.InvalidInput;
             }
 
-            int changed = 0, added = 0, unchanged = 0, skipped = 0, failed = 0;
+            int changed = 0, added = 0, tables = 0, unchanged = 0, skipped = 0, failed = 0;
             foreach (var lexFile in files)
             {
                 var result = await ApplyFile(lexFile, dryRun);
@@ -57,13 +57,17 @@ internal sealed class LexApplyCommand : CommandBase<LexApplyParameters>
                 }
                 foreach (var change in result.Changes)
                 {
-                    if (change.Kind == ApplyChangeKind.Added)
+                    switch (change.Kind)
                     {
-                        added++;
-                    }
-                    else
-                    {
-                        changed++;
+                        case ApplyChangeKind.Added:
+                            added++;
+                            break;
+                        case ApplyChangeKind.Table:
+                            tables++;
+                            break;
+                        default:
+                            changed++;
+                            break;
                     }
                 }
                 unchanged += result.Unchanged;
@@ -72,9 +76,9 @@ internal sealed class LexApplyCommand : CommandBase<LexApplyParameters>
 
             context.Console.DisplayNewLine();
             context.Console.DisplayTextLine(
-                $"Summary: {changed} changed, {added} added, {unchanged} unchanged, {skipped} skipped, {failed} failed" +
+                $"Summary: {changed} changed, {added} added, {tables} table(s), {unchanged} unchanged, {skipped} skipped, {failed} failed" +
                 (dryRun ? " (dry run, nothing written)" : string.Empty));
-            if (!dryRun && changed + added > 0)
+            if (!dryRun && changed + added + tables > 0)
             {
                 context.Console.DisplayInfoLine("Check the regulation (LexCheck) and run the regulation tests.");
             }
@@ -135,6 +139,11 @@ internal sealed class LexApplyCommand : CommandBase<LexApplyParameters>
                 console.DisplayTextLine($"         {marker} {change.File}: {change.Target} ({change.Detail})");
             }
         }
+        // a lookup file with a text table is stored as archive: its references are updated by hand
+        foreach (var replaced in result.ReplacedFiles)
+        {
+            console.DisplayInfoLine($"         [ZIP] {replaced}: update installFiles (regulation-package.json), the project file and Setup.pecmd");
+        }
         foreach (var skip in result.Skipped)
         {
             console.DisplayTextLine($"         [SKIP] {skip}");
@@ -152,11 +161,17 @@ internal sealed class LexApplyCommand : CommandBase<LexApplyParameters>
     public override void ShowHelp(ICommandConsole console)
     {
         console.DisplayTitleLine("- LexApply");
-        console.DisplayTextLine("      Write the lex values into the lookup values of the data regulation (Regulation/*.json).");
+        console.DisplayTextLine("      Write the lex values into the lookup values of the data regulation (Regulation/*.json and the");
+        console.DisplayTextLine("      JSON entries of Regulation/*.zip).");
         console.DisplayTextLine("      Mapping as in LexCheck: lex key = Lookup.Key, a further key part addresses a property");
         console.DisplayTextLine("      of the value object; a contentFile key may end with the year of validFrom.");
         console.DisplayTextLine("      Only differing values are replaced, missing values of an existing lookup are added;");
         console.DisplayTextLine("      descriptions and file formatting are kept. A second run changes nothing.");
+        console.DisplayTextLine("      Text table (entry with contentFile and contentMap, key = lookup name): the text file (or");
+        console.DisplayTextLine("      archive entry tables.zip!table.txt) is converted with the map and replaces all values of the");
+        console.DisplayTextLine("      lookup when they differ (~ file: lookup (+added, -removed, ~changed)). A lookup file that holds");
+        console.DisplayTextLine("      lookups only is written as ZIP archive (Lookups.Name.json becomes Lookups.Name.zip, [ZIP]);");
+        console.DisplayTextLine("      the same table gives the same archive bytes.");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. file name or file mask [FileMask] (e.g. lex.json or **/lex.json)");
         console.DisplayTextLine("      Toggles:");

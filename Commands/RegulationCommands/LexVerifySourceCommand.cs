@@ -91,12 +91,16 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
 
         int Count(SourceMatch m) => results.Count(r => r.Match == m);
         var problems = Count(SourceMatch.Partial) + Count(SourceMatch.NotFound) + Count(SourceMatch.QuoteNotFound);
+        // text tables verified by file identity read no number words: they have no languages
+        var languages = results.FirstOrDefault(r => r.Languages != null)?.Languages;
+        var fileIdentities = results.Count(r => r.FileIdentity);
         var line = $"{lexFile} - found {Count(SourceMatch.Found)}, ambiguous {Count(SourceMatch.Ambiguous)}, " +
                    $"partial {Count(SourceMatch.Partial)}, not found {Count(SourceMatch.NotFound)}, " +
                    $"quote not found {Count(SourceMatch.QuoteNotFound)}, unreadable {Count(SourceMatch.Unreadable)}, " +
                    $"no local evidence {Count(SourceMatch.NoEvidence)}, no numbers {Count(SourceMatch.NoNumbers)}, " +
                    $"no content {Count(SourceMatch.NoContent)}" +
-                   (results.Count > 0 ? $", languages {results[0].Languages}" : string.Empty);
+                   (fileIdentities > 0 ? $", file identity {fileIdentities}" : string.Empty) +
+                   (languages != null ? $", languages {languages}" : string.Empty);
         if (problems > 0) context.Console.DisplayErrorLine("  " + line);
         else context.Console.DisplayTextLine("  " + line);
         foreach (var result in results.Where(r => r.Match is SourceMatch.Partial or SourceMatch.NotFound))
@@ -194,9 +198,10 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
             {
                 locations++;
             }
-            if (editor.SetAutoVerification(result.Key,
-                    SourceVerifier.AutoVerification(today, result.Evidence, result.Derived.Select(x => x.Property),
-                        result.Languages)))
+            var verification = result.FileIdentity
+                ? ManifestVerifier.FileIdentityVerification(today, result.Evidence)
+                : SourceVerifier.AutoVerification(today, result.Evidence, result.Derived.Select(x => x.Property), result.Languages);
+            if (editor.SetAutoVerification(result.Key, verification))
             {
                 verifications++;
             }
@@ -229,6 +234,10 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         console.DisplayTextLine("      Numbers in words count ($1 million, 2.5 lakh, one and one-half).");
         console.DisplayTextLine("      A table with more than 40 numbers is checked with 40 numbers evenly distributed over the table.");
         console.DisplayTextLine("      With sourceQuote, the quote must be in the source and the numbers in the section of the quote.");
+        console.DisplayTextLine("      A text table (contentFile with contentMap) is the authority file itself and is verified by file");
+        console.DisplayTextLine("      identity: its file (or the archive of tables.zip!table.txt) is declared in files[] with sourceUrls and");
+        console.DisplayTextLine("      present in the .lex folder; no numbers are looked up and nothing is downloaded, also not with /live.");
+        console.DisplayTextLine("      The verification record names the method ...; file identity and the file as evidence.");
         console.DisplayTextLine("      The numbers of a property with a derived exclusion (Lookup.Key.Property, formula and legal reference");
         console.DisplayTextLine("      as reason) are not looked up and are listed as derived: <property> = <value> (<reason>); a number");
         console.DisplayTextLine("      that is also in another property is looked up there. The verification record lists the derived");
@@ -246,7 +255,7 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         console.DisplayTextLine("      record names the languages and the hash of their words (method ...; languages de,en 3f2a9c1b).");
         console.DisplayTextLine("      Readable: HTML, text, csv, xls/xlsx/xlsb/ods, PDF with text layer, docx/odt.");
         console.DisplayTextLine("      Results:");
-        console.DisplayTextLine("          found: all numbers are in the sources");
+        console.DisplayTextLine("          found: all numbers are in the sources (text table: file identity)");
         console.DisplayTextLine("          ambiguous: a single number written with two digits at most (22%, 1.5), a single number with three");
         console.DisplayTextLine("                     digits at most in more than three sections, or a number in words only:");
         console.DisplayTextLine("                     confirm with LexAttest or add sourceQuote");

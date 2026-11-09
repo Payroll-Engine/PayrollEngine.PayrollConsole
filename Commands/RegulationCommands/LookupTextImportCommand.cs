@@ -1,11 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Model;
-using PayrollEngine.Serialization;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Client.Service.Api;
+using PayrollEngine.Lex;
 
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 
@@ -96,20 +95,16 @@ public sealed class LookupTextImportCommand : CommandBase<LookupTextImportParame
         return 0;
     }
 
-    private static LookupTextMap ReadLookupMapping(string fileName)
+    private static TextTableMap ReadLookupMapping(string fileName)
     {
         // mapping from json text file
-        var json = File.ReadAllText(fileName);
-        var mapping = DefaultJsonSerializer.Deserialize<LookupTextMap>(json);
+        var mapping = TextTableMap.Load(fileName);
 
         // validate
-        if (mapping?.Key == null && (mapping?.Keys == null || !mapping.Keys.Any()))
+        var errors = mapping.Validate();
+        if (errors.Count > 0)
         {
-            throw new PayrollException($"Text value map without key mapping: {mapping}.");
-        }
-        if (mapping.Value == null && (mapping.Values == null || !mapping.Values.Any()))
-        {
-            throw new PayrollException($"Text value map without value mapping: {mapping}.");
+            throw new PayrollException($"Invalid text to lookup mapping {fileName}: {string.Join("; ", errors)}.");
         }
 
         return mapping;
@@ -141,6 +136,7 @@ public sealed class LookupTextImportCommand : CommandBase<LookupTextImportParame
         console.DisplayTextLine(string.Empty);
         console.DisplayTextLine("      Mapping JSON object:");
         console.DisplayTextLine("          {");
+        console.DisplayTextLine("            'filters': [filterMap]");
         console.DisplayTextLine("            'key': valueMap");
         console.DisplayTextLine("            'keys': [valueMap]");
         console.DisplayTextLine("            'rangeValue': valueMap");
@@ -154,5 +150,12 @@ public sealed class LookupTextImportCommand : CommandBase<LookupTextImportParame
         console.DisplayTextLine("          - start [int]: value start index in line (0...n)");
         console.DisplayTextLine("          - length [int]: value character count (1...n)");
         console.DisplayTextLine("          - decimalPlaces [int]: decimal places for value type 'decimal' (default: 0)");
+        console.DisplayTextLine(string.Empty);
+        console.DisplayTextLine("          Mapping JSON object filter map (optional, all filters must match):");
+        console.DisplayTextLine("          - start [int]: column start index in line (0...n), column index for tab-delimited lines");
+        console.DisplayTextLine("          - length [int]: column character count (1...n)");
+        console.DisplayTextLine("          - values [string]: accepted column texts (trimmed, case-sensitive)");
+        console.DisplayTextLine("          Lines rejected by a filter are skipped without warning (e.g. header and trailer records):");
+        console.DisplayTextLine("            'filters': [ { 'start': 0, 'length': 2, 'values': ['06', '11'] } ]");
     }
 }
