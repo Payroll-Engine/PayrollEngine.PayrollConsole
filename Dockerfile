@@ -10,6 +10,7 @@ WORKDIR /src
 COPY ["PayrollEngine.PayrollConsole.sln", "./"]
 COPY ["PayrollConsole/PayrollEngine.PayrollConsole.csproj", "PayrollConsole/"]
 COPY ["Commands/PayrollEngine.PayrollConsole.Commands.csproj", "Commands/"]
+COPY ["Commands.Tests/PayrollEngine.PayrollConsole.Commands.Tests.csproj", "Commands.Tests/"]
 COPY ["Directory.Build.props", "./"]
 
 # Configure NuGet source
