@@ -66,10 +66,12 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
 
             var results = new List<CheckResult>();
             using var urlChecker = parameters.UrlMode == LexUrlMode.CheckUrls ? new UrlChecker() : null;
+            // additional languages of the source verification (release): the host variable, as LexVerifySource
+            var vocabulary = VerifySourceOperation.ResolveVocabulary(null, Environment.GetEnvironmentVariable);
             foreach (var lexFile in files)
             {
                 results.Add(await CheckFile(lexFile, parameters.RequireLocation, parameters.RequireVerification,
-                    parameters.ReleaseMode == LexReleaseMode.Release, urlChecker));
+                    parameters.ReleaseMode == LexReleaseMode.Release, urlChecker, vocabulary));
             }
 
             foreach (var result in results)
@@ -100,8 +102,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         }
     }
 
-    private static async Task<CheckResult> CheckFile(string lexFilePath, bool requireLocation,
-        bool requireVerification, bool release, UrlChecker urlChecker)
+    internal static async Task<CheckResult> CheckFile(string lexFilePath, bool requireLocation,
+        bool requireVerification, bool release, UrlChecker urlChecker, string vocabulary = null)
     {
         Manifest manifest;
         try
@@ -121,7 +123,7 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         var result = Checker.Check(manifest, lexFilePath, requireLocation, requireVerification, release);
         if (release)
         {
-            await Checker.CheckSources(manifest, result);
+            await Checker.CheckSources(manifest, result, vocabulary);
         }
         if (urlChecker != null)
         {
