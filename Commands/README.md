@@ -431,6 +431,10 @@ PayrunTest Test.pt.json /single /showall /keeptest /TestPrecision3
 
 The Lex commands document and check the provenance of the compliance values in a data regulation satellite. The manifest `lex.json` is stored in the `.lex` folder next to the `Regulation` folder, together with the evidence files and the generated `snapshot.json` (see [lex.json — Source Manifest Schema](#lexjson--source-manifest-schema)).
 
+Commands are thin wrappers over [PayrollEngine.Lex](https://github.com/Payroll-Engine/PayrollEngine.Lex). Workflow rules (write locations, attestation parameters, snapshot overwrite, apply and rollover cycle) live in the library **operations** layer — see the [Operations](https://github.com/Payroll-Engine/PayrollEngine.Lex#operations) section of the Lex README. Console output and exit codes stay stable; hosts call the same operations.
+
+For MCP clients, [PayrollEngine.Mcp.Server](https://github.com/Payroll-Engine/PayrollEngine.Mcp.Server) exposes the same read model as structured JSON (`lex_list_manifests`, `lex_get_entry`, `lex_check`, `lex_verify_snapshot`, `lex_verify_source`, `lex_validate`) when `McpServer:Permissions:Regulator` is `Read`. Write steps (`LexAdd`, `LexFetch`, `LexApply`, …) remain console commands.
+
 Lifecycle of a satellite:
 
 | Step | Command | Result |
