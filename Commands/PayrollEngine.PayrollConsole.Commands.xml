@@ -2811,9 +2811,25 @@
             The attestation of the library operation; the parameter rules are those of <see cref="M:PayrollEngine.Lex.AttestRequest.Test"/>
             </summary>
         </member>
+        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.VerifiedByEnvironmentVariable">
+            <summary>
+            Environment variable with the default person of a verification (used when VerifiedBy is not given)
+            </summary>
+        </member>
+        <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.VerifiedByFromEnvironment">
+            <summary>
+            True when VerifiedBy was taken from the environment variable
+            </summary>
+        </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
+            </summary>
+        </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser,System.Func{System.String,System.String})">
+            <summary>
+            Parse command parameters with an explicit environment lookup (the default person comes from
+            <see cref="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.VerifiedByEnvironmentVariable"/>; never used for a review)
             </summary>
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckCommand">

@@ -77,18 +77,52 @@ public class LexAttestParameters : ICommandParameters
         };
 
     /// <summary>
+    /// Environment variable with the default person of a verification (used when VerifiedBy is not given)
+    /// </summary>
+    public const string VerifiedByEnvironmentVariable = "PAYROLL_ENGINE_LEX_USER";
+
+    /// <summary>
+    /// True when VerifiedBy was taken from the environment variable
+    /// </summary>
+    public bool VerifiedByFromEnvironment { get; private init; }
+
+    /// <summary>
     /// Parse command parameters
     /// </summary>
     public static LexAttestParameters ParserFrom(CommandLineParser parser) =>
-        new()
+        ParserFrom(parser, Environment.GetEnvironmentVariable);
+
+    /// <summary>
+    /// Parse command parameters with an explicit environment lookup (the default person comes from
+    /// <see cref="VerifiedByEnvironmentVariable"/>; never used for a review)
+    /// </summary>
+    public static LexAttestParameters ParserFrom(CommandLineParser parser, Func<string, string> getEnvironmentVariable)
+    {
+        var verifiedBy = parser.GetByName(nameof(VerifiedBy));
+        var reviewedBy = parser.GetByName(nameof(ReviewedBy));
+        var reviewedOn = parser.GetByName(nameof(ReviewedOn));
+        var fromEnvironment = false;
+        if (string.IsNullOrWhiteSpace(verifiedBy) &&
+            string.IsNullOrWhiteSpace(reviewedBy) && string.IsNullOrWhiteSpace(reviewedOn))
+        {
+            var user = getEnvironmentVariable?.Invoke(VerifiedByEnvironmentVariable)?.Trim();
+            if (!string.IsNullOrWhiteSpace(user))
+            {
+                verifiedBy = user;
+                fromEnvironment = true;
+            }
+        }
+        return new()
         {
             Key = LexArguments.Positional(parser.Get(2, nameof(Key))),
             Lex = parser.GetByName(nameof(Lex)),
-            VerifiedBy = parser.GetByName(nameof(VerifiedBy)),
+            VerifiedBy = verifiedBy,
+            VerifiedByFromEnvironment = fromEnvironment,
             VerifiedOn = parser.GetByName(nameof(VerifiedOn)),
             Evidence = parser.GetByName(nameof(Evidence)),
-            ReviewedBy = parser.GetByName(nameof(ReviewedBy)),
-            ReviewedOn = parser.GetByName(nameof(ReviewedOn)),
+            ReviewedBy = reviewedBy,
+            ReviewedOn = reviewedOn,
             OverwriteMode = parser.GetEnumToggle(LexOverwriteMode.Skip)
         };
+    }
 }

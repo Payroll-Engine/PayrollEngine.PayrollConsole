@@ -685,7 +685,7 @@ Record the manual verification of lex entries: a person confirms the values agai
 | Name | Default | Description |
 |:-----|:--------|:------------|
 | `Lex` | `lex.json` or `.lex/lex.json` in the current folder | Path of `lex.json` or of its folder |
-| `VerifiedBy` | none | Person who verified the values |
+| `VerifiedBy` | environment variable `PAYROLL_ENGINE_LEX_USER` | Person who verified the values; the default is not used for a review (`ReviewedBy`/`ReviewedOn` given) and the output names its origin |
 | `VerifiedOn` | today | Verification date `yyyy-MM-dd` |
 | `Evidence` | none | Evidence document (declared in `files[]`) |
 | `ReviewedBy` | none | Second person (review of a manual verification) |

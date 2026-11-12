@@ -30,7 +30,10 @@ internal sealed class LexAttestCommand : CommandBase<LexAttestParameters>
             }
             else
             {
-                context.Console.DisplayTextLine($"Verified by      {parameters.VerifiedBy}");
+                var origin = parameters.VerifiedByFromEnvironment
+                    ? $" (from {LexAttestParameters.VerifiedByEnvironmentVariable})"
+                    : string.Empty;
+                context.Console.DisplayTextLine($"Verified by      {parameters.VerifiedBy}{origin}");
                 context.Console.DisplayTextLine($"Verified on      {parameters.VerifiedOn ?? "(today)"}");
                 context.Console.DisplayTextLine($"Evidence         {parameters.Evidence}");
             }
@@ -105,7 +108,8 @@ internal sealed class LexAttestCommand : CommandBase<LexAttestParameters>
         console.DisplayTextLine("          1. entry key or pattern [Key] (Name matches all keys below it, Prefix* matches a prefix)");
         console.DisplayTextLine("      Named:");
         console.DisplayTextLine("          Lex: path of lex.json or of its folder (default: lex.json or .lex/lex.json in the current folder)");
-        console.DisplayTextLine("          VerifiedBy: person who verified the values");
+        console.DisplayTextLine("          VerifiedBy: person who verified the values (default: environment variable PAYROLL_ENGINE_LEX_USER,");
+        console.DisplayTextLine("              not used for a review)");
         console.DisplayTextLine("          VerifiedOn: verification date yyyy-MM-dd (default: today)");
         console.DisplayTextLine("          Evidence: evidence document (declared in files[])");
         console.DisplayTextLine("          ReviewedBy: second person (review of a manual verification)");

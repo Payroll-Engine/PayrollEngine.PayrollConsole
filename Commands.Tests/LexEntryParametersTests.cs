@@ -16,7 +16,11 @@ public class LexEntryParametersTests
         LexAddParameters.ParserFrom(Parser("LexAdd", arguments));
 
     private static LexAttestParameters Attest(params string[] arguments) =>
-        LexAttestParameters.ParserFrom(Parser("LexAttest", arguments));
+        LexAttestParameters.ParserFrom(Parser("LexAttest", arguments), _ => null);
+
+    private static LexAttestParameters AttestWithUser(string user, params string[] arguments) =>
+        LexAttestParameters.ParserFrom(Parser("LexAttest", arguments),
+            name => name == LexAttestParameters.VerifiedByEnvironmentVariable ? user : null);
 
     [Fact]
     public void Fetch_Defaults()
@@ -136,6 +140,44 @@ public class LexEntryParametersTests
     [InlineData()]
     public void Attest_InvalidCombination(params string[] arguments) =>
         Assert.NotNull(Attest(["Rates", .. arguments]).Test());
+
+    [Fact]
+    public void Attest_VerifiedBy_FromEnvironment()
+    {
+        var parameters = AttestWithUser(" Jane Doe ", "Rates", "Evidence:doc.pdf");
+        Assert.Equal("Jane Doe", parameters.VerifiedBy);
+        Assert.True(parameters.VerifiedByFromEnvironment);
+        Assert.Null(parameters.Test());
+    }
+
+    [Fact]
+    public void Attest_VerifiedBy_ExplicitWinsOverEnvironment()
+    {
+        var parameters = AttestWithUser("Env User", "Rates", "VerifiedBy:Jane Doe", "Evidence:doc.pdf");
+        Assert.Equal("Jane Doe", parameters.VerifiedBy);
+        Assert.False(parameters.VerifiedByFromEnvironment);
+    }
+
+    [Theory]
+    [InlineData("ReviewedBy:John Doe")]
+    [InlineData("ReviewedBy:John Doe", "ReviewedOn:2026-11-03")]
+    public void Attest_Review_IgnoresEnvironment(params string[] arguments)
+    {
+        var parameters = AttestWithUser("Env User", ["Rates", .. arguments]);
+        Assert.Null(parameters.VerifiedBy);
+        Assert.False(parameters.VerifiedByFromEnvironment);
+        Assert.Null(parameters.Test());
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("  ")]
+    public void Attest_EmptyEnvironment_IsNoDefault(string user)
+    {
+        var parameters = AttestWithUser(user, "Rates", "Evidence:doc.pdf");
+        Assert.Null(parameters.VerifiedBy);
+        Assert.NotNull(parameters.Test());
+    }
 
     [Fact]
     public void Attest_MissingKey_IsInvalid() =>
