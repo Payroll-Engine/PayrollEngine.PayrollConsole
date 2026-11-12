@@ -1,9 +1,5 @@
 using System;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Lex;
@@ -18,12 +14,6 @@ namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 // ReSharper disable once UnusedMember.Global
 internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
 {
-    private static readonly JsonSerializerOptions ReadOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-    };
-
     /// <inheritdoc />
     protected override async Task<int> Execute(CommandContext context, LexSnapshotParameters parameters)
     {
@@ -101,80 +91,45 @@ internal sealed class LexSnapshotCommand : CommandBase<LexSnapshotParameters>
         bool dryRun,
         HttpClient client)
     {
-        var manifestDir = Path.GetDirectoryName(lexFilePath)!;
-        var targetDir = string.IsNullOrWhiteSpace(parameters.TargetPath)
-            ? manifestDir
-            : parameters.TargetPath;
+        var result = await SnapshotOperation.RunAsync(lexFilePath, parameters.TargetPath, dryRun,
+            parameters.OverwriteMode == LexOverwriteMode.Overwrite,
+            url => SourceDocument.LoadLive(url, client),
+            fileName => context.Console.DisplayInfoLine($"         Downloading {fileName} ..."));
 
-        // check for existing snapshot
-        var snapshotPath = Path.Combine(targetDir, "snapshot.json");
-        if (File.Exists(snapshotPath) && parameters.OverwriteMode == LexOverwriteMode.Skip)
+        switch (result.Status)
         {
-            context.Console.DisplayInfoLine($"  [SKIP] {lexFilePath} — snapshot.json already exists");
-            return ProcessResult.Skipped;
-        }
-
-        // load manifest
-        Manifest manifest;
-        try
-        {
-            var json = await File.ReadAllTextAsync(lexFilePath);
-            manifest = JsonSerializer.Deserialize<Manifest>(json, ReadOptions);
-        }
-        catch (Exception ex)
-        {
-            context.Console.DisplayErrorLine($"  [FAIL] {lexFilePath} — failed to parse lex.json: {ex.Message}");
-            return ProcessResult.Failed;
-        }
-
-        // validate
-        var errors = Validator.Validate(manifest, manifestDir);
-        if (errors.Count > 0)
-        {
-            context.Console.DisplayErrorLine($"  [FAIL] {lexFilePath} — validation errors:");
-            foreach (var error in errors)
-            {
-                context.Console.DisplayErrorLine($"         {error}");
-            }
-            return ProcessResult.Failed;
-        }
-
-        // write snapshot
-        try
-        {
-            if (!dryRun && !Directory.Exists(targetDir))
-            {
-                Directory.CreateDirectory(targetDir);
-            }
-
-            var writer = new SnapshotWriter();
-            var snapshot = await writer.WriteAsync(manifest, manifestDir, targetDir, dryRun,
-                (fileName, dryRunFile) =>
+            case SnapshotStatus.Skipped:
+                context.Console.DisplayInfoLine($"  [SKIP] {lexFilePath} — snapshot.json already exists");
+                return ProcessResult.Skipped;
+            case SnapshotStatus.Created:
+                var snapshot = result.Snapshot;
+                var label = dryRun ? "[DRY-RUN]" : "[OK]";
+                context.Console.DisplaySuccessLine(
+                    $"  {label} {lexFilePath} — {snapshot.Values.Count} values, {snapshot.Files.Count} files");
+                if (snapshot.LiveSources != null)
                 {
-                    if (!dryRunFile)
+                    context.Console.DisplayInfoLine(
+                        $"         live sources: {result.LiveSourcesHashed} hashed, {result.LiveSourcesUnreadable} not readable (no change detection)");
+                }
+                return ProcessResult.Created;
+            default:
+                if (result.ParseError != null)
+                {
+                    context.Console.DisplayErrorLine($"  [FAIL] {lexFilePath} — failed to parse lex.json: {result.ParseError}");
+                }
+                else if (result.ValidationErrors.Count > 0)
+                {
+                    context.Console.DisplayErrorLine($"  [FAIL] {lexFilePath} — validation errors:");
+                    foreach (var error in result.ValidationErrors)
                     {
-                        context.Console.DisplayInfoLine($"         Downloading {fileName} ...");
+                        context.Console.DisplayErrorLine($"         {error}");
                     }
-                },
-                keepLocalFiles: parameters.OverwriteMode == LexOverwriteMode.Overwrite,
-                loadLiveSource: url => SourceDocument.LoadLive(url, client));
-
-            var label = dryRun ? "[DRY-RUN]" : "[OK]";
-            context.Console.DisplaySuccessLine(
-                $"  {label} {lexFilePath} — {snapshot.Values.Count} values, {snapshot.Files.Count} files");
-            if (snapshot.LiveSources != null)
-            {
-                var unreadable = snapshot.LiveSources.Count(x => x.TextHash == null);
-                context.Console.DisplayInfoLine(
-                    $"         live sources: {snapshot.LiveSources.Count - unreadable} hashed, {unreadable} not readable (no change detection)");
-            }
-
-            return ProcessResult.Created;
-        }
-        catch (Exception ex)
-        {
-            context.Console.DisplayErrorLine($"  [FAIL] {lexFilePath} — {ex.Message}");
-            return ProcessResult.Failed;
+                }
+                else
+                {
+                    context.Console.DisplayErrorLine($"  [FAIL] {lexFilePath} — {result.Error}");
+                }
+                return ProcessResult.Failed;
         }
     }
 

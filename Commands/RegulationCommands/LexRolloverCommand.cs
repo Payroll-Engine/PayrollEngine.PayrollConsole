@@ -45,7 +45,7 @@ internal sealed class LexRolloverCommand : CommandBase<LexRolloverParameters>
         try
         {
             var date = DateTime.ParseExact(parameters.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-            DatePeriod cycle;
+            RolloverCycle cycle;
             try
             {
                 var calendars = new CalendarService(context.HttpClient);

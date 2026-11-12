@@ -1,10 +1,12 @@
 using System;
 using System.Threading.Tasks;
+using PayrollEngine.Lex;
 
 namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 
 /// <summary>
-/// Cycle of the payroll calendar that contains the rollover date
+/// Cycle of the payroll calendar that contains the rollover date: converts the calendar period of the
+/// backend into the cycle of the Lex library and reports its error as <see cref="PayrollException"/>
 /// </summary>
 internal static class LexRolloverCycle
 {
@@ -16,19 +18,14 @@ internal static class LexRolloverCycle
     /// <param name="getTenantId">Returns the id of a tenant identifier, null when unknown</param>
     /// <param name="getCycle">Returns the calendar cycle of the tenant id that contains the date</param>
     /// <exception cref="PayrollException">Unknown tenant or no cycle</exception>
-    internal static async Task<DatePeriod> GetAsync(string tenant, DateTime date,
+    internal static async Task<RolloverCycle> GetAsync(string tenant, DateTime date,
         Func<string, Task<int?>> getTenantId, Func<int, DateTime, Task<DatePeriod>> getCycle)
     {
-        var tenantId = await getTenantId(tenant);
-        if (tenantId == null)
+        var result = await RolloverCycle.GetAsync(tenant, date, getTenantId, async (tenantId, moment) =>
         {
-            throw new PayrollException($"Unknown tenant {tenant}");
-        }
-        var cycle = await getCycle(tenantId.Value, date);
-        if (cycle == null || cycle.Start > date || cycle.End < date)
-        {
-            throw new PayrollException($"The calendar of tenant {tenant} returns no cycle for {date:yyyy-MM-dd}");
-        }
-        return cycle;
+            var period = await getCycle(tenantId, moment);
+            return period == null ? null : new RolloverCycle { Start = period.Start, End = period.End };
+        });
+        return result.Error != null ? throw new PayrollException(result.Error) : result.Cycle;
     }
 }

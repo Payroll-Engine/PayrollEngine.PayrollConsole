@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Lex;
@@ -16,13 +14,6 @@ namespace PayrollEngine.PayrollConsole.Commands.RegulationCommands;
 // ReSharper disable once UnusedMember.Global
 internal sealed class LexApplyCommand : CommandBase<LexApplyParameters>
 {
-    private static readonly JsonSerializerOptions ReadOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        ReadCommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true
-    };
-
     /// <inheritdoc />
     protected override async Task<int> Execute(CommandContext context, LexApplyParameters parameters)
     {
@@ -45,73 +36,30 @@ internal sealed class LexApplyCommand : CommandBase<LexApplyParameters>
                 return (int)ProgramExitCode.InvalidInput;
             }
 
-            int changed = 0, added = 0, tables = 0, unchanged = 0, skipped = 0, failed = 0;
+            var summary = new ApplySummary();
             foreach (var lexFile in files)
             {
-                var result = await ApplyFile(lexFile, dryRun);
+                var result = await ApplyOperation.ApplyFileAsync(lexFile, dryRun);
                 Display(context.Console, result, dryRun);
-                if (result.Error != null)
-                {
-                    failed++;
-                    continue;
-                }
-                foreach (var change in result.Changes)
-                {
-                    switch (change.Kind)
-                    {
-                        case ApplyChangeKind.Added:
-                            added++;
-                            break;
-                        case ApplyChangeKind.Table:
-                            tables++;
-                            break;
-                        default:
-                            changed++;
-                            break;
-                    }
-                }
-                unchanged += result.Unchanged;
-                skipped += result.Skipped.Count;
+                summary.Add(result);
             }
 
             context.Console.DisplayNewLine();
             context.Console.DisplayTextLine(
-                $"Summary: {changed} changed, {added} added, {tables} table(s), {unchanged} unchanged, {skipped} skipped, {failed} failed" +
+                $"Summary: {summary.Changed} changed, {summary.Added} added, {summary.Tables} table(s), {summary.Unchanged} unchanged, " +
+                $"{summary.Skipped} skipped, {summary.Failed} failed" +
                 (dryRun ? " (dry run, nothing written)" : string.Empty));
-            if (!dryRun && changed + added + tables > 0)
+            if (!dryRun && summary.Applied > 0)
             {
-                context.Console.DisplayInfoLine("Check the regulation (LexCheck) and run the regulation tests.");
+                context.Console.DisplayInfoLine(ApplyOperation.CheckHint);
             }
-            return failed > 0 ? (int)ProgramExitCode.InvalidInput : (int)ProgramExitCode.Ok;
+            return summary.Failed > 0 ? (int)ProgramExitCode.InvalidInput : (int)ProgramExitCode.Ok;
         }
         catch (Exception exception)
         {
             ProcessError(context.Console, exception);
             return (int)ProgramExitCode.GenericError;
         }
-    }
-
-    private static async Task<ApplyResult> ApplyFile(string lexFilePath, bool dryRun)
-    {
-        Manifest manifest;
-        try
-        {
-            manifest = JsonSerializer.Deserialize<Manifest>(await File.ReadAllTextAsync(lexFilePath), ReadOptions);
-        }
-        catch (Exception exception) when (exception is JsonException or IOException)
-        {
-            return new ApplyResult { LexPath = lexFilePath, Error = "lex.json could not be read: " + exception.Message };
-        }
-        if (manifest == null)
-        {
-            return new ApplyResult { LexPath = lexFilePath, Error = "lex.json is empty" };
-        }
-        var errors = Validator.Validate(manifest, Path.GetDirectoryName(lexFilePath)!);
-        if (errors.Count > 0)
-        {
-            return new ApplyResult { LexPath = lexFilePath, Error = $"lex.json is invalid: {errors[0]}" };
-        }
-        return Applier.Apply(manifest, lexFilePath, dryRun);
     }
 
     private static void Display(ICommandConsole console, ApplyResult result, bool dryRun)
@@ -140,9 +88,9 @@ internal sealed class LexApplyCommand : CommandBase<LexApplyParameters>
             }
         }
         // a lookup file with a text table is stored as archive: its references are updated by hand
-        foreach (var replaced in result.ReplacedFiles)
+        foreach (var hint in ApplyOperation.ReplacedFileHints(result))
         {
-            console.DisplayInfoLine($"         [ZIP] {replaced}: update installFiles (regulation-package.json), the project file and Setup.pecmd");
+            console.DisplayInfoLine($"         [ZIP] {hint}");
         }
         foreach (var skip in result.Skipped)
         {

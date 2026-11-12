@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
@@ -41,48 +40,14 @@ internal sealed class LexAttestCommand : CommandBase<LexAttestParameters>
 
         try
         {
-            var lexPath = FileResolver.ResolveManifest(parameters.Lex);
-            if (lexPath == null)
+            var attestation = await AttestOperation.AttestAsync(parameters.Lex, parameters.ToRequest());
+            if (attestation.Error != null)
             {
-                context.Console.DisplayErrorLine($"lex.json not found: {parameters.Lex ?? Directory.GetCurrentDirectory()}");
-                return (int)ProgramExitCode.InvalidInput;
-            }
-            var lexDirectory = Path.GetDirectoryName(lexPath)!;
-            var editor = ManifestEditor.Parse(await File.ReadAllTextAsync(lexPath));
-
-            var keys = editor.MatchKeys(parameters.Key);
-            if (keys.Count == 0)
-            {
-                context.Console.DisplayErrorLine($"No entry matches {parameters.Key}");
+                context.Console.DisplayErrorLine(attestation.Error);
                 return (int)ProgramExitCode.InvalidInput;
             }
 
-            if (!parameters.IsReview)
-            {
-                if (!editor.HasFile(parameters.Evidence))
-                {
-                    context.Console.DisplayErrorLine($"Evidence is not declared in files[] (LexFetch): {parameters.Evidence}");
-                    return (int)ProgramExitCode.InvalidInput;
-                }
-                if (!File.Exists(Path.Combine(lexDirectory, parameters.Evidence)))
-                {
-                    context.Console.DisplayErrorLine($"Evidence file not found in the .lex folder: {parameters.Evidence}");
-                    return (int)ProgramExitCode.InvalidInput;
-                }
-            }
-
-            var overwrite = parameters.OverwriteMode == LexOverwriteMode.Overwrite;
-            var results = keys.Select(key => (Key: key, Result: parameters.IsReview
-                ? editor.SetReview(key, parameters.ReviewedBy, parameters.ReviewedOn ?? EntryRules.Today(), overwrite)
-                : editor.SetManualVerification(key, new Verification
-                {
-                    Mode = Verification.ModeManual,
-                    VerifiedOn = parameters.VerifiedOn ?? EntryRules.Today(),
-                    VerifiedBy = parameters.VerifiedBy,
-                    Evidence = parameters.Evidence
-                }, overwrite))).ToList();
-
-            foreach (var (key, result) in results)
+            foreach (var (key, result, reviewNotRequired) in attestation.Entries.Select(x => (x.Key, x.Result, x.ReviewNotRequired)))
             {
                 switch (result)
                 {
@@ -99,22 +64,16 @@ internal sealed class LexAttestCommand : CommandBase<LexAttestParameters>
                         context.Console.DisplayInfoLine($"  [SKIP] {key} - no manual verification to review");
                         break;
                 }
-                if (parameters.IsReview && result == AttestResult.Written &&
-                    editor.SourceReview(key) != Source.ReviewFourEyes)
+                if (reviewNotRequired)
                 {
                     context.Console.DisplayInfoLine($"         note: the source of {key} does not require a review ({Source.ReviewFourEyes})");
                 }
             }
 
-            if (editor.Changes > 0)
-            {
-                await editor.SaveAsync(lexPath);
-            }
-            var written = results.Count(x => x.Result == AttestResult.Written);
-            var unchanged = results.Count(x => x.Result == AttestResult.Unchanged);
             context.Console.DisplayNewLine();
-            context.Console.DisplayTextLine($"Summary: {written} written, {unchanged} unchanged, {results.Count - written - unchanged} skipped");
-            if (written > 0)
+            context.Console.DisplayTextLine(
+                $"Summary: {attestation.Written} written, {attestation.Unchanged} unchanged, {attestation.Skipped} skipped");
+            if (attestation.Written > 0)
             {
                 context.Console.DisplayInfoLine("Update the snapshot (LexSnapshot /overwrite).");
             }

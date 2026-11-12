@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Lex;
@@ -20,23 +18,11 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
 {
     private const int MaxQuoteLength = 120;
 
-    /// <summary>Environment variable with the folder of additional language files</summary>
-    private const string VocabularyVariable = "PAYROLL_ENGINE_LEX_VOCABULARY";
-
-    private static readonly JsonSerializerOptions ReadOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        ReadCommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true
-    };
-
     /// <inheritdoc />
     protected override async Task<int> Execute(CommandContext context, LexVerifySourceParameters parameters)
     {
         DisplayTitle(context.Console, "Lex Verify Source");
-        var vocabulary = string.IsNullOrWhiteSpace(parameters.Vocabulary)
-            ? Environment.GetEnvironmentVariable(VocabularyVariable)
-            : parameters.Vocabulary;
+        var vocabulary = VerifySourceOperation.ResolveVocabulary(parameters.Vocabulary, Environment.GetEnvironmentVariable);
         if (context.DisplayLevel == DisplayLevel.Full)
         {
             context.Console.DisplayTextLine($"File mask        {parameters.FileMask}");
@@ -62,9 +48,9 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
             int problems = 0, ambiguous = 0;
             foreach (var lexFile in files)
             {
-                var results = await VerifyFile(context, lexFile, parameters, vocabulary, client, documents);
-                problems += results.Count(r => r.Match is SourceMatch.Partial or SourceMatch.NotFound or SourceMatch.QuoteNotFound);
-                ambiguous += results.Count(r => r.Match == SourceMatch.Ambiguous);
+                var file = await VerifyFile(context, lexFile, parameters, vocabulary, client, documents);
+                problems += file.Problems;
+                ambiguous += file.Ambiguous;
             }
 
             context.Console.DisplayNewLine();
@@ -81,19 +67,18 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         }
     }
 
-    private static async Task<List<SourceResult>> VerifyFile(CommandContext context, string lexFile, LexVerifySourceParameters parameters,
+    private static async Task<VerifySourceFileResult> VerifyFile(CommandContext context, string lexFile, LexVerifySourceParameters parameters,
         string vocabulary, HttpClient client, Dictionary<string, SourceDocument> documents)
     {
-        var json = await File.ReadAllTextAsync(lexFile);
-        var manifest = JsonSerializer.Deserialize<Manifest>(json, ReadOptions) ?? new Manifest();
-        var results = await ManifestVerifier.VerifyManifest(manifest, Path.GetDirectoryName(lexFile)!,
-            client != null ? url => SourceDocument.LoadLive(url, client) : null, documents, vocabulary);
+        var file = await VerifySourceOperation.VerifyFileAsync(lexFile, vocabulary,
+            client != null ? url => SourceDocument.LoadLive(url, client) : null, documents);
+        var results = file.Results;
 
-        int Count(SourceMatch m) => results.Count(r => r.Match == m);
-        var problems = Count(SourceMatch.Partial) + Count(SourceMatch.NotFound) + Count(SourceMatch.QuoteNotFound);
+        int Count(SourceMatch m) => file.Count(m);
+        var problems = file.Problems;
         // text tables verified by file identity read no number words: they have no languages
-        var languages = results.FirstOrDefault(r => r.Languages != null)?.Languages;
-        var fileIdentities = results.Count(r => r.FileIdentity);
+        var languages = file.Languages;
+        var fileIdentities = file.FileIdentities;
         var line = $"{lexFile} - found {Count(SourceMatch.Found)}, ambiguous {Count(SourceMatch.Ambiguous)}, " +
                    $"partial {Count(SourceMatch.Partial)}, not found {Count(SourceMatch.NotFound)}, " +
                    $"quote not found {Count(SourceMatch.QuoteNotFound)}, unreadable {Count(SourceMatch.Unreadable)}, " +
@@ -163,57 +148,33 @@ internal sealed class LexVerifySourceCommand : CommandBase<LexVerifySourceParame
         {
             context.Console.DisplayInfoLine($"         {withoutEvidence} entr(ies) without local evidence: verify manually or use /live");
         }
-        var unused = EvidenceCheck.UnusedEvidence(manifest, Path.GetDirectoryName(lexFile)!);
+        var unused = file.UnusedEvidence;
         if (unused.Count > 0)
         {
             context.Console.DisplayInfoLine($"         evidence file(s) that back no entry (set documentRef or the source URL): {string.Join(", ", unused)}");
         }
 
-        if (parameters.WriteMode != LexSourceWriteMode.ReportOnly)
+        var write = await VerifySourceOperation.WriteAsync(file, WriteMode(parameters.WriteMode));
+        if (write is { Saved: true })
         {
-            await WriteResults(context, lexFile, json, results, parameters.WriteMode == LexSourceWriteMode.RefreshLocations);
+            context.Console.DisplayInfoLine(
+                $"         wrote {write.Locations} source location(s) and {write.Verifications} verification record(s): update the snapshot (LexSnapshot /overwrite)");
         }
-        return results;
+        return file;
     }
+
+    private static SourceWriteMode WriteMode(LexSourceWriteMode mode) => mode switch
+    {
+        LexSourceWriteMode.WriteLocations => SourceWriteMode.WriteLocations,
+        LexSourceWriteMode.RefreshLocations => SourceWriteMode.RefreshLocations,
+        _ => SourceWriteMode.ReportOnly
+    };
 
     private static string Sampled(SourceResult result) =>
         result.Sampled ? $" sampled {result.NumbersTotal} of {result.ContentNumbers} numbers" : string.Empty;
 
     private static string Shorten(string text) =>
         text is { Length: > MaxQuoteLength } ? text[..MaxQuoteLength] + "..." : text;
-
-    /// <summary>
-    /// Write the found source locations and the automatic verification records of fully found entries;
-    /// ambiguous entries and entries excluded from auto verification are not written
-    /// </summary>
-    private static async Task WriteResults(CommandContext context, string lexFile, string json,
-        List<SourceResult> results, bool refresh)
-    {
-        var editor = ManifestEditor.Parse(json);
-        var today = DateOnly.FromDateTime(DateTime.Today);
-        int locations = 0, verifications = 0;
-        foreach (var result in results.Where(r => r.CanWrite))
-        {
-            if (result.Location != null && editor.SetSourceLocation(result.Key, result.Location, refresh))
-            {
-                locations++;
-            }
-            var verification = result.FileIdentity
-                ? ManifestVerifier.FileIdentityVerification(today, result.Evidence)
-                : SourceVerifier.AutoVerification(today, result.Evidence, result.Derived.Select(x => x.Property), result.Languages);
-            if (editor.SetAutoVerification(result.Key, verification))
-            {
-                verifications++;
-            }
-        }
-        if (editor.Changes == 0)
-        {
-            return;
-        }
-        await editor.SaveAsync(lexFile);
-        context.Console.DisplayInfoLine(
-            $"         wrote {locations} source location(s) and {verifications} verification record(s): update the snapshot (LexSnapshot /overwrite)");
-    }
 
     /// <inheritdoc />
     public override bool BackendCommand => false;

@@ -2806,6 +2806,11 @@
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.Test">
             <inheritdoc />
         </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.ToRequest">
+            <summary>
+            The attestation of the library operation; the parameter rules are those of <see cref="M:PayrollEngine.Lex.AttestRequest.Test"/>
+            </summary>
+        </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexAttestParameters.ParserFrom(PayrollEngine.Client.Command.CommandLineParser)">
             <summary>
             Parse command parameters
@@ -3083,7 +3088,8 @@
         </member>
         <member name="T:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverCycle">
             <summary>
-            Cycle of the payroll calendar that contains the rollover date
+            Cycle of the payroll calendar that contains the rollover date: converts the calendar period of the
+            backend into the cycle of the Lex library and reports its error as <see cref="T:PayrollEngine.PayrollException"/>
             </summary>
         </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexRolloverCycle.GetAsync(System.String,System.DateTime,System.Func{System.String,System.Threading.Tasks.Task{System.Nullable{System.Int32}}},System.Func{System.Int32,System.DateTime,System.Threading.Tasks.Task{PayrollEngine.DatePeriod}})">
@@ -3301,17 +3307,8 @@
             and, on request, writes the found source location and the automatic verification record into the manifest.
             </summary>
         </member>
-        <member name="F:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.VocabularyVariable">
-            <summary>Environment variable with the folder of additional language files</summary>
-        </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceParameters)">
             <inheritdoc />
-        </member>
-        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.WriteResults(PayrollEngine.Client.Command.CommandContext,System.String,System.String,System.Collections.Generic.List{PayrollEngine.Lex.SourceResult},System.Boolean)">
-            <summary>
-            Write the found source locations and the automatic verification records of fully found entries;
-            ambiguous entries and entries excluded from auto verification are not written
-            </summary>
         </member>
         <member name="P:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexVerifySourceCommand.BackendCommand">
             <inheritdoc />

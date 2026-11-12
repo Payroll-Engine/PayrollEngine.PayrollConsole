@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using PayrollEngine.Client.Command;
 using PayrollEngine.Lex;
@@ -32,37 +29,7 @@ internal sealed class LexAddCommand : CommandBase<LexAddParameters>
 
         try
         {
-            var lexPath = FileResolver.ResolveManifest(parameters.Lex);
-            if (lexPath == null)
-            {
-                context.Console.DisplayErrorLine($"lex.json not found: {parameters.Lex ?? Directory.GetCurrentDirectory()}");
-                return (int)ProgramExitCode.InvalidInput;
-            }
-            var editor = ManifestEditor.Parse(await File.ReadAllTextAsync(lexPath));
-
-            var errors = new List<string>();
-            if (editor.HasKey(parameters.Key))
-            {
-                errors.Add($"Entry {parameters.Key} exists");
-            }
-            foreach (var url in parameters.SourceUrls.Where(x => !editor.HasSource(x)))
-            {
-                errors.Add($"Source URL is not declared in sources[]: {url}");
-            }
-            if (!string.IsNullOrWhiteSpace(parameters.DocumentRef) && !editor.HasFile(parameters.DocumentRef))
-            {
-                errors.Add($"Document is not declared in files[] (LexFetch): {parameters.DocumentRef}");
-            }
-            if (errors.Count > 0)
-            {
-                foreach (var error in errors)
-                {
-                    context.Console.DisplayErrorLine(error);
-                }
-                return (int)ProgramExitCode.InvalidInput;
-            }
-
-            editor.AddValue(new Entry
+            var result = await AddEntryOperation.AddAsync(parameters.Lex, new Entry
             {
                 Key = parameters.Key,
                 Content = parameters.Content,
@@ -74,17 +41,18 @@ internal sealed class LexAddCommand : CommandBase<LexAddParameters>
                 DocumentRef = parameters.DocumentRef,
                 Description = parameters.Description
             });
-            await editor.SaveAsync(lexPath);
-            context.Console.DisplaySuccessLine($"  [OK] {parameters.Key} added to {lexPath}");
-
-            var missing = new List<string>();
-            if (string.IsNullOrWhiteSpace(parameters.Content)) missing.Add("content");
-            if (parameters.SourceUrls.Count == 0) missing.Add("sourceUrls");
-            if (string.IsNullOrWhiteSpace(parameters.SourceLocation)) missing.Add("sourceLocation");
-            if (string.IsNullOrWhiteSpace(parameters.LegalReference)) missing.Add("legalReference");
-            if (missing.Count > 0)
+            if (!result.Added)
             {
-                context.Console.DisplayInfoLine($"         to fill: {string.Join(", ", missing)}");
+                foreach (var error in result.Errors)
+                {
+                    context.Console.DisplayErrorLine(error);
+                }
+                return (int)ProgramExitCode.InvalidInput;
+            }
+            context.Console.DisplaySuccessLine($"  [OK] {parameters.Key} added to {result.LexPath}");
+            if (result.Missing.Count > 0)
+            {
+                context.Console.DisplayInfoLine($"         to fill: {string.Join(", ", result.Missing)}");
             }
             context.Console.DisplayInfoLine("Verify the entry (LexVerifySource, LexAttest) and update the snapshot (LexSnapshot /overwrite).");
             return (int)ProgramExitCode.Ok;

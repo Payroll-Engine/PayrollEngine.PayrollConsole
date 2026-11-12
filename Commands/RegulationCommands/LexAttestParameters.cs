@@ -58,36 +58,23 @@ public class LexAttestParameters : ICommandParameters
     public Type[] Toggles => [typeof(LexOverwriteMode)];
 
     /// <inheritdoc />
-    public string Test()
-    {
-        if (string.IsNullOrWhiteSpace(Key))
+    public string Test() =>
+        ToRequest().Test();
+
+    /// <summary>
+    /// The attestation of the library operation; the parameter rules are those of <see cref="AttestRequest.Test"/>
+    /// </summary>
+    public AttestRequest ToRequest() =>
+        new()
         {
-            return "Missing entry key or key pattern";
-        }
-        var verify = !string.IsNullOrWhiteSpace(VerifiedBy) || !string.IsNullOrWhiteSpace(Evidence) ||
-                     !string.IsNullOrWhiteSpace(VerifiedOn);
-        if (IsReview)
-        {
-            if (verify)
-            {
-                return "Verification and review are separate steps: use either VerifiedBy/Evidence or ReviewedBy";
-            }
-            return string.IsNullOrWhiteSpace(ReviewedOn) || EntryRules.IsDate(ReviewedOn)
-                ? null
-                : $"Invalid ReviewedOn '{ReviewedOn}', expected yyyy-MM-dd";
-        }
-        if (!string.IsNullOrWhiteSpace(ReviewedOn))
-        {
-            return "ReviewedOn requires ReviewedBy";
-        }
-        if (string.IsNullOrWhiteSpace(VerifiedBy) || string.IsNullOrWhiteSpace(Evidence))
-        {
-            return "Missing VerifiedBy and Evidence (or ReviewedBy for a review)";
-        }
-        return string.IsNullOrWhiteSpace(VerifiedOn) || EntryRules.IsDate(VerifiedOn)
-            ? null
-            : $"Invalid VerifiedOn '{VerifiedOn}', expected yyyy-MM-dd";
-    }
+            Key = Key,
+            VerifiedBy = VerifiedBy,
+            VerifiedOn = VerifiedOn,
+            Evidence = Evidence,
+            ReviewedBy = ReviewedBy,
+            ReviewedOn = ReviewedOn,
+            Overwrite = OverwriteMode == LexOverwriteMode.Overwrite
+        };
 
     /// <summary>
     /// Parse command parameters

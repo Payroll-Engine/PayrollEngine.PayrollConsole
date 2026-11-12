@@ -175,6 +175,8 @@ public class ExcelWorkbookTests
         Assert.Equal("Value", workbook.GetNamedValue<string>("Single"));
         Assert.Equal("Local", workbook.GetNamedValue<string>("SheetScope"));
         Assert.Null(workbook.GetNamedValue<string>("Missing"));
+        // the delegate runs synchronously inside Assert.Throws, before the workbook is disposed
+        // ReSharper disable once AccessToDisposedClosure
         Assert.Throws<PayrollException>(() => workbook.GetNamedValue<string>("Multiple"));
     }
 
