@@ -597,9 +597,9 @@ An entry with `contentFile` covers its whole lookup (e.g. a tariff table stored 
 - source location: `/optional` (default, a missing `sourceLocation` is information) or `/required` (finding)
 - verification: `/verificationoptional` (default, entries without verification are counted) or `/verificationrequired` (finding)
 - source URLs: `/skipurls` (default) or `/checkurls` (load every source URL)
-- release gate: `/development` (default) or `/release` — `/required` and `/verificationrequired`, a secondary main source is a finding, and the entries are verified against their local evidence: an entry without manual verification that is ambiguous, whose quote is not found or that is excluded from auto verification but has an `auto` record is a finding; an entry without manual verification that is verifiable neither locally nor live, zero values without justification and evidence files that back no entry are a finding
+- release gate: `/development` (default) or `/release` — `/required` and `/verificationrequired`, a secondary main source is a finding, and the entries are verified against their local evidence: an entry without manual verification that is ambiguous, whose quote is not found or that is excluded from auto verification but has an `auto` record is a finding; an entry without manual verification that is verifiable neither locally nor live, zero values without justification, values of range lookups without `rangeValue` and evidence files that back no entry are a finding
 
-The report (Markdown and CSV) shows the new counts per satellite: `UnspecificLocations`, `SecondaryMainSource`, `Release`, `Ambiguous`, `QuoteNotFound`, `ExcludedAutoVerified`, `ExcludedDerived`, `ExcludedNotApplicable`, `UnjustifiedZero`, `OtherReferenceYear`, `UnusedEvidence` and `NotVerifiable` (CSV columns appended at the end).
+The report (Markdown and CSV) shows the new counts per satellite: `UnspecificLocations`, `SecondaryMainSource`, `Release`, `Ambiguous`, `QuoteNotFound`, `ExcludedAutoVerified`, `ExcludedDerived`, `ExcludedNotApplicable`, `UnjustifiedZero`, `OtherReferenceYear`, `UnusedEvidence`, `NotVerifiable` and `RangeValueMissing` (CSV columns appended at the end).
 
 Entries with a `referenceYear` other than the year of `validFrom` are listed as information (`<key> (<year>)`), never as finding.
 
@@ -706,7 +706,7 @@ LexAttest Rates.* "ReviewedBy:John Doe"
 ```
 
 ### LexApply
-Write the lex values into the lookup values of the data regulation (`Regulation/*.json`). The mapping is the same as in `LexCheck`: the lex key is `Lookup.Key`, a further key part addresses a property of the value object; a `contentFile` key may end with the year of `validFrom`. Only differing values are replaced and missing values of an existing lookup are added; descriptions and file formatting are kept, so a second run changes nothing. Open entries are skipped until they are verified.
+Write the lex values into the lookup values of the data regulation (`Regulation/*.json`). The mapping is the same as in `LexCheck`: the lex key is `Lookup.Key`, a further key part addresses a property of the value object; a `contentFile` key may end with the year of `validFrom`. Only differing values are replaced and missing values of an existing lookup are added; descriptions and file formatting are kept, so a second run changes nothing. Open entries are skipped until they are verified. A new row in a range lookup (`rangeMode` other than `None`) gets a `rangeValue`: the key in the format `yyyy-MM-dd` as the number `yyyyMMdd` (`2025-01-01` becomes `20250101`), or the `rangeValue` of the lex entry for other keys. A new row with another key and no `rangeValue` is the error `rangeValueMissing`; nothing is written. The `rangeValue` of an existing row is never recomputed. The dry run shows the `rangeValue` of a new row.
 
 | # | Argument | Description |
 |---|:---------|:------------|
@@ -823,6 +823,7 @@ Each value must have exactly one of `content` or `contentFile` — they are mutu
 | `sourceLocation` | No | Precise location within the source document (free text) |
 | `sourceQuote` | No | Text passage of the source that contains the value; `LexVerifySource` looks up the numbers in the section of the quote. Anchors short numbers and numbers in words (`one and one-half`). Part of the snapshot hash |
 | `referenceYear` | No | Year the value legally belongs to when it differs from the cycle (e.g. `2025` for a surcharge `for 2025` in the 2026 satellite); replaces the `validFrom` year in the year context of `LexVerifySource` and for the quote. Listed by `LexCheck` as information, kept by `LexRollover`. Part of the snapshot hash |
+| `rangeValue` | No | Technical range value of a new row in a range lookup, for a key that is no date (`yyyy-MM-dd`); written by `LexApply`. Not a compliance value: it is not part of the snapshot hash and never replaces the range value of an existing row |
 | `legalReference` | No | Legal norm reference (e.g. `Income Tax Act §12(1)`) |
 | `documentRef` | No | Local evidence document, declared in `files[]` |
 | `description` | No | Human-readable description |

@@ -171,6 +171,9 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         if (result.Release && result.UnjustifiedZero > 0)
             console.DisplayErrorLine($"         {result.UnjustifiedZero} entr(ies) with {SourceVerifier.UnjustifiedZeroHint}: " +
                                      string.Join(", ", result.UnjustifiedZeroSamples));
+        if (result.Release && result.RangeValueMissing > 0)
+            console.DisplayErrorLine($"         {result.RangeValueMissing} range lookup value(s) without rangeValue: " +
+                                     string.Join(", ", result.RangeValueMissingSamples));
         if (result.Release && result.UnusedEvidence > 0)
             console.DisplayErrorLine($"         {result.UnusedEvidence} evidence file(s) that back no entry (set documentRef or the source URL): " +
                                      string.Join(", ", result.UnusedEvidenceSamples));
@@ -208,6 +211,9 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         if (!result.Release && result.UnjustifiedZero > 0)
             console.DisplayInfoLine($"         info: {result.UnjustifiedZero} entr(ies) with {SourceVerifier.UnjustifiedZeroHint}: " +
                                     string.Join(", ", result.UnjustifiedZeroSamples));
+        if (!result.Release && result.RangeValueMissing > 0)
+            console.DisplayInfoLine($"         info: {result.RangeValueMissing} range lookup value(s) without rangeValue: " +
+                                    string.Join(", ", result.RangeValueMissingSamples));
         if (!result.Release && result.UnusedEvidence > 0)
             console.DisplayInfoLine($"         info: {result.UnusedEvidence} evidence file(s) that back no entry (set documentRef or the source URL): " +
                                     string.Join(", ", result.UnusedEvidenceSamples));
@@ -263,7 +269,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("                        not found or it is excluded from auto verification but has an automatic record;");
         console.DisplayTextLine("                        an entry without manual verification is a finding when it has no readable local");
         console.DisplayTextLine("                        evidence and no source that is readable live according to the snapshot;");
-        console.DisplayTextLine("                        zero values without justification and evidence files that back no entry are a finding)");
+        console.DisplayTextLine("                        zero values without justification, range lookup values without rangeValue and");
+        console.DisplayTextLine("                        evidence files that back no entry are a finding)");
         console.DisplayTextLine("      Exit codes:");
         console.DisplayTextLine("          0 no findings (or /lenient), 4 findings (/strict), 6 no lex.json found or root folder missing,");
         console.DisplayTextLine("          -1 invalid parameters or unexpected error");
