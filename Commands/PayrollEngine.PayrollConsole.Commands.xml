@@ -2841,6 +2841,11 @@
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckCommand.Execute(PayrollEngine.Client.Command.CommandContext,PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckParameters)">
             <inheritdoc />
         </member>
+        <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckCommand.WarningLines(PayrollEngine.Lex.CheckResult)">
+            <summary>
+            Output lines of the checks that could not run (<see cref="P:PayrollEngine.Lex.CheckResult.Warnings"/>), one per warning
+            </summary>
+        </member>
         <member name="M:PayrollEngine.PayrollConsole.Commands.RegulationCommands.LexCheckCommand.DisplayInformation(PayrollEngine.Client.Command.ICommandConsole,PayrollEngine.Lex.CheckResult)">
             <summary>
             Information that is a finding only with /required or /release

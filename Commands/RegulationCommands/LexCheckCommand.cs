@@ -185,10 +185,19 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
     }
 
     /// <summary>
+    /// Output lines of the checks that could not run (<see cref="CheckResult.Warnings"/>), one per warning
+    /// </summary>
+    internal static IEnumerable<string> WarningLines(CheckResult result) =>
+        result.Warnings.Select(warning => $"         warning: {warning}");
+
+    /// <summary>
     /// Information that is a finding only with /required or /release
     /// </summary>
     private static void DisplayInformation(ICommandConsole console, CheckResult result)
     {
+        // checks that could not run (e.g. git is not available): no finding, but the result is incomplete
+        foreach (var line in WarningLines(result))
+            console.DisplayInfoLine(line);
         if (!result.RequireLocation && result.UnspecificLocations > 0)
             console.DisplayInfoLine($"         info: {result.UnspecificLocations} location(s) not entry-specific: {string.Join(", ", result.UnspecificLocationSamples)}");
         if (!result.Release && result.SecondaryMainSource > 0)
@@ -228,6 +237,8 @@ internal sealed class LexCheckCommand : CommandBase<LexCheckParameters>
         console.DisplayTextLine("      and an evidence file that backs no entry (no documentRef, no source URL of an entry, no contentFile,");
         console.DisplayTextLine("      no verification evidence, or a file in .lex not declared in files[]).");
         console.DisplayTextLine("      Information: entries with a referenceYear other than the validFrom year.");
+        console.DisplayTextLine("      Warnings: a check that could not run (e.g. git is not available for the evidence tracking) is shown as");
+        console.DisplayTextLine("      a 'warning:' line; it is no finding and does not change the exit code, but the result is incomplete.");
         console.DisplayTextLine("      Exclusions of all kinds (coverage, sourceLocation, orphan, autoVerification, derived, notApplicable) are");
         console.DisplayTextLine("      listed in the report; a derived or notApplicable exclusion whose pattern matches no property of an entry,");
         console.DisplayTextLine("      and a notApplicable exclusion of a property that is not 0, are manifest findings.");

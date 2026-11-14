@@ -603,6 +603,8 @@ The report (Markdown and CSV) shows the new counts per satellite: `UnspecificLoc
 
 Entries with a `referenceYear` other than the year of `validFrom` are listed as information (`<key> (<year>)`), never as finding.
 
+A check that could not run (for example `git` is not available or the folder is not inside a git repository, so the evidence tracking is not checked) is shown as a `warning:` line below the manifest, also for a manifest without findings, and in the report under `## Warnings` (once per message with the satellites it concerns). A warning is no finding and does not change the exit code, but the result is incomplete: run the check where the check can run before you rely on it. The `lex_check` MCP tool returns the same text in `warnings`.
+
 With `/release` the header lines `Location mode` and `Verification` show the effective modes `Required (release)` and `VerificationRequired (release)`.
 
 Exit codes: `0` no findings (or `/lenient`), `4` findings (`/strict`), `6` no `lex.json` found or root folder missing, `-1` invalid parameters or error.
