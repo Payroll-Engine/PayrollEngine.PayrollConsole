@@ -6,10 +6,10 @@ Built-in console commands for payrun performance testing with any regulation.
 
 Load test of the Payrun API endpoint under variable employee counts (100, 1'000, 10'000). **Performance measurement focuses exclusively on payrun execution.** Loading employees and case values is setup and is not measured.
 
-## Principle: Two Separate Phases
+## Principle: Two Separate Steps
 
 ```
-Phase 1 – Setup (not measured)            Phase 2 – Measurement (payrun only)
+Step 1 – Setup (not measured)             Step 2 – Measurement (payrun only)
 ┌──────────────────────────────────┐      ┌──────────────────────────────┐
 │ LoadTestSetupEmployees Employees │      │ PayrunLoadTest               │
 │ LoadTestSetupCases  Cases        │      │                              │
@@ -22,13 +22,13 @@ Phase 1 – Setup (not measured)            Phase 2 – Measurement (payrun only
 └──────────────────────────────────┘      └──────────────────────────────┘
 ```
 
-### Phase 1 – Setup (not measured)
+### Step 1 – Setup (not measured)
 
 - Employees are bulk-imported via `LoadTestSetupEmployees` using `IEmployeeService.CreateEmployeesBulkAsync()` (SQL BulkInsert, 5'000 item chunks)
 - Case values are bulk-imported via `LoadTestSetupCases` using `IPayrollService.AddCasesBulkAsync()` (fast bulk insert, no script execution)
 - Setup JSON can be split across multiple files (500 employees per case batch)
 
-### Phase 2 – Measurement (payrun only)
+### Step 2 – Measurement (payrun only)
 
 - Payrun is started directly via `PayrunJobService.StartJobAsync<PayrunJob>()` – no ExchangeImport needed
 - Server-side timing extracted from the returned `PayrunJob` (JobStart/JobEnd)
