@@ -57,6 +57,11 @@ internal sealed class LexFetchCommand : CommandBase<LexFetchParameters>
                 context.Console.DisplayErrorLine(exception.Message);
                 return (int)ProgramExitCode.InvalidInput;
             }
+            catch (FetchTargetLinkException exception)
+            {
+                context.Console.DisplayErrorLine(exception.Message);
+                return (int)ProgramExitCode.InvalidInput;
+            }
 
             if (result.State == FetchState.Differs)
             {
@@ -109,6 +114,7 @@ internal sealed class LexFetchCommand : CommandBase<LexFetchParameters>
         console.DisplayTextLine("      (fileName, sourceUrls). Hash and size are shown; LexSnapshot records them in the snapshot.");
         console.DisplayTextLine("      An existing file with the same content is kept, a different one only replaced with /overwrite.");
         console.DisplayTextLine("      The manifest (lex.json) and the snapshot (snapshot.json) are no fetch target and are refused.");
+        console.DisplayTextLine("      A target that is a link pointing out of the .lex folder is refused too.");
         console.DisplayTextLine("      Arguments:");
         console.DisplayTextLine("          1. source URL [Url]");
         console.DisplayTextLine("          2. target file name [FileName] (optional, default from the URL)");
@@ -118,7 +124,7 @@ internal sealed class LexFetchCommand : CommandBase<LexFetchParameters>
         console.DisplayTextLine("      Toggles:");
         console.DisplayTextLine("          overwrite mode: /skip (default) or /overwrite (replace a file with different content)");
         console.DisplayTextLine("      Exit codes:");
-        console.DisplayTextLine("          0 ok, 3 source not loaded (HTTP error), 6 lex.json missing, file differs or reserved file name, -1 invalid parameters or error");
+        console.DisplayTextLine("          0 ok, 3 source not loaded (HTTP error), 6 lex.json missing, file differs, reserved file name or target link out of the .lex folder, -1 invalid parameters or error");
         console.DisplayTextLine("      Examples:");
         console.DisplayTextLine("          LexFetch https://example.org/tax-rates-2026.pdf");
         console.DisplayTextLine("          LexFetch https://example.org/rates rates-2026.html Lex:Data.Tax.2026 \"Description:Tax rates 2026\"");

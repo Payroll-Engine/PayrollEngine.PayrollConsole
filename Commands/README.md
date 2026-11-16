@@ -467,9 +467,9 @@ Download a source document unchanged into the `.lex` folder and declare it in `f
 **Toggles:**
 - overwrite mode: `/skip` (default) or `/overwrite` (replace a file with different content)
 
-`lex.json` and `snapshot.json` are no fetch targets: the names are refused (case, trailing dots and spaces ignored), also when the name is derived from the URL, and nothing is written.
+`lex.json` and `snapshot.json` are no fetch targets: the names are refused (case, trailing dots and spaces ignored), also when the name is derived from the URL, and nothing is written. A target that is a link pointing out of the `.lex` folder (or onto a reserved name, or nowhere) is refused as well.
 
-Exit codes: `0` ok, `3` source not loaded (HTTP error), `6` `lex.json` missing, file differs or reserved file name, `-1` invalid parameters or error.
+Exit codes: `0` ok, `3` source not loaded (HTTP error), `6` `lex.json` missing, file differs, reserved file name or target link out of the `.lex` folder, `-1` invalid parameters or error.
 
 **Examples:**
 ```cmd
